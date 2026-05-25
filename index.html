@@ -1141,6 +1141,66 @@
                 </div>
 
               </div><!-- /theory grid -->
+
+              <!-- ══ THEORY QUIZ ══ -->
+              <div style="margin-top:32px; padding-top:28px; border-top:1.5px solid rgba(26,74,68,0.09);">
+
+                <!-- Start screen -->
+                <div id="theory-quiz-start">
+                  <div style="background:linear-gradient(135deg,var(--teal-50) 0%,#fff 100%); border:1.5px solid rgba(45,125,111,0.15); border-radius:16px; padding:26px 28px; display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;">
+                    <div>
+                      <p style="font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--teal-500); margin-bottom:6px; font-family:'Inter',sans-serif;">Theory Quiz</p>
+                      <h4 style="font-family:'Playfair Display',serif; font-size:1.15rem; font-weight:700; color:var(--teal-900); margin-bottom:5px;">Test Your Theory Knowledge</h4>
+                      <p style="font-size:0.84rem; color:var(--text-mid); line-height:1.65;">26 questions · all 13 theories · founders, key concepts &amp; signature techniques</p>
+                    </div>
+                    <button onclick="startTheoryQuiz()" class="btn-primary" style="font-size:0.875rem; padding:11px 24px; white-space:nowrap; flex-shrink:0;">
+                      Start Quiz →
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Active quiz -->
+                <div id="theory-quiz-active" style="display:none;">
+                  <div style="background:#fff; border-radius:16px; border:1.5px solid rgba(26,74,68,0.09); box-shadow:0 2px 16px rgba(26,74,68,0.07); overflow:hidden;">
+                    <div style="height:4px; background:var(--teal-100);">
+                      <div id="tq-progress-bar" style="height:100%; background:linear-gradient(90deg,var(--teal-700),var(--teal-500)); transition:width 0.4s ease; width:0%;"></div>
+                    </div>
+                    <div style="padding:28px;">
+                      <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px; flex-wrap:wrap;">
+                        <span id="tq-num" style="font-size:0.72rem; font-weight:700; color:var(--text-light); text-transform:uppercase; letter-spacing:0.05em; font-family:'Inter',sans-serif;"></span>
+                        <span id="tq-theory-badge" style="font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; padding:2px 9px; border-radius:20px; background:var(--teal-50); color:var(--teal-700); border:1px solid rgba(45,125,111,0.15); font-family:'Inter',sans-serif;"></span>
+                      </div>
+                      <p id="tq-question" style="font-size:0.9875rem; font-weight:600; color:var(--teal-900); line-height:1.65; margin-bottom:18px;"></p>
+                      <div id="tq-options" style="display:flex; flex-direction:column; gap:8px;"></div>
+                      <div id="tq-feedback" style="display:none; margin-top:14px; border-radius:10px; padding:13px 16px; font-size:0.83rem; line-height:1.65;"></div>
+                      <div style="margin-top:18px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+                        <span id="tq-score-live" style="font-size:0.78rem; color:var(--text-light); font-family:'Inter',sans-serif;"></span>
+                        <button id="tq-next-btn" onclick="theoryQuizNext()" class="btn-primary" style="display:none; font-size:0.875rem; padding:10px 24px;">Next →</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Results -->
+                <div id="theory-quiz-results" style="display:none;">
+                  <div style="background:#fff; border-radius:16px; border:1.5px solid rgba(26,74,68,0.09); box-shadow:0 2px 16px rgba(26,74,68,0.07); padding:32px 28px; text-align:center;">
+                    <p style="font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-light); margin-bottom:10px; font-family:'Inter',sans-serif;">Quiz Complete</p>
+                    <div id="tq-score-pct" style="font-family:'Playfair Display',serif; font-size:3.2rem; font-weight:700; color:var(--teal-900); letter-spacing:-0.03em; line-height:1; margin-bottom:6px;"></div>
+                    <p id="tq-score-raw" style="font-size:0.9rem; color:var(--text-mid); margin-bottom:8px;"></p>
+                    <p id="tq-score-verdict" style="font-size:0.85rem; font-weight:700; margin-bottom:20px;"></p>
+                    <div style="height:8px; background:var(--teal-100); border-radius:4px; margin:0 auto 24px; max-width:320px; overflow:hidden;">
+                      <div id="tq-progress-result" style="height:100%; border-radius:4px; transition:width 0.8s ease;"></div>
+                    </div>
+                    <div id="tq-domain-breakdown" style="text-align:left; max-width:380px; margin:0 auto 24px;"></div>
+                    <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+                      <button onclick="startTheoryQuiz()" class="btn-primary" style="font-size:0.875rem; padding:11px 24px;">↺ Try Again</button>
+                      <button onclick="resetTheoryQuiz()" class="btn-ghost" style="font-size:0.875rem; padding:11px 22px;">Back to Theories</button>
+                    </div>
+                  </div>
+                </div>
+
+              </div><!-- /theory quiz -->
+
             </div><!-- /acc-inner -->
           </div><!-- /acc-content -->
         </div><!-- /acc-item 1 -->
@@ -9014,6 +9074,247 @@
       reviewVisible = !reviewVisible;
       document.getElementById('review-panel').style.display = reviewVisible ? '' : 'none';
       document.getElementById('review-toggle-btn').textContent = reviewVisible ? 'Hide Review' : 'Review Answers';
+    }
+
+    /* ══ Theory Quiz ══ */
+    const theoryQuizBank = [
+      // ── Psychodynamic ──
+      { theory:'Psychodynamic', q:'Which defense mechanism involves attributing one\'s own unacceptable feelings or impulses onto another person?', opts:['Repression','Sublimation','Projection','Displacement'], ans:2, exp:'Projection involves attributing one\'s own unacceptable feelings or impulses to another person (e.g., "You\'re angry at me" when in fact you are angry). Repression = unconscious blocking; displacement = redirecting to a safer target.' },
+      { theory:'Psychodynamic', q:'In psychodynamic theory, the ego operates according to which principle?', opts:['Pleasure principle','Reality principle','Moral principle','Actualizing principle'], ans:1, exp:'The ego operates on the reality principle, mediating between the id\'s demands (pleasure principle) and the external world. The superego enforces moral standards.' },
+      // ── Adlerian ──
+      { theory:'Adlerian', q:'The primary therapeutic technique in Adlerian therapy is:', opts:['Free association','Encouragement','The empty chair','Systematic desensitization'], ans:1, exp:'Encouragement is the cornerstone of Adlerian therapy — it combats discouragement, builds confidence, and fosters social interest (Gemeinschaftsgefühl), which Adler viewed as the hallmark of mental health.' },
+      { theory:'Adlerian', q:'Adler\'s concept of "fictional finalism" means that behavior is guided by:', opts:['Unconscious drives from childhood','Reinforcement schedules','Imagined future goals the person strives toward','Birth order alone'], ans:2, exp:'Fictional finalism: people are motivated by imagined, idealized future goals (fictions) that guide present behavior — even if never fully achieved. It is teleological (goal-directed), not deterministic.' },
+      // ── Existential ──
+      { theory:'Existential', q:'Yalom\'s four ultimate concerns of existence include all EXCEPT:', opts:['Death','Freedom','Meaninglessness','Unconscious conflict'], ans:3, exp:'Yalom\'s four ultimate concerns: death, freedom, isolation, and meaninglessness. Unconscious conflict is a psychodynamic concept. Existential therapy confronts these givens rather than resolving them.' },
+      { theory:'Existential', q:'Viktor Frankl\'s logotherapy holds that the primary human motivation is:', opts:['The will to power','The will to pleasure','The will to meaning','Striving for superiority'], ans:2, exp:'Logotherapy (logos = meaning) centers on the will to meaning as the fundamental human drive. When blocked, an existential vacuum develops, potentially leading to noögenic neurosis.' },
+      // ── Person-Centered ──
+      { theory:'Person-Centered', q:'Rogers argued the three core conditions are not only necessary but also ________ for therapeutic change.', opts:['Helpful','Sufficient','Evidence-based','Ethically required'], ans:1, exp:'Rogers\' controversial position: empathy, unconditional positive regard (UPR), and congruence are NECESSARY AND SUFFICIENT for change — no specific techniques are required. The relationship is the therapy.' },
+      { theory:'Person-Centered', q:'"Conditions of worth" develop when a child learns that love and acceptance are:', opts:['Freely given regardless of behavior','Available only when certain expectations are met','Dependent on social interest','Based on pleasure-seeking'], ans:1, exp:'Conditions of worth occur when children receive acceptance only for meeting others\' standards. This creates incongruence between the organismic self (true experience) and the self-concept built to earn approval.' },
+      // ── Gestalt ──
+      { theory:'Gestalt', q:'"Unfinished business" in Gestalt therapy refers to:', opts:['Incomplete treatment goals','Unexpressed feelings from past events that block present awareness','Irrational beliefs not yet disputed','Behaviors that were never reinforced'], ans:1, exp:'Unfinished business = lingering unexpressed feelings (resentment, grief, guilt, anger) from past experiences that intrude on present functioning. Gestalt resolves these in the here-and-now.' },
+      { theory:'Gestalt', q:'Which technique is most closely associated with Gestalt therapy?', opts:['Thought records','WDEP questioning','The empty chair','Scaling questions'], ans:2, exp:'The empty chair — Fritz Perls\' signature technique — facilitates dialogue between parts of the self or with an imagined significant other, bringing unfinished business into present-moment awareness.' },
+      // ── Behavioral ──
+      { theory:'Behavioral', q:'Negative reinforcement INCREASES behavior by:', opts:['Adding an unpleasant consequence','Removing something aversive','Delivering a desired reward','Withholding a stimulus'], ans:1, exp:'Negative reinforcement = REMOVING an aversive stimulus to INCREASE a behavior (e.g., buckling a seatbelt stops the beeping → buckling increases). It is NOT punishment — it strengthens behavior.' },
+      { theory:'Behavioral', q:'Systematic desensitization pairs relaxation training with:', opts:['Cognitive restructuring','Graduated exposure to a feared hierarchy','Paradoxical intention','Token economy'], ans:1, exp:'Wolpe\'s systematic desensitization uses counter-conditioning: deep muscle relaxation is paired with progressively anxiety-provoking stimuli in a graduated hierarchy, replacing anxiety with relaxation.' },
+      // ── CBT/REBT ──
+      { theory:'CBT/REBT', q:'Beck\'s cognitive triad of depression consists of negative views about:', opts:['Past, present, and future','Self, world, and future','Behavior, emotion, and cognition','Id, ego, and superego'], ans:1, exp:'Beck\'s cognitive triad = negative automatic thoughts about SELF ("I am worthless"), the WORLD ("Everything is a failure"), and the FUTURE ("Nothing will improve") — the cognitive core of depression.' },
+      { theory:'CBT/REBT', q:'In Ellis\'s REBT, the "B" in the A-B-C model stands for:', opts:['Behavior','Boundary','Belief','Biology'], ans:2, exp:'A = Activating Event, B = Belief (rational or irrational), C = Consequence (emotional/behavioral). Ellis argued C is caused by B, not A. Disputing (D) irrational beliefs creates E — an Effective new belief.' },
+      // ── Reality Therapy ──
+      { theory:'Reality Therapy', q:'Glasser\'s Choice Theory identifies how many basic psychological needs?', opts:['Three','Four','Five','Seven'], ans:2, exp:'Five basic needs: survival/health, love/belonging, power/achievement, freedom/autonomy, and fun. All behavior — including "mental illness" — is an attempt to meet one or more of these needs.' },
+      { theory:'Reality Therapy', q:'In Glasser\'s WDEP system, "E" stands for:', opts:['Explore','Evaluate','Evidence','Emotion'], ans:1, exp:'WDEP: Wants (what do you want?), Doing/Direction (what are you doing?), Evaluate ("Is what you\'re doing getting you what you want?"), Plan (what specific steps will you take?). Self-evaluation is the hinge point.' },
+      // ── SFBT ──
+      { theory:'SFBT', q:'The Miracle Question in SFBT is designed primarily to:', opts:['Explore the origins of the presenting problem','Help clients describe and build toward a desired future','Measure symptom severity','Identify irrational beliefs'], ans:1, exp:'"If a miracle happened overnight and your problem was solved, what would you notice differently?" This orients clients toward solutions and concrete, achievable goals rather than problem-focused analysis.' },
+      { theory:'SFBT', q:'"Exception questions" explore:', opts:['Times when the client\'s problem did NOT occur','Exceptions to ethical standards','Alternative life narratives','The cultural origins of distress'], ans:0, exp:'Exception questions identify past instances when the problem was absent or less intense — evidence of the client\'s existing strengths and partial solutions that can be amplified and built upon.' },
+      // ── Narrative ──
+      { theory:'Narrative', q:'"The person is not the problem — the problem is the problem" reflects which Narrative technique?', opts:['Re-authoring','Unique outcomes','Externalization','Witnessing'], ans:2, exp:'Externalization separates the person\'s identity from the problem — the problem is treated as something external to the person. "Anxiety tells you to avoid" rather than "You are an anxious person."' },
+      { theory:'Narrative', q:'"Unique outcomes" (sparkling moments) in Narrative Therapy are used to:', opts:['Identify individualized treatment goals','Build an alternative preferred story','Design CBT homework','Measure symptom reduction'], ans:1, exp:'Unique outcomes = exceptions to the dominant problem-saturated story. White used these moments as entry points to co-construct an alternative, preferred narrative where the person is not defined by the problem.' },
+      // ── DBT ──
+      { theory:'DBT', q:'DBT was originally developed by Marsha Linehan primarily for clients with:', opts:['Major Depressive Disorder','Schizophrenia','Borderline Personality Disorder','PTSD'], ans:2, exp:'DBT was created specifically for BPD, grounded in Linehan\'s biosocial theory: BPD results from emotional dysregulation (biological sensitivity) interacting with an invalidating environment (social experience).' },
+      { theory:'DBT', q:'The foundational/core module of DBT\'s four skills is:', opts:['Distress Tolerance','Emotional Regulation','Interpersonal Effectiveness','Mindfulness'], ans:3, exp:'Mindfulness is the core module — all other skills are built on it. It cultivates "Wise Mind" (the integration of Emotion Mind and Reasonable Mind) and the ability to observe experience without fusing with it.' },
+      // ── ACT ──
+      { theory:'ACT', q:'In ACT, "cognitive defusion" means:', opts:['Eliminating unwanted thoughts','Replacing negative thoughts with positive ones','Creating distance from thoughts so they have less control','Arguing against distorted cognitions'], ans:2, exp:'Defusion = stepping back from thoughts and observing them rather than being fused with or controlled by them. "I\'m having the thought that I\'m worthless" creates psychological distance vs. "I am worthless."' },
+      { theory:'ACT', q:'ACT is classified as part of which "wave" of behavioral therapy?', opts:['First wave (classical conditioning)','Second wave (cognitive-behavioral)','Third wave (acceptance/mindfulness-based)','Fourth wave (neuroscience-based)'], ans:2, exp:'Third-wave CBT therapies (ACT, DBT, MBCT, Schema Therapy) integrate acceptance, mindfulness, and values alongside cognitive and behavioral strategies, rather than primarily targeting symptom reduction.' },
+      // ── MI ──
+      { theory:'MI', q:'In Motivational Interviewing, "rolling with resistance" means:', opts:['Directly confronting the client\'s denial','Reflecting and exploring resistance without arguing','Ignoring client objections','Matching the client\'s ambivalence'], ans:1, exp:'Rolling with resistance: instead of opposing or confronting, the counselor reflects, reframes, or explores the client\'s perspective. Arguing increases resistance; rolling preserves the therapeutic alliance.' },
+      { theory:'MI', q:'A client says "I know I drink too much, but I\'m not ready to quit." This BEST represents which Prochaska stage?', opts:['Precontemplation','Contemplation','Preparation','Maintenance'], ans:1, exp:'Contemplation = awareness of the problem + ambivalence about change ("I want to, but..."). The person is weighing pros and cons. Precontemplation = no awareness or intent to change within six months.' },
+
+      // ── Psychodynamic (additional) ──
+      { theory:'Psychodynamic', q:'In psychoanalytic therapy, when a client unconsciously transfers feelings from a past relationship onto the therapist, this is called:', opts:['Countertransference','Resistance','Transference','Sublimation'], ans:2, exp:'Transference = redirecting feelings from a significant early figure (usually a parent) onto the therapist. It is considered the cornerstone of psychoanalytic treatment and a window into unresolved conflicts.' },
+      { theory:'Psychodynamic', q:'According to Freud, the oral stage occurs during which period of development?', opts:['Ages 3–6','Ages 1–3','Birth to 18 months','Ages 6–12'], ans:2, exp:'The oral stage (birth–18 months) centers on feeding and dependency. Fixation at this stage may manifest as dependence, pessimism, or oral-oriented behaviors (e.g., smoking, overeating) in adulthood.' },
+      { theory:'Psychodynamic', q:'A person who unconsciously feels hostility toward a sibling but becomes excessively loving toward them is demonstrating:', opts:['Regression','Reaction formation','Rationalization','Undoing'], ans:1, exp:'Reaction formation = expressing the opposite of an anxiety-provoking impulse. The person converts hostility into exaggerated affection to keep the unacceptable feeling out of awareness.' },
+      { theory:'Psychodynamic', q:'A therapist\'s own emotional reaction to a client\'s material, stemming from the therapist\'s unresolved issues, is called:', opts:['Empathic resonance','Transference','Projective identification','Countertransference'], ans:3, exp:'Countertransference = the therapist\'s unconscious emotional reactions to the client. Modern psychodynamic theory views it as both an obstacle and a valuable source of clinical information when properly analyzed.' },
+      { theory:'Psychodynamic', q:'Object relations theory focuses primarily on:', opts:['Reinforcement history and behavioral patterns','Irrational beliefs about the self and others','Internal mental representations of self and others formed in early relationships','The existential search for meaning'], ans:2, exp:'Object relations (Klein, Winnicott, Fairbairn) emphasizes early internalized representations ("objects") of self and caregivers. These templates shape adult relationships and form the basis of the therapeutic relationship.' },
+
+      // ── Adlerian (additional) ──
+      { theory:'Adlerian', q:'Adler\'s concept of "inferiority feelings" is viewed as:', opts:['A pathological state requiring medication','A universal human condition that can motivate growth','Identical to an inferiority complex','The result of birth order alone'], ans:1, exp:'Adler saw inferiority feelings as universal and potentially motivating — the "starting point of all human striving." Only when compensation fails and feelings overwhelm functioning do they become an inferiority complex.' },
+      { theory:'Adlerian', q:'According to Adler, first-born children may be particularly prone to:', opts:['Feeling inferior to older siblings','Developing strong social interest without rivalry','Struggling with "dethronement" and later seeking power or attention','Being spoiled and lacking ambition'], ans:2, exp:'Adler noted that first-borns are "dethroned" when a second child arrives, which may produce a drive for power, attention, or superiority. Birth order is a social, not biological, influence on lifestyle.' },
+      { theory:'Adlerian', q:'In Adlerian therapy, exploring a client\'s earliest memories is used to:', opts:['Identify repressed trauma','Uncover the client\'s current lifestyle and guiding beliefs','Diagnose DSM disorders','Access unconscious sexual conflicts'], ans:1, exp:'Early recollections (ERs) are projective windows into the person\'s current lifestyle and core beliefs. Because memory is selective, what a person chooses to recall reflects their private logic and guiding fictions.' },
+      { theory:'Adlerian', q:'"Gemeinschaftsgefühl" is the German term Adler used for:', opts:['Fictional finalism','Inferiority striving','Social interest','Lifestyle'], ans:2, exp:'Gemeinschaftsgefühl (social interest) — concern for and connection to the broader community — was Adler\'s primary criterion for psychological health. Psychopathology is essentially a failure to develop social interest.' },
+      { theory:'Adlerian', q:'The "lifestyle" in Adlerian therapy refers to:', opts:['A client\'s daily routine and habits','The characteristic pattern of beliefs, goals, and behaviors a person develops in early childhood','The therapeutic techniques the counselor employs','Cultural background and socioeconomic status'], ans:1, exp:'Lifestyle = the unique, self-consistent movement toward one\'s fictional goals, shaped in early childhood. Assessment tools include family constellation, early recollections, and the life-tasks interview.' },
+
+      // ── Existential (additional) ──
+      { theory:'Existential', q:'Sartre\'s concept of "bad faith" describes:', opts:['A therapist violating informed consent','Denying one\'s freedom and responsibility by blaming others or circumstances','The inauthenticity caused by irrational beliefs','Unresolved guilt in the existential framework'], ans:1, exp:'Bad faith = self-deception — acting as if one has no freedom or choice (e.g., "I had to do it"). Sartre argued bad faith is a flight from the anxiety of radical freedom and personal responsibility.' },
+      { theory:'Existential', q:'Existential anxiety (Angst) that arises from confronting freedom and the need to make meaningful choices is considered:', opts:['Pathological and requiring treatment','A symptom of unresolved childhood trauma','A normal, inevitable aspect of human existence','A cognitive distortion to be challenged'], ans:2, exp:'Existential anxiety is ontological (part of being) rather than neurotic. It arises from the awareness of freedom, death, meaninglessness, and isolation. Healthy functioning involves confronting, not eliminating, this anxiety.' },
+      { theory:'Existential', q:'The existential concept of "thrownness" (Heidegger) refers to:', opts:['A Gestalt technique for releasing repressed emotion','The fact that humans are "thrown" into circumstances not of their choosing','The projection of anxiety onto objects','The narrative process of self-creation'], ans:1, exp:'Thrownness (Geworfenheit) = the unchosen conditions of one\'s existence (family, culture, era, body). Existential therapy works with the tension between thrownness (givens) and projection (chosen possibilities).' },
+      { theory:'Existential', q:'Rollo May argued that which experience is essential to mental health and creativity?', opts:['Anxiety avoidance','Complete surrender to the unconscious','The encounter — a direct, authentic meeting with the world','Operant self-reinforcement'], ans:2, exp:'May emphasized the encounter as essential — a genuine, present-moment engagement with the world, others, and oneself. Neurosis, for May, is the failure to confront existence fully and authentically.' },
+      { theory:'Existential', q:'The concept of "existential vacuum" in Frankl\'s logotherapy refers to:', opts:['Lack of social support','A pervasive feeling of emptiness and meaninglessness','The absence of the unconscious in therapy','Isolation from one\'s community'], ans:1, exp:'Existential vacuum = a widespread sense of inner emptiness arising when the will to meaning is blocked. It may manifest as depression, aggression, or addiction. Logotherapy works to reconnect clients with meaning sources.' },
+
+      // ── Person-Centered (additional) ──
+      { theory:'Person-Centered', q:'Unconditional positive regard (UPR) means the therapist:', opts:['Agrees with everything the client says','Accepts the client fully without evaluating their worth based on behaviors','Avoids giving any feedback or challenges','Only reflects positive feelings the client expresses'], ans:1, exp:'UPR = prizing the client as a person of inherent worth regardless of their behaviors, thoughts, or feelings. It counters the conditions of worth that created incongruence and creates a climate for self-acceptance.' },
+      { theory:'Person-Centered', q:'In person-centered therapy, "congruence" refers to the therapist:', opts:['Matching the client\'s emotional state','Being genuine, transparent, and consistent across self, experience, and expression','Having the same theoretical orientation as the client','Agreeing with the client\'s self-assessment'], ans:1, exp:'Congruence (genuineness/realness) = the therapist\'s inner experience and outer expression are aligned. Rogers viewed congruence as the most important condition — a phony therapist cannot facilitate authentic growth.' },
+      { theory:'Person-Centered', q:'Rogers described the therapist\'s capacity to sense the client\'s private world "as if" it were one\'s own, while maintaining separateness, as:', opts:['Sympathy','Unconditional positive regard','Accurate empathic understanding','Positive self-concept'], ans:2, exp:'Accurate empathic understanding = immersing in the client\'s subjective world and communicating that understanding — not sympathy (sharing feelings) but accurate sensing of the other\'s experience from inside their frame of reference.' },
+      { theory:'Person-Centered', q:'The "fully functioning person" in Rogers\' theory is characterized by:', opts:['The absence of any anxiety','An externally directed locus of evaluation','Openness to experience and an internal locus of evaluation','Complete self-actualization with no further growth needed'], ans:2, exp:'The fully functioning person: open to experience, existential living (present-focused), organismic trust, expressive freedom, and an internal locus of evaluation. It is a direction of growth, not a final destination.' },
+      { theory:'Person-Centered', q:'According to Rogers, what is the primary motivation of human beings?', opts:['Reduction of anxiety and tension','The will to power over others','The actualizing tendency — an inherent drive toward growth and fulfillment','The avoidance of existential meaninglessness'], ans:2, exp:'The actualizing tendency is Rogers\' master motive — a biological and psychological drive toward growth, complexity, and fulfillment. Under the right relational conditions, it naturally moves the person toward health.' },
+
+      // ── Gestalt (additional) ──
+      { theory:'Gestalt', q:'In Gestalt theory, "figure" and "ground" refer to:', opts:['The therapist\'s role versus the client\'s role','The most salient need/experience (figure) versus the background of all other experience (ground)','Conscious versus unconscious material','Behavior versus cognition'], ans:1, exp:'Figure-ground: at any moment, the most pressing need or experience emerges as figure against the ground of everything else. Healthy functioning involves flexible, fluid cycling between figure and ground.' },
+      { theory:'Gestalt', q:'A client who redirects anger meant for another person inward against themselves is demonstrating which contact boundary disturbance?', opts:['Introjection','Projection','Retroflection','Confluence'], ans:2, exp:'Retroflection = turning against the self what one wants to do to another. The energy meant for the environment is redirected inward (e.g., self-criticism instead of expressing anger at someone). Depression often involves retroflection.' },
+      { theory:'Gestalt', q:'Gestalt therapy\'s paradoxical theory of change states that:', opts:['Change requires strong therapeutic confrontation','Change happens by trying harder to be different','Change occurs when one fully becomes what one already is, rather than striving to be different','Change is driven by insight into unconscious conflicts'], ans:2, exp:'Arnold Beisser\'s paradoxical theory: "Change occurs when one becomes what he is, not when he tries to become what he is not." Authentically inhabiting one\'s present experience, rather than resisting it, creates the conditions for change.' },
+      { theory:'Gestalt', q:'In Gestalt therapy, the concept of "confluence" refers to:', opts:['The meeting of two strong emotions','A loss of the boundary between self and other, with no sense of differentiation','Bringing past material into the present','The moment of therapeutic breakthrough'], ans:1, exp:'Confluence = merging — the boundary between self and environment dissolves. Examples: codependent relationships, groupthink. Healthy contact requires a permeable but intact self-other boundary.' },
+      { theory:'Gestalt', q:'The emphasis on present-moment awareness — "the here and now" — in Gestalt therapy is captured by the phrase:', opts:['"Go back to the beginning"','The only moment that exists is now; awareness cures','Use the miracle question to envision the future','Access the unconscious through free association'], ans:1, exp:'Perls emphasized the present: "Nothing exists except the now." The past is brought into the present tense (role-play, experiments) rather than discussed abstractly. Present-centered awareness is both the method and the goal.' },
+
+      // ── Behavioral (additional) ──
+      { theory:'Behavioral', q:'In classical conditioning, "extinction" occurs when:', opts:['The CS produces a stronger response over time','The conditioned response is suppressed by punishment','The CS is repeatedly presented without the UCS until the CR disappears','A new UCS replaces the original one'], ans:2, exp:'Extinction = the CS is presented repeatedly without the UCS → the CR gradually weakens and disappears. Note: extinction is not unlearning — the conditioned response can return (spontaneous recovery) after a rest period.' },
+      { theory:'Behavioral', q:'A variable-ratio reinforcement schedule produces behavior that is:', opts:['Slow and steady','Extinct quickly when reinforcement stops','High rate and very resistant to extinction','High only immediately after reinforcement'], ans:2, exp:'Variable-ratio (VR) schedules (e.g., slot machines) produce the highest, most consistent response rates and are the most resistant to extinction because the organism cannot predict when reinforcement will occur.' },
+      { theory:'Behavioral', q:'Bandura\'s social learning theory contributed the concept that behavior can be learned through:', opts:['Classical conditioning alone','Observing and imitating models without direct reinforcement','Operant shaping only','Free association of mental models'], ans:1, exp:'Observational learning (modeling/vicarious reinforcement): behavior can be acquired by watching others and the consequences they receive — without direct reinforcement of the observer. This bridges behaviorism and cognitive approaches.' },
+      { theory:'Behavioral', q:'A token economy is an example of which behavioral principle?', opts:['Classical conditioning','Negative punishment','Generalized conditioned reinforcement','Spontaneous recovery'], ans:2, exp:'Token economies use generalized conditioned reinforcers (tokens) exchangeable for backup reinforcers. They operationalize positive reinforcement systematically and are widely used in schools, psychiatric settings, and prisons.' },
+      { theory:'Behavioral', q:'The behavioral technique of "flooding" (implosion) differs from systematic desensitization in that flooding:', opts:['Uses relaxation training throughout','Proceeds gradually through a fear hierarchy','Exposes the client to maximum-intensity feared stimuli immediately, without relaxation','Relies on cognitive reappraisal rather than exposure'], ans:2, exp:'Flooding = immediate, prolonged exposure to the most feared stimulus at full intensity — without relaxation training. The anxiety response eventually exhausts itself (habituation). More intense but often faster than gradual desensitization.' },
+
+      // ── CBT/REBT (additional) ──
+      { theory:'CBT/REBT', q:'Which cognitive distortion involves drawing a broad negative conclusion from a single incident?', opts:['Mind reading','Overgeneralization','Personalization','Magnification'], ans:1, exp:'Overgeneralization = applying a negative conclusion from one event universally: "I failed this exam — I\'m a complete failure." Beck and Burns identified this as a core distortion in depression and anxiety.' },
+      { theory:'CBT/REBT', q:'In REBT, the three main categories of "musturbatory" (absolutistic) beliefs are demands about:', opts:['Past, present, and future','Self, others, and the world/life conditions','Thinking, feeling, and behavior','Id, ego, and superego demands'], ans:1, exp:'Ellis\'s core irrational demands: "I MUST perform well" (self-demand), "You MUST treat me well" (other-demand), "Life MUST be fair" (world-demand). All irrational thinking ultimately involves one of these three musts.' },
+      { theory:'CBT/REBT', q:'The purpose of Socratic questioning (guided discovery) in CBT is to:', opts:['Confront and argue against the client\'s beliefs','Help clients discover and evaluate evidence for their beliefs rather than accepting them as facts','Provide direct psychoeducation about cognitive distortions','Build rapport through reflective listening'], ans:1, exp:'Socratic questioning guides clients to examine the evidence for and against their beliefs, explore alternative explanations, and reason toward more balanced cognitions — rather than the therapist arguing or lecturing.' },
+      { theory:'CBT/REBT', q:'A thought record (dysfunctional thought record) in CBT typically asks clients to identify:', opts:['Childhood memories and their emotional impact','The situation, automatic thought, emotion, evidence for/against, and alternative response','Goals, exceptions, and scaling','Archetypes from the collective unconscious'], ans:1, exp:'CBT thought records (e.g., the 7-column DTR) help clients identify: situation → automatic thought → emotions → evidence for → evidence against → balanced response → outcome. This builds metacognitive awareness and cognitive flexibility.' },
+      { theory:'CBT/REBT', q:'Beck\'s concept of "schemas" in CBT refers to:', opts:['Behavioral reinforcement patterns','Deep, core beliefs about self, others, and the world that organize information processing','The hierarchy of fears used in exposure therapy','Irrational beliefs that fuel emotional disturbance'], ans:1, exp:'Schemas = deep, stable cognitive structures (core beliefs) formed in early experience: "I am unlovable," "The world is dangerous." They filter perception and give rise to automatic thoughts. Schema therapy targets these directly.' },
+
+      // ── Reality Therapy (additional) ──
+      { theory:'Reality Therapy', q:'The "quality world" in Glasser\'s Choice Theory is:', opts:['An ideal society Glasser envisioned','A mental picture album of people, things, and values most important to the individual','The unconscious repository of repressed desires','The therapist\'s vision of the client\'s potential'], ans:1, exp:'The quality world = a personal, internal picture album of everything most meaningful to us — specific people, activities, possessions, and beliefs. All behavior is an attempt to move the world to match our quality world pictures.' },
+      { theory:'Reality Therapy', q:'In Choice Theory, Glasser argues that ALL human behavior consists of four components. Which combination is correct?', opts:['Thinking, feeling, acting, physiology','Sensing, perceiving, thinking, deciding','Activating event, belief, consequence, disputing','Stimulus, organism, response, consequence'], ans:0, exp:'Total behavior = acting + thinking + feeling + physiology. All four are always present together. Glasser emphasizes that acting and thinking are most controllable; feelings and physiology are largely indirect products.' },
+      { theory:'Reality Therapy', q:'Which of the following BEST reflects the spirit of Reality Therapy\'s approach to "irresponsible" behavior?', opts:['Confront and challenge the client\'s poor choices directly and forcefully','Accept no excuses while remaining warm, supportive, and non-punitive','Explore the unconscious roots of self-defeating behavior','Use reinforcement to reward responsible choices'], ans:1, exp:'Reality Therapy is non-punitive but firm. Glasser rejected punishment and excuse-making equally. The therapist maintains warmth and genuine care while refusing to accept excuses and consistently asking "Is what you\'re doing working?"' },
+      { theory:'Reality Therapy', q:'In the WDEP system, the most important step — the "hinge" of the process — is:', opts:['Wants (W)','Doing/Direction (D)','Evaluation (E)','Planning (P)'], ans:2, exp:'Self-evaluation (E) is the hinge point: "Is what you are doing helping you get what you want?" Real change only begins when the client honestly judges that current behavior is not meeting their needs. The therapist can\'t make this evaluation for the client.' },
+      { theory:'Reality Therapy', q:'Reality Therapy would be LEAST likely to focus on:', opts:['Present behavior and choices','The client\'s stated wants and needs','Exploring past trauma as the primary vehicle for change','Concrete, achievable plans for behavior change'], ans:2, exp:'Reality Therapy is present- and future-focused. Dwelling on past trauma or diagnosis is seen as excuse-making that prevents the client from taking responsibility for current choices. The question is always: "What are you doing now, and is it working?"' },
+
+      // ── SFBT (additional) ──
+      { theory:'SFBT', q:'In SFBT, "coping questions" are used when a client seems overwhelmed or hopeless. They aim to:', opts:['Challenge irrational thoughts about coping','Help the client recognize strengths and resources they are already using to survive difficult circumstances','Build a detailed hierarchy of coping skills','Assess suicide risk formally'], ans:1, exp:'"How have you managed to get through something so difficult?" Coping questions surface hidden competence and resilience — even when things seem terrible, people are doing something to cope. These questions shift focus from collapse to survival strength.' },
+      { theory:'SFBT', q:'Scaling questions in SFBT (e.g., "On a scale of 1–10, where are you today?") serve to:', opts:['Assess symptom severity for diagnostic purposes','Quantify motivation, progress, and confidence, and open space for small-step goal setting','Replace the need for a therapeutic alliance','Identify the client\'s irrational beliefs numerically'], ans:1, exp:'Scaling questions make abstract progress concrete and measurable. They also reveal what is already working: "You\'re at a 3, not a 1 — what are you doing that keeps you at 3?" This leads directly to identifying and amplifying existing strengths.' },
+      { theory:'SFBT', q:'The SFBT concept of "pre-session change" refers to:', opts:['Client research done before the first appointment','Improvements the client notices between scheduling and attending the first session — evidence that change is already occurring','The therapist\'s solution-focused mindset before the session','Homework assigned at the end of the previous session'], ans:1, exp:'de Shazer discovered that asking "What changed between scheduling and coming in?" often reveals client-initiated improvements. This demonstrates that clients are already agents of change and that the locus of change is in the client, not the therapy.' },
+      { theory:'SFBT', q:'SFBT therapists deliberately use "not-knowing" and "leading from behind" because:', opts:['They lack training in diagnosis','This models healthy uncertainty for clients','The client is the expert on their own life; the therapist\'s role is to draw out and amplify the client\'s own knowledge','It satisfies the requirement for evidence-based neutrality'], ans:2, exp:'SFBT is grounded in social constructionism. The therapist genuinely defers to the client as expert on their own experience. "Leading from behind" means using questions to draw out the client\'s wisdom rather than imposing solutions.' },
+      { theory:'SFBT', q:'Which description BEST captures the SFBT philosophy on problems?', opts:['Problems must be thoroughly analyzed to generate solutions','The same problem has the same cause in every client','Extensive understanding of the problem is NOT necessary to construct solutions','Problems reveal deep unconscious conflicts that must be resolved first'], ans:2, exp:'A core SFBT assumption: "The problem is not the solution." You don\'t need to understand a problem fully to solve it. The focus is on what works — exceptions, strengths, and goal images — not on problem analysis.' },
+
+      // ── Narrative (additional) ──
+      { theory:'Narrative', q:'In Narrative Therapy, a "dominant story" is:', opts:['The therapist\'s theoretical framework','The problem-saturated account that has become the primary lens through which the person understands their identity and life','The client\'s preferred future narrative','The most evidence-based explanation for a diagnosis'], ans:1, exp:'The dominant story is the totalizing, problem-saturated narrative that organizes identity — e.g., "I am a depressed person." It marginalizes exceptions (unique outcomes) that don\'t fit this story. Therapy re-authors a more complex, preferred alternative.' },
+      { theory:'Narrative', q:'"Re-authoring" conversations in Narrative Therapy help clients:', opts:['Rewrite history to eliminate painful memories','Identify and thicken an alternative, preferred story by linking unique outcomes across time','Dispute irrational beliefs holding back their narrative','Accept the dominant story and build coping skills around it'], ans:1, exp:'Re-authoring traces unique outcomes across time to build a thickened alternative narrative. White used scaffolding questions to move from a noticed exception → to meaning → to identity claim: "What does this say about who you are?"' },
+      { theory:'Narrative', q:'Definitional ceremonies in Narrative Therapy involve:', opts:['Formal diagnosis using the DSM','The client performing a ritual to mark the end of therapy','Outsider witnesses who retell and thicken the client\'s preferred story','Legal definitions of mental health impairment'], ans:2, exp:'Definitional ceremonies (from Barbara Myerhoff) use outsider witnesses — significant others or community members — who listen to the client\'s story, retell what moved them, and reflect back what this reveals about the client\'s identity.' },
+      { theory:'Narrative', q:'The use of therapeutic letters in Narrative Therapy serves to:', opts:['Provide formal written diagnoses for insurance billing','Summarize session content for legal records','Extend and solidify the preferred narrative between sessions, giving it additional weight and permanence','Assign homework from a CBT framework'], ans:2, exp:'White and Epston used letters to document the alternative story, honor the client\'s journey, and give it lasting authority. A letter carries the weight of a document and can be re-read — reinforcing the new preferred narrative.' },
+      { theory:'Narrative', q:'"Deconstruction" in Narrative Therapy involves:', opts:['Taking apart cognitive distortions using Socratic questioning','Unpacking how dominant cultural stories, power structures, and taken-for-granted assumptions have shaped the client\'s problem-saturated narrative','Analyzing the structure of the unconscious','Dismantling unhealthy behavioral patterns through exposure'], ans:1, exp:'Deconstruction: examining how cultural discourses (about gender, success, mental illness) have authored the problem story for the client. "Who benefits from this story?" "What cultural norms does this story serve?" It\'s a political and therapeutic act.' },
+
+      // ── DBT (additional) ──
+      { theory:'DBT', q:'The DBT distress tolerance skill "TIPP" addresses biological arousal by targeting:', opts:['Thoughts, impulses, plans, and behaviors','Temperature, Intense exercise, Paced breathing, and Paired muscle relaxation','Time management, Interpersonal practice, Problem-solving, and Planning','Triggers, Intensity, Pause, and Process'], ans:1, exp:'TIPP rapidly reduces physiological arousal: Temperature (cold water activates dive reflex), Intense exercise (burns off stress hormones), Paced breathing (slows exhale to calm the nervous system), Paired muscle relaxation. Used in crisis.' },
+      { theory:'DBT', q:'In DBT, "chain analysis" (behavioral chain analysis) is used to:', opts:['Identify the biological causes of BPD','Map out the sequence of events, thoughts, feelings, and behaviors that led to a problem behavior','Teach the client to link DBT skills in sequence','Conduct a suicide risk assessment formally'], ans:1, exp:'Chain analysis maps the precise chain of events leading to a problem behavior: vulnerability factors → prompting event → links (thoughts, feelings, sensations, actions) → problem behavior → consequences. It identifies where to insert skills.' },
+      { theory:'DBT', q:'DBT\'s interpersonal effectiveness skill "DEAR MAN" is primarily used to:', opts:['Manage crisis states','Build self-respect in relationships','Effectively ask for what you want or say no while maintaining relationships','Practice mindfulness in social situations'], ans:2, exp:'DEAR MAN: Describe, Express, Assert, Reinforce, Mindful, Appear confident, Negotiate. It is a skill for effectively making requests or refusing requests while maintaining the relationship and self-respect. Core to the IE module.' },
+      { theory:'DBT', q:'Linehan\'s biosocial theory proposes that BPD develops from:', opts:['Early trauma and dissociation alone','A biological predisposition toward emotional sensitivity combined with a pervasive invalidating environment','Irrational core beliefs about the self developed in childhood','Unresolved Oedipal conflicts'], ans:1, exp:'Biosocial theory: emotional dysregulation (biological) + invalidating environment (social) = BPD. The invalidating environment communicates that the child\'s emotions are wrong, bad, or oversensitive, preventing development of emotion regulation skills.' },
+      { theory:'DBT', q:'The dialectic at the heart of DBT is the balance between:', opts:['Thinking and feeling','Acceptance and change','Mindfulness and action','Individual and group work'], ans:1, exp:'The central dialectic: clients must accept themselves as they are AND work to change. The therapist holds both simultaneously. The synthesis of radical acceptance and behavioral change strategies is what distinguishes DBT from standard CBT.' },
+
+      // ── ACT (additional) ──
+      { theory:'ACT', q:'In ACT\'s hexaflex model, which process is central and supports all the others?', opts:['Defusion','Acceptance','Contact with the present moment','Psychological flexibility'], ans:3, exp:'Psychological flexibility — the ability to contact the present moment fully as a conscious being and, based on values, persist or change behavior — is the core outcome and overarching process of ACT. The six hexaflex processes all contribute to it.' },
+      { theory:'ACT', q:'ACT\'s concept of "self-as-context" (the observing self) is contrasted with:', opts:['Self-as-process','Self-as-content','Self-as-narrative','Self-as-concept'], ans:1, exp:'Self-as-content = identifying with one\'s thoughts, feelings, and stories ("I am anxious; that\'s who I am"). Self-as-context = the stable, transcendent observer of experience ("I am the one who notices thoughts/feelings"). ACT strengthens the latter.' },
+      { theory:'ACT', q:'In ACT, "values" differ from goals in that values are:', opts:['Outcome states that can be achieved and checked off','SMART objectives for therapy','Ongoing directions of living that can never be fully "completed"','Beliefs about how life should be lived based on cultural norms'], ans:2, exp:'Values = chosen life directions (e.g., "being a loving parent") that are never fully completed — they are lived moment by moment. Goals are milestones along a valued direction. Clarifying values gives committed action its purpose.' },
+      { theory:'ACT', q:'The ACT metaphor of "passengers on the bus" is used to illustrate:', opts:['How to practice mindfulness in groups','Defusion: the client (driver) can move toward values even when difficult thoughts and feelings (passengers) are present and making noise','The importance of social support in therapy','Hierarchical goal-setting with the therapist'], ans:1, exp:'Bus metaphor: the client drives the bus of their life; difficult thoughts/feelings are rowdy passengers. ACT teaches that you don\'t have to negotiate with them, get rid of them, or kick them off — you can drive toward your values while they\'re aboard.' },
+      { theory:'ACT', q:'ACT\'s stance on the goal of therapy is BEST described as:', opts:['Reducing or eliminating symptoms and negative emotions','Restructuring maladaptive thoughts to reduce distress','Increasing psychological flexibility so the client can pursue a valued life, regardless of symptoms','Achieving insight into the unconscious roots of avoidance'], ans:2, exp:'ACT does not target symptom reduction as the primary goal. Instead, it aims to increase willingness to experience difficult internal events while moving toward what matters. Paradoxically, symptoms often decrease as a byproduct of increased flexibility.' },
+
+      // ── MI (additional) ──
+      { theory:'MI', q:'The four core communication skills that form the OARS of MI are:', opts:['Observe, Advise, Reflect, Summarize','Open questions, Affirm, Reflect, Summarize','Open questions, Analyze, Reinforce, Scale','Observe, Affirm, Reframe, Set goals'], ans:1, exp:'OARS: Open questions (invite elaboration), Affirming (recognize strengths), Reflecting (communicate understanding and evoke further exploration), Summarizing (collect and link change talk). These skills express the MI spirit and elicit change talk.' },
+      { theory:'MI', q:'"Change talk" in MI refers to statements that:', opts:['Indicate the client is not ready for change','Reflect the counselor\'s advice about needed changes','Signal the client\'s own desire, ability, reasons, need, or commitment toward change','Describe past successful changes the client has made'], ans:2, exp:'Change talk: client-generated statements favoring change (DARN-CAT: Desire, Ability, Reasons, Need = preparatory; Commitment, Activation, Taking steps = mobilizing). Eliciting and reinforcing change talk is MI\'s central mechanism of action.' },
+      { theory:'MI', q:'The "spirit" of MI is captured by the acronym PACE, which stands for:', opts:['Partnership, Acceptance, Compassion, Evocation','Presence, Alignment, Collaboration, Empathy','Purpose, Accountability, Change focus, Engagement','Problem-focus, Autonomy support, Collaboration, Education'], ans:0, exp:'MI Spirit = Partnership (collaborative, not expert-prescriptive), Acceptance (UPR, accurate empathy, autonomy support, affirmation), Compassion (prioritizing client\'s wellbeing), Evocation (drawing out the client\'s own motivation, not installing it).' },
+      { theory:'MI', q:'The "righting reflex" in MI is the counselor\'s tendency to:', opts:['Provide immediate empathic validation','Use OARS systematically','Feel compelled to correct, fix, or provide solutions to the client\'s problems','Match the client\'s stage of change precisely'], ans:2, exp:'The righting reflex: helpers naturally want to "fix it" — giving advice, warning, prescribing. Miller and Rollnick argue this reflex typically elicits resistance and sustain talk rather than change. MI trains counselors to restrain this reflex and evoke change instead.' },
+      { theory:'MI', q:'Decisional balance in MI involves exploring:', opts:['The financial costs of the client\'s problem behavior','The pros and cons of changing AND the pros and cons of staying the same','The client\'s readiness on a 1–10 scale','The cultural factors influencing the client\'s ambivalence'], ans:1, exp:'Decisional balance explores all four cells: benefits of current behavior, costs of current behavior, benefits of change, and costs of change. In MI it is used selectively — primarily in contemplation — to evoke change talk, not as a neutral exercise.' },
+    ];
+
+    let tqIndex = 0, tqScore = 0, tqDeck = [], tqAnswered = false;
+    const tqTheoryMap = {};
+
+    function startTheoryQuiz() {
+      tqDeck = [...theoryQuizBank];
+      for (let i = tqDeck.length-1; i > 0; i--) {
+        const j = Math.floor(Math.random()*(i+1));
+        [tqDeck[i],tqDeck[j]] = [tqDeck[j],tqDeck[i]];
+      }
+      tqIndex = 0; tqScore = 0;
+      Object.keys(tqTheoryMap).forEach(k => delete tqTheoryMap[k]);
+      document.getElementById('theory-quiz-start').style.display = 'none';
+      document.getElementById('theory-quiz-results').style.display = 'none';
+      document.getElementById('theory-quiz-active').style.display = '';
+      renderTheoryQuestion();
+    }
+
+    function renderTheoryQuestion() {
+      tqAnswered = false;
+      const q = tqDeck[tqIndex];
+      const total = tqDeck.length;
+      document.getElementById('tq-num').textContent = `Question ${tqIndex+1} of ${total}`;
+      document.getElementById('tq-theory-badge').textContent = q.theory;
+      document.getElementById('tq-question').textContent = q.q;
+      document.getElementById('tq-progress-bar').style.width = `${(tqIndex/total)*100}%`;
+      document.getElementById('tq-feedback').style.display = 'none';
+      document.getElementById('tq-next-btn').style.display = 'none';
+      document.getElementById('tq-score-live').textContent = tqIndex > 0 ? `${tqScore}/${tqIndex} correct so far` : '';
+      document.getElementById('tq-options').innerHTML = q.opts.map((opt,i) =>
+        `<button class="exam-opt" id="tq-opt-${i}" onclick="selectTQ(${i})">
+          <span class="opt-letter">${['A','B','C','D'][i]}</span>
+          <span style="font-size:0.9rem; color:var(--text-dark); line-height:1.55;">${opt}</span>
+        </button>`
+      ).join('');
+    }
+
+    function selectTQ(chosen) {
+      if (tqAnswered) return;
+      tqAnswered = true;
+      const q = tqDeck[tqIndex];
+      const isCorrect = chosen === q.ans;
+      if (isCorrect) tqScore++;
+      if (!tqTheoryMap[q.theory]) tqTheoryMap[q.theory] = {c:0,t:0};
+      tqTheoryMap[q.theory].t++;
+      if (isCorrect) tqTheoryMap[q.theory].c++;
+
+      q.opts.forEach((_,i) => {
+        const btn = document.getElementById(`tq-opt-${i}`);
+        if (i === q.ans) {
+          btn.style.cssText += ';border-color:var(--teal-700) !important;background:rgba(45,125,111,0.05) !important;';
+          const ltr = btn.querySelector('.opt-letter');
+          ltr.style.background = 'var(--teal-700)'; ltr.style.color = '#fff'; ltr.style.borderColor = 'var(--teal-700)';
+        } else if (i === chosen) {
+          btn.style.cssText += ';border-color:#C05252 !important;background:rgba(192,82,82,0.05) !important;';
+        }
+        btn.disabled = true;
+      });
+
+      const fb = document.getElementById('tq-feedback');
+      fb.style.display = '';
+      fb.style.background = isCorrect ? 'rgba(45,125,111,0.06)' : 'rgba(196,133,90,0.07)';
+      fb.style.border = `1px solid ${isCorrect ? 'rgba(45,125,111,0.2)' : 'rgba(196,133,90,0.2)'}`;
+      fb.style.borderRadius = '10px';
+      fb.innerHTML = `<strong style="color:${isCorrect?'var(--teal-700)':'var(--amber)'};">${isCorrect?'✓ Correct!':'✗ Incorrect'}</strong>&nbsp; <span style="color:var(--text-mid);">${q.exp}</span>`;
+
+      const nb = document.getElementById('tq-next-btn');
+      nb.style.display = '';
+      nb.textContent = tqIndex === tqDeck.length-1 ? 'See Results →' : 'Next →';
+    }
+
+    function theoryQuizNext() {
+      tqIndex++;
+      if (tqIndex >= tqDeck.length) { showTQResults(); return; }
+      renderTheoryQuestion();
+      document.getElementById('theory-quiz-active').scrollIntoView({behavior:'smooth',block:'nearest'});
+    }
+
+    function showTQResults() {
+      document.getElementById('theory-quiz-active').style.display = 'none';
+      const res = document.getElementById('theory-quiz-results');
+      res.style.display = '';
+      const total = tqDeck.length;
+      const pct = Math.round((tqScore/total)*100);
+      const pass = pct >= 70;
+      document.getElementById('tq-score-pct').textContent = `${pct}%`;
+      document.getElementById('tq-score-raw').textContent = `${tqScore} out of ${total} correct`;
+      document.getElementById('tq-score-verdict').textContent = pass ? '✓ Passing Range — great work!' : 'Keep reviewing — you\'ve got this!';
+      document.getElementById('tq-score-verdict').style.color = pass ? 'var(--teal-700)' : 'var(--amber)';
+      const pr = document.getElementById('tq-progress-result');
+      pr.style.width = `${pct}%`;
+      pr.style.background = pass ? 'var(--teal-700)' : 'var(--amber)';
+      const bd = document.getElementById('tq-domain-breakdown');
+      bd.innerHTML = '<p style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-light);margin-bottom:12px;font-family:\'Inter\',sans-serif;">By Theory</p>' +
+        Object.entries(tqTheoryMap).map(([th,s]) => {
+          const dp = Math.round((s.c/s.t)*100);
+          const col = dp===100 ? 'var(--teal-700)' : dp>=50 ? 'var(--amber)' : '#C05252';
+          return `<div style="margin-bottom:10px;"><div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span style="font-size:0.8rem;font-weight:600;color:var(--text-dark);">${th}</span><span style="font-size:0.78rem;color:var(--text-mid);">${s.c}/${s.t}</span></div><div style="height:5px;background:var(--teal-100);border-radius:3px;overflow:hidden;"><div style="height:100%;width:${dp}%;background:${col};border-radius:3px;transition:width 0.6s ease;"></div></div></div>`;
+        }).join('');
+      res.scrollIntoView({behavior:'smooth',block:'nearest'});
+    }
+
+    function resetTheoryQuiz() {
+      document.getElementById('theory-quiz-active').style.display = 'none';
+      document.getElementById('theory-quiz-results').style.display = 'none';
+      document.getElementById('theory-quiz-start').style.display = '';
     }
 
     /* ── Navbar scroll state ── */
