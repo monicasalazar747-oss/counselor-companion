@@ -3880,7 +3880,7 @@
         </div>
 
         <!-- Tool tab switcher -->
-        <div style="display:flex; gap:4px; background:#fff; border-radius:12px; padding:5px; border:1.5px solid rgba(26,74,68,0.09); box-shadow:0 1px 4px rgba(26,74,68,0.05); margin-bottom:36px; width:fit-content;">
+        <div style="display:flex; flex-wrap:wrap; gap:4px; background:#fff; border-radius:12px; padding:5px; border:1.5px solid rgba(26,74,68,0.09); box-shadow:0 1px 4px rgba(26,74,68,0.05); margin-bottom:36px;">
           <button class="ref-tool-tab active" id="reftab-dsm" onclick="showRefTool('dsm')">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
             DSM-5 Glossary
@@ -3896,6 +3896,10 @@
           <button class="ref-tool-tab" id="reftab-meds" onclick="showRefTool('meds')">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M10.5 20H4a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2h3.93a2 2 0 0 1 1.66.9l.82 1.2a2 2 0 0 0 1.66.9H20a2 2 0 0 1 2 2v3"/><circle cx="18" cy="18" r="4"/><path d="m15.5 18 2 2 3-3"/></svg>
             Medications
+          </button>
+          <button class="ref-tool-tab" id="reftab-compare" onclick="showRefTool('compare')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="2" y="3" width="9" height="18" rx="1.5"/><rect x="13" y="3" width="9" height="18" rx="1.5"/></svg>
+            Compare &amp; Contrast
           </button>
         </div>
 
@@ -4071,6 +4075,45 @@
 
         </div><!-- /ref-panel-meds -->
 
+        <!-- ── PANEL: Compare & Contrast ── -->
+        <div id="ref-panel-compare" style="display:none;">
+
+          <div style="margin-bottom:28px;">
+            <p style="color:var(--text-mid); font-size:0.95rem; line-height:1.7; max-width:680px;">Side-by-side breakdowns of concepts students most often confuse on the NCE and NCMHCE. Each card includes a "why students mix these up" note and an exam-focused tip.</p>
+          </div>
+
+          <!-- Search -->
+          <div style="position:relative; margin-bottom:20px;">
+            <svg style="position:absolute; left:14px; top:50%; transform:translateY(-50%); pointer-events:none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input id="compare-search" type="text" placeholder="Search concepts, categories, or keywords…" oninput="filterCompare()" style="width:100%; padding:13px 14px 13px 44px; border-radius:10px; border:1.5px solid rgba(26,74,68,0.13); background:#fff; font-family:'Inter',sans-serif; font-size:0.9375rem; color:var(--text-dark); outline:none; transition:border-color 0.15s ease; box-shadow:0 1px 4px rgba(26,74,68,0.05);" onfocus="this.style.borderColor='var(--teal-500)'" onblur="this.style.borderColor='rgba(26,74,68,0.13)'">
+          </div>
+
+          <!-- Category pills -->
+          <div id="compare-filters" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:32px;">
+            <button class="dsm-cat active" onclick="setCompareFilter('all',this)">All</button>
+            <button class="dsm-cat" onclick="setCompareFilter('Assessment',this)">Assessment</button>
+            <button class="dsm-cat" onclick="setCompareFilter('Ethics',this)">Ethics</button>
+            <button class="dsm-cat" onclick="setCompareFilter('Theory',this)">Theory</button>
+            <button class="dsm-cat" onclick="setCompareFilter('Clinical',this)">Clinical</button>
+            <button class="dsm-cat" onclick="setCompareFilter('Cultural',this)">Cultural</button>
+            <button class="dsm-cat" onclick="setCompareFilter('Wellness',this)">Wellness</button>
+          </div>
+
+          <!-- Count -->
+          <p id="compare-count" style="font-size:0.8rem; color:var(--text-light); margin-bottom:18px; font-weight:500; letter-spacing:0.01em;"></p>
+
+          <!-- Cards container -->
+          <div id="compare-cards"></div>
+
+          <!-- Empty state -->
+          <div id="compare-empty" style="display:none; text-align:center; padding:60px 0;">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 16px; display:block;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <p style="color:var(--text-mid); font-size:0.95rem;">No comparisons match your search.</p>
+            <button onclick="document.getElementById('compare-search').value=''; filterCompare();" style="margin-top:14px; font-size:0.85rem; color:var(--teal-700); background:none; border:none; cursor:pointer; text-decoration:underline; font-family:'Inter',sans-serif;">Clear search</button>
+          </div>
+
+        </div><!-- /ref-panel-compare -->
+
       </div>
     </div>
   </div>
@@ -4096,6 +4139,41 @@
     .ref-tool-tab:hover { background: var(--teal-50); color: var(--teal-700); }
     .ref-tool-tab.active { background: var(--teal-700); color: #fff; }
     .ref-tool-tab:focus-visible { outline: 3px solid rgba(75,166,152,0.5); outline-offset: 2px; }
+
+    /* Compare & Contrast styles */
+    .compare-cols { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+    .compare-col {
+      flex: 1; min-width: 180px;
+      padding: 14px 16px;
+      background: var(--sage-bg);
+      border-radius: 10px;
+      border: 1.5px solid rgba(26,74,68,0.09);
+    }
+    .compare-col-label {
+      font-size: 0.82rem; font-weight: 700; color: var(--teal-900);
+      margin-bottom: 10px; padding-bottom: 8px;
+      border-bottom: 2px solid rgba(45,125,111,0.14);
+      letter-spacing: -0.01em;
+    }
+    .compare-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 5px; }
+    .compare-col li {
+      font-size: 0.825rem; color: var(--text-mid); line-height: 1.55;
+      display: flex; gap: 7px; align-items: flex-start;
+    }
+    .compare-col li::before { content: '›'; color: var(--teal-500); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+    .compare-confusion {
+      background: rgba(45,125,111,0.05);
+      border-left: 3px solid var(--teal-500);
+      border-radius: 0 8px 8px 0;
+      padding: 9px 13px; margin-top: 14px;
+      font-size: 0.82rem; color: var(--text-mid); line-height: 1.6;
+    }
+    .compare-confusion strong { color: var(--teal-700); }
+    .compare-cat-badge {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;
+      padding: 3px 9px; border-radius: 20px; flex-shrink: 0;
+      background: rgba(45,125,111,0.09); color: var(--teal-700);
+    }
 
     /* DSM reference styles */
     .dsm-cat {
@@ -6156,7 +6234,7 @@
 
     /* ══════════ REFERENCE TOOL PANEL SWITCHER ══════════ */
     function showRefTool(name) {
-      ['dsm','aca','theorists','meds'].forEach(t => {
+      ['dsm','aca','theorists','meds','compare'].forEach(t => {
         document.getElementById('ref-panel-' + t).style.display = name === t ? '' : 'none';
         document.getElementById('reftab-' + t).classList.toggle('active', name === t);
       });
@@ -8280,6 +8358,461 @@
     }
 
     renderMedCards(medsData);
+
+    /* ══════════ COMPARE & CONTRAST ══════════ */
+
+    // ─────────────────────────────────────────────────────────────────
+    // compareData — add new entries here to extend the tool.
+    // Each entry shape:
+    //   { id, category, title, items: [{ label, points[] }], confusion, tip }
+    // category must be one of: Assessment · Ethics · Theory · Clinical · Cultural · Wellness
+    // ─────────────────────────────────────────────────────────────────
+    const compareData = [
+      {
+        id: 'phq9-gad7',
+        category: 'Assessment',
+        title: 'PHQ-9 vs GAD-7',
+        items: [
+          {
+            label: 'PHQ-9',
+            points: [
+              '9 items, 0–27 total score',
+              'Screens for Major Depressive Disorder',
+              'Severity: Minimal (0–4) · Mild (5–9) · Moderate (10–14) · Mod-Severe (15–19) · Severe (20–27)',
+              'Clinical cut-off ≥10',
+              'Item 9 screens for suicidal ideation',
+              'Items map directly to the 9 DSM-5 MDD criteria (SIGECAPS)'
+            ]
+          },
+          {
+            label: 'GAD-7',
+            points: [
+              '7 items, 0–21 total score',
+              'Screens for Generalized Anxiety Disorder',
+              'Severity: Minimal (0–4) · Mild (5–9) · Moderate (10–14) · Severe (15–21)',
+              'Clinical cut-off ≥10',
+              'No suicidality item',
+              'Also sensitive to panic disorder, social anxiety, and PTSD'
+            ]
+          }
+        ],
+        confusion: 'Both are brief 0–3 Likert scales, typically administered together, and share the same clinical threshold (≥10). Instrument names and item counts are easily swapped under pressure.',
+        tip: 'PHQ = 9 questions matching the 9 DSM depression criteria; GAD = 7 questions. Both cut-offs ≥10. Only the PHQ-9 has a suicide item (item 9) — GAD-7 has none. Item count is in the name.'
+      },
+      {
+        id: 'duty-warn-protect',
+        category: 'Ethics',
+        title: 'Duty to Warn vs Duty to Protect',
+        items: [
+          {
+            label: 'Duty to Warn',
+            points: [
+              'Obligation to directly notify the identifiable potential victim',
+              'Originated from Tarasoff v. Regents (1976) second ruling',
+              'Requires a specific, identifiable third party at imminent risk',
+              'One specific action: contact the intended victim',
+              'Not universally mandated in every state — varies by jurisdiction'
+            ]
+          },
+          {
+            label: 'Duty to Protect',
+            points: [
+              'Broader obligation to take reasonable steps to prevent harm',
+              'Can be satisfied via multiple actions: warning victim, contacting police, hospitalizing client, or intensifying treatment',
+              'Encompasses duty to warn but is not limited to it',
+              'More widely adopted standard across jurisdictions',
+              'ACA Code supports protective action even when warning alone is not legally required'
+            ]
+          }
+        ],
+        confusion: 'Both arise from Tarasoff and involve imminent danger to an identifiable third party. "Warn" is one specific action; "protect" is the broader standard that may or may not include warning.',
+        tip: 'Duty to warn = tell the victim. Duty to protect = do whatever is reasonable to prevent harm (which may include warning). Protect is the umbrella; warn is one tool under it.'
+      },
+      {
+        id: 'subpoena-court-order',
+        category: 'Ethics',
+        title: 'Subpoena vs Court Order',
+        items: [
+          {
+            label: 'Subpoena',
+            points: [
+              'Issued by an attorney — NOT a judge',
+              'Commands appearance or production of records',
+              'Does NOT automatically override confidentiality or privilege',
+              'Correct response: consult an attorney and notify the client',
+              'Client may file a motion to quash to block release',
+              'A subpoena alone is never sufficient to release records without client consent or a court order'
+            ]
+          },
+          {
+            label: 'Court Order',
+            points: [
+              'Signed by a judge',
+              'Does override privilege — counselor must comply',
+              'Can compel disclosure even over client objection',
+              'Release only what is specifically ordered — nothing more',
+              'Document receipt and comply within the stated timeframe',
+              'Legal force supersedes counselor-client privilege'
+            ]
+          }
+        ],
+        confusion: 'Both arrive as formal legal documents demanding records or testimony. Students assume any legal document requires automatic disclosure.',
+        tip: 'Subpoena = from an attorney — do NOT release records automatically. Court order = from a judge — you must comply. The deciding question on any exam item: "Who signed it?"'
+      },
+      {
+        id: 'burnout-cf-vt',
+        category: 'Wellness',
+        title: 'Burnout vs Compassion Fatigue vs Vicarious Trauma',
+        items: [
+          {
+            label: 'Burnout',
+            points: [
+              'Gradual depletion from chronic workplace stress',
+              'Not client-specific — applies to any profession',
+              'Maslach\'s 3 dimensions: exhaustion, cynicism, reduced efficacy',
+              'Slow accumulation over months to years',
+              'Addressed through workload restructuring, supervision, and boundaries',
+              'Does not require trauma content exposure'
+            ]
+          },
+          {
+            label: 'Compassion Fatigue',
+            points: [
+              'Emotional exhaustion from absorbing clients\' pain and suffering',
+              'Rapid onset — can develop after a single session',
+              'Combines secondary traumatic stress + burnout elements',
+              'Symptoms: emotional numbing, reduced empathy, dreading sessions',
+              'Also called secondary traumatic stress (Figley)',
+              'Specific to caregiving/helping-profession roles'
+            ]
+          },
+          {
+            label: 'Vicarious Trauma',
+            points: [
+              'Lasting shift in counselor\'s core beliefs and worldview from cumulative trauma exposure',
+              'Affects meaning-making, spirituality, and sense of safety in the world',
+              'Progressive cognitive-schema change over time (McCann & Pearlman)',
+              'Can persist even after leaving the field',
+              'Requires deeper intervention — therapy, existential/meaning work',
+              'Not just fatigue: the counselor\'s inner life is reorganized'
+            ]
+          }
+        ],
+        confusion: 'All three involve helper impairment and share overlapping symptoms (exhaustion, detachment, reduced effectiveness). The mechanism and depth of impact distinguish them.',
+        tip: 'Think depth: Burnout = job stress (any job). Compassion fatigue = fast emotional absorption (empathy depletes). Vicarious trauma = slow, deep worldview change (belief systems reorganize). Exam language about "altered worldview" or "loss of meaning" = vicarious trauma.'
+      },
+      {
+        id: 'mood-affect',
+        category: 'Assessment',
+        title: 'Mood vs Affect',
+        items: [
+          {
+            label: 'Mood',
+            points: [
+              'Subjective, internal emotional state — what the client reports',
+              'Sustained over time (hours to days)',
+              'Assessed by asking: "How have you been feeling?"',
+              'Documented using the client\'s own words in quotes',
+              'Examples: depressed, anxious, irritable, euphoric, euthymic'
+            ]
+          },
+          {
+            label: 'Affect',
+            points: [
+              'Objective, observable emotional expression — what the clinician sees',
+              'Changes moment-to-moment within a session',
+              'Assessed through facial expression, vocal tone, and body language',
+              'Described by: range, intensity, appropriateness, and mobility',
+              'Examples: flat, blunted, broad, labile, constricted, incongruent'
+            ]
+          }
+        ],
+        confusion: 'Both describe emotion and are assessed in the same MSE. The same session produces both a mood report and an affect observation, and they may or may not match.',
+        tip: 'Mood = what the client SAYS ("I feel hopeless") — use quotes. Affect = what you SEE ("affect is flat, restricted in range") — use descriptors. Congruent = mood and affect match. Incongruent = they don\'t (clinically significant).'
+      },
+      {
+        id: 'thought-process-content',
+        category: 'Assessment',
+        title: 'Thought Process vs Thought Content',
+        items: [
+          {
+            label: 'Thought Process',
+            points: [
+              'HOW thoughts are organized and expressed — the form of thinking',
+              'Assessed through the flow and structure of speech',
+              'Normal: logical, linear, goal-directed',
+              'Abnormal: loose associations, tangentiality, circumstantiality, flight of ideas, thought blocking, perseveration, clang associations, word salad'
+            ]
+          },
+          {
+            label: 'Thought Content',
+            points: [
+              'WHAT the client is thinking about — the substance of thinking',
+              'Specific beliefs, preoccupations, and themes present',
+              'Includes: delusions (persecutory, grandiose, somatic, referential, erotomanic), obsessions, suicidal ideation, homicidal ideation, phobias, magical thinking',
+              'Delusions = fixed, false beliefs unshakeable by contrary evidence'
+            ]
+          }
+        ],
+        confusion: 'Both fall under "thought" in the MSE and are evaluated in the same conversation. Loose associations (a process problem) are sometimes mislabeled as a content problem.',
+        tip: 'Process = HOW (form: organized? coherent? linear?). Content = WHAT (themes: delusions? SI? HI?). Flight of ideas and loose associations are process disorders. Paranoid delusions and suicidal ideation are content. Both are documented in every complete MSE.'
+      },
+      {
+        id: 'reinforcement-punishment',
+        category: 'Theory',
+        title: 'Reinforcement & Punishment — Skinner\'s Four Quadrants',
+        items: [
+          {
+            label: 'Positive Reinforcement',
+            points: [
+              'ADD a pleasant stimulus → behavior increases (↑)',
+              'E.g., praise after completing homework → homework frequency ↑',
+              'Positive = something added; Reinforcement = behavior increases',
+              'Most powerful schedule: variable-ratio (slot machine effect)'
+            ]
+          },
+          {
+            label: 'Negative Reinforcement',
+            points: [
+              'REMOVE an aversive stimulus → behavior increases (↑)',
+              'E.g., nagging stops when room is cleaned → cleaning frequency ↑',
+              'NOT punishment — behavior still goes UP',
+              'Avoidance/escape behaviors are maintained by negative reinforcement'
+            ]
+          },
+          {
+            label: 'Positive Punishment',
+            points: [
+              'ADD an aversive stimulus → behavior decreases (↓)',
+              'E.g., extra chores assigned after misbehavior → misbehavior ↓',
+              '"Positive" means added, not pleasant'
+            ]
+          },
+          {
+            label: 'Negative Punishment',
+            points: [
+              'REMOVE a pleasant stimulus → behavior decreases (↓)',
+              'E.g., take away screen time after misbehavior → misbehavior ↓',
+              'Response cost (removing tokens/points) is negative punishment'
+            ]
+          }
+        ],
+        confusion: '"Negative reinforcement" is chronically confused with punishment. In everyday speech, "negative" implies a bad outcome; in operant conditioning it means subtraction, not harm.',
+        tip: 'Two rules to memorize: (1) Reinforcement = behavior increases; Punishment = behavior decreases. (2) Positive = add something; Negative = remove something. Negative reinforcement (remove aversive → behavior ↑) is the single most-tested confusion on the NCE.'
+      },
+      {
+        id: 'boundary-crossing-violation',
+        category: 'Ethics',
+        title: 'Boundary Crossing vs Boundary Violation',
+        items: [
+          {
+            label: 'Boundary Crossing',
+            points: [
+              'Departure from the standard professional role that may or may not be harmful',
+              'Can be intentional, purposeful, and clinically justified',
+              'Examples: attending a client\'s graduation, accepting a small gift, limited self-disclosure',
+              'Requires documentation, consultation, and a clear clinical rationale',
+              'Context-dependent — can be therapeutic when managed thoughtfully',
+              'Does not automatically constitute misconduct'
+            ]
+          },
+          {
+            label: 'Boundary Violation',
+            points: [
+              'Serious breach that exploits the therapeutic relationship and causes harm',
+              'Crosses ethical and often legal lines regardless of intent',
+              'Examples: sexual contact with a client, financial exploitation, using client information for personal gain',
+              'Always harmful to the client and the therapeutic relationship',
+              'Sexual contact with a current client = always a violation (ACA A.5.a)',
+              'Subject to licensure board action, civil liability, and potential criminal charges'
+            ]
+          }
+        ],
+        confusion: 'All violations are crossings, but not all crossings are violations. The distinction lies in intent, degree of harm, and whether the client\'s welfare is protected.',
+        tip: 'Ask two questions: (1) Was it intentional, documented, and in the client\'s interest? → May be a crossing. (2) Did it exploit or harm the client? → Always a violation. Sexual contact with a current client is never a "crossing" — no clinical rationale can justify it.'
+      },
+      {
+        id: 'cultural-competence-humility',
+        category: 'Cultural',
+        title: 'Cultural Competence vs Cultural Humility',
+        items: [
+          {
+            label: 'Cultural Competence',
+            points: [
+              'Measurable knowledge, skills, and awareness about specific cultural groups',
+              'Implies an achievable endpoint — competence can be attained',
+              'Focus: the counselor acquiring culture-specific knowledge',
+              'Associated with Sue\'s tripartite model (awareness → knowledge → skills)',
+              'Risk: can foster stereotyping when reduced to group generalizations',
+              'Static view — culture as a body of learnable content'
+            ]
+          },
+          {
+            label: 'Cultural Humility',
+            points: [
+              'Ongoing process of self-reflection and openness to learning from each individual client',
+              'No endpoint — a lifelong commitment to self-critique and growth (Tervalon & Murray-García, 1998)',
+              'Focus: the counselor examining their own biases, assumptions, and power',
+              'Privileges the client as the expert on their own cultural experience',
+              'Emphasizes curiosity, not assuming shared intra-group norms',
+              'Dynamic view — culture as lived experience requiring ongoing dialogue'
+            ]
+          }
+        ],
+        confusion: 'Both address multicultural counseling practice. The field has shifted from "competence" (a destination) toward "humility" (an ongoing practice), but both terms appear on licensing exams.',
+        tip: 'Competence = learn about cultural groups (endpoint, knowledge-focused). Humility = remain curious and self-critical with every individual client (lifelong process, relationship-focused). Current exam frameworks — especially the NCMHCE — favor humility language and the process orientation.'
+      },
+      {
+        id: 'beck-ellis',
+        category: 'Theory',
+        title: 'Aaron Beck (CBT) vs Albert Ellis (REBT)',
+        items: [
+          {
+            label: 'Aaron Beck — CBT',
+            points: [
+              'Cognitive distortions: systematic errors in thinking (catastrophizing, overgeneralization, all-or-nothing, personalization, magnification)',
+              'Automatic thoughts arise from deeper cognitive schemas',
+              'Empirical approach: test thoughts against evidence using Socratic questioning',
+              'Collaborative, structured, present-focused therapy with homework',
+              'Developed for depression in the 1960s–70s; extended to anxiety, OCD, personality disorders',
+              'Core tools: thought records, behavioral experiments, behavioral activation'
+            ]
+          },
+          {
+            label: 'Albert Ellis — REBT',
+            points: [
+              'Irrational beliefs: absolutistic demands — musts, shoulds, awfulizing, low frustration tolerance (LFT), self-damning',
+              'ABC(DE) model: Activating event → Belief → Consequence; add D (Dispute) and E (New Effect)',
+              'Confrontational, directive, and highly psychoeducational style',
+              'Distinguishes rational (preferential) from irrational (demanding) beliefs',
+              'Originally Rational Emotive Therapy (1955) — precursor to the CBT movement',
+              'Philosophical disputation: challenge the logic and utility of beliefs, not just the evidence'
+            ]
+          }
+        ],
+        confusion: 'Both are cognitive-behavioral approaches that modify thinking to change emotion and behavior, share many techniques, and are both classified as "CBT" in broad usage.',
+        tip: 'Ellis = REBT, ABC model, irrational beliefs (musts/shoulds), directive/confrontational. Beck = CBT, automatic thoughts + cognitive distortions, collaborative/Socratic. REBT came first (1955); Beck\'s CBT followed. On the exam, "ABC model" = Ellis/REBT.'
+      },
+      {
+        id: 'consent-assent',
+        category: 'Ethics',
+        title: 'Informed Consent vs Assent',
+        items: [
+          {
+            label: 'Informed Consent',
+            points: [
+              'Legal authorization to proceed with treatment',
+              'Requirements: voluntary, competent decision-maker, adequate disclosure, capacity to understand',
+              'Given by adults (18+) or legally emancipated minors',
+              'Must cover: nature of services, risks/benefits, alternatives, limits of confidentiality, fees',
+              'Ongoing process — not a one-time signature (ACA A.2.a)',
+              'Required before treatment begins'
+            ]
+          },
+          {
+            label: 'Assent',
+            points: [
+              'Affirmative agreement of a minor to participate in treatment',
+              'Legally insufficient on its own — parental/guardian consent is still required',
+              'Ethically necessary: respects the minor\'s developing autonomy',
+              'Uses developmentally appropriate language; not a formal legal document',
+              'A child who refuses to assent signals a concern the counselor must address',
+              'Used alongside parental consent, never as a substitute'
+            ]
+          }
+        ],
+        confusion: 'In pediatric and school counseling, both documents may be used at the same intake. Students confuse them as interchangeable or assume minor assent replaces parental consent.',
+        tip: 'Consent = legal authorization (signed by an adult/guardian). Assent = the minor\'s agreement (ethically required, legally insufficient). On the NCMHCE: guardian signs consent; child signs assent. A minor\'s refusal to assent doesn\'t block treatment but cannot be ignored.'
+      },
+      {
+        id: 'countertransference-types',
+        category: 'Clinical',
+        title: 'Concordant vs Complementary Countertransference',
+        items: [
+          {
+            label: 'Concordant',
+            points: [
+              'Counselor identifies with the client\'s own subjective experience',
+              'Counselor feels what the client feels — empathic resonance',
+              'E.g., counselor feels grief while working with a bereaved client',
+              'Also called "identificatory" countertransference',
+              'Often a signal of accurate empathy — clinically useful when recognized',
+              'Racker\'s framework, rooted in object relations theory'
+            ]
+          },
+          {
+            label: 'Complementary',
+            points: [
+              'Counselor identifies with an internal object from the client\'s relational world',
+              'Counselor feels what a significant figure in the client\'s past felt toward them',
+              'E.g., counselor feels critical or dismissive toward a client whose parent was rejecting',
+              'The client\'s relational pattern is re-enacted in the therapeutic relationship',
+              'Often signals projective identification — important diagnostic and relational data',
+              'Requires supervision or self-reflection to avoid destructive enactment'
+            ]
+          }
+        ],
+        confusion: 'Both are countertransference responses in Racker\'s object relations framework, both occur in the therapeutic relationship, and both require self-awareness to manage. The difference is who the counselor is unconsciously resonating with.',
+        tip: 'Concordant = counselor feels WITH the client (parallel emotional experience). Complementary = counselor feels TOWARD the client the way a past figure felt (relational role enacted). Complementary CT is the higher-stakes clinical red flag and the more frequently tested concept.'
+      }
+    ];
+
+    let activeCatCompare = 'all';
+
+    function renderCompareCards(data) {
+      const container = document.getElementById('compare-cards');
+      const empty = document.getElementById('compare-empty');
+      const countEl = document.getElementById('compare-count');
+      if (!data.length) {
+        container.innerHTML = '';
+        empty.style.display = 'block';
+        countEl.textContent = '';
+        return;
+      }
+      empty.style.display = 'none';
+      countEl.textContent = data.length + ' comparison' + (data.length === 1 ? '' : 's');
+      container.innerHTML = data.map(d => {
+        const colsHTML = d.items.map(item => {
+          const liHTML = item.points.map(p => `<li>${p}</li>`).join('');
+          return `<div class="compare-col"><div class="compare-col-label">${item.label}</div><ul>${liHTML}</ul></div>`;
+        }).join('');
+        return `
+        <div class="dsm-card" data-compare-cat="${d.category}" data-compare-search="${(d.title + ' ' + d.category + ' ' + d.confusion + ' ' + d.tip + ' ' + d.items.map(i => i.label + ' ' + i.points.join(' ')).join(' ')).toLowerCase()}">
+          <button class="dsm-trigger" aria-expanded="false" onclick="toggleDSM(this)">
+            <span class="compare-cat-badge">${d.category}</span>
+            <span style="font-size:0.9375rem; font-weight:600; color:var(--teal-900); flex:1; text-align:left; line-height:1.4;">${d.title}</span>
+            <svg class="dsm-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="dsm-body">
+            <div class="dsm-body-inner">
+              <div class="compare-cols">${colsHTML}</div>
+              <div class="compare-confusion"><strong>Why students confuse these:</strong> ${d.confusion}</div>
+              <div class="dsm-tip"><strong>Exam tip:</strong> ${d.tip}</div>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    function setCompareFilter(cat, el) {
+      activeCatCompare = cat;
+      document.querySelectorAll('#compare-filters .dsm-cat').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      filterCompare();
+    }
+
+    function filterCompare() {
+      const q = document.getElementById('compare-search').value.toLowerCase().trim();
+      const filtered = compareData.filter(d => {
+        const catMatch = activeCatCompare === 'all' || d.category === activeCatCompare;
+        const searchText = (d.title + ' ' + d.category + ' ' + d.confusion + ' ' + d.tip + ' ' + d.items.map(i => i.label + ' ' + i.points.join(' ')).join(' ')).toLowerCase();
+        const searchMatch = !q || searchText.includes(q);
+        return catMatch && searchMatch;
+      });
+      renderCompareCards(filtered);
+    }
+
+    renderCompareCards(compareData);
 
     /* ══════════════════════════════════════════
        NCMHCE — CLINICAL SIMULATION CASES
