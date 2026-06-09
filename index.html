@@ -3880,7 +3880,7 @@
         </div>
 
         <!-- Tool tab switcher -->
-        <div style="display:flex; flex-wrap:wrap; gap:4px; background:#fff; border-radius:12px; padding:5px; border:1.5px solid rgba(26,74,68,0.09); box-shadow:0 1px 4px rgba(26,74,68,0.05); margin-bottom:36px;">
+        <div id="ref-tab-bar" style="display:flex; flex-wrap:wrap; gap:4px; background:#fff; border-radius:12px; padding:5px; border:1.5px solid rgba(26,74,68,0.09); box-shadow:0 1px 4px rgba(26,74,68,0.05); margin-bottom:36px;">
           <button class="ref-tool-tab active" id="reftab-dsm" onclick="showRefTool('dsm')">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
             DSM-5 Glossary
@@ -3900,6 +3900,10 @@
           <button class="ref-tool-tab" id="reftab-compare" onclick="showRefTool('compare')">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="2" y="3" width="9" height="18" rx="1.5"/><rect x="13" y="3" width="9" height="18" rx="1.5"/></svg>
             Compare &amp; Contrast
+          </button>
+          <button class="ref-tool-tab" id="reftab-mnemonics" onclick="showRefTool('mnemonics')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M4 7h16M4 12h10M4 17h7"/></svg>
+            Mnemonics
           </button>
         </div>
 
@@ -4114,6 +4118,56 @@
 
         </div><!-- /ref-panel-compare -->
 
+        <!-- ── PANEL: Mnemonics Cheat Sheet ── -->
+        <div id="ref-panel-mnemonics" style="display:none;">
+
+          <!-- Print-only title (hidden on screen) -->
+          <div class="mnemo-print-header">
+            <h2 style="font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; color:var(--teal-900); letter-spacing:-0.02em; margin-bottom:4px;">Mnemonics Cheat Sheet</h2>
+            <p style="font-size:0.78rem; color:var(--text-mid);">LPC Exam Prep — Counselor Companion · All mnemonics drawn from study material</p>
+          </div>
+
+          <!-- Screen description + print button -->
+          <div id="mnemo-intro" style="display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:28px; flex-wrap:wrap;">
+            <p style="color:var(--text-mid); font-size:0.95rem; line-height:1.7; max-width:620px;">Every mnemonic from the study material in one searchable list. Filter by domain, search by letter or keyword, or print a clean cheat sheet.</p>
+            <button onclick="window.print()" class="mnemo-print-btn" style="display:inline-flex; align-items:center; gap:7px; padding:9px 16px; background:var(--teal-50); border:1.5px solid rgba(45,125,111,0.2); border-radius:9px; font-family:'Inter',sans-serif; font-size:0.82rem; font-weight:600; color:var(--teal-700); cursor:pointer; white-space:nowrap; transition:background 0.15s ease;" onmouseover="this.style.background='rgba(45,125,111,0.12)'" onmouseout="this.style.background='var(--teal-50)'" aria-label="Print mnemonics cheat sheet">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+              Print Cheat Sheet
+            </button>
+          </div>
+
+          <!-- Search -->
+          <div id="mnemo-search-container" style="position:relative; margin-bottom:20px;">
+            <svg style="position:absolute; left:14px; top:50%; transform:translateY(-50%); pointer-events:none;" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input id="mnemo-search" type="text" placeholder="Search by acronym, letter, or keyword…" oninput="filterMnemo()" style="width:100%; padding:13px 14px 13px 44px; border-radius:10px; border:1.5px solid rgba(26,74,68,0.13); background:#fff; font-family:'Inter',sans-serif; font-size:0.9375rem; color:var(--text-dark); outline:none; transition:border-color 0.15s ease; box-shadow:0 1px 4px rgba(26,74,68,0.05);" onfocus="this.style.borderColor='var(--teal-500)'" onblur="this.style.borderColor='rgba(26,74,68,0.13)'">
+          </div>
+
+          <!-- Domain filter pills -->
+          <div id="mnemo-filter-row" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:28px;">
+            <button class="dsm-cat active" onclick="setMnemoFilter('all',this)">All Domains</button>
+            <button class="dsm-cat" onclick="setMnemoFilter('Counseling Skills',this)">Counseling Skills</button>
+            <button class="dsm-cat" onclick="setMnemoFilter('Assessment',this)">Assessment</button>
+            <button class="dsm-cat" onclick="setMnemoFilter('Motivational Interviewing',this)">Motivational Interviewing</button>
+            <button class="dsm-cat" onclick="setMnemoFilter('DBT Skills',this)">DBT Skills</button>
+            <button class="dsm-cat" onclick="setMnemoFilter('Treatment Planning',this)">Treatment Planning</button>
+            <button class="dsm-cat" onclick="setMnemoFilter('Multicultural Practice',this)">Multicultural Practice</button>
+          </div>
+
+          <!-- Count -->
+          <p id="mnemo-count" style="font-size:0.8rem; color:var(--text-light); margin-bottom:20px; font-weight:500; letter-spacing:0.01em;"></p>
+
+          <!-- Cards grid -->
+          <div id="mnemo-cards"></div>
+
+          <!-- Empty state -->
+          <div id="mnemo-empty" style="display:none; text-align:center; padding:60px 0;">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 16px; display:block;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <p style="color:var(--text-mid); font-size:0.95rem;">No mnemonics match your search.</p>
+            <button onclick="document.getElementById('mnemo-search').value=''; filterMnemo();" style="margin-top:14px; font-size:0.85rem; color:var(--teal-700); background:none; border:none; cursor:pointer; text-decoration:underline; font-family:'Inter',sans-serif;">Clear search</button>
+          </div>
+
+        </div><!-- /ref-panel-mnemonics -->
+
       </div>
     </div>
   </div>
@@ -4139,6 +4193,101 @@
     .ref-tool-tab:hover { background: var(--teal-50); color: var(--teal-700); }
     .ref-tool-tab.active { background: var(--teal-700); color: #fff; }
     .ref-tool-tab:focus-visible { outline: 3px solid rgba(75,166,152,0.5); outline-offset: 2px; }
+
+    /* ── Mnemonics Cheat Sheet ── */
+    .mnemo-print-header { display: none; } /* shown only in print */
+    #mnemo-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 14px;
+    }
+    .mnemo-card {
+      background: #fff;
+      border-radius: 14px;
+      border: 1.5px solid rgba(26,74,68,0.08);
+      padding: 18px 20px;
+      box-shadow: 0 1px 3px rgba(26,74,68,0.04), 0 4px 12px rgba(26,74,68,0.05);
+    }
+    .mnemo-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+    .mnemo-acronym {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.25rem; font-weight: 700;
+      color: var(--teal-900); letter-spacing: -0.02em; line-height: 1.2;
+    }
+    .mnemo-domain-badge {
+      font-size: 0.64rem; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; padding: 3px 8px; border-radius: 20px;
+      flex-shrink: 0; margin-top: 3px;
+    }
+    .mnemo-context {
+      font-size: 0.79rem; color: var(--text-mid); font-style: italic;
+      line-height: 1.5; margin: 5px 0 12px;
+    }
+    .mnemo-letters { display: flex; flex-direction: column; gap: 5px; }
+    .mnemo-row { display: flex; align-items: baseline; gap: 8px; }
+    .mnemo-letter {
+      min-width: 22px; height: 22px; border-radius: 5px;
+      background: var(--teal-50); border: 1px solid rgba(45,125,111,0.18);
+      font-size: 0.7rem; font-weight: 800; color: var(--teal-700);
+      display: inline-flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-family: 'Inter', sans-serif;
+    }
+    .mnemo-letter.amber { background: rgba(196,133,90,0.1); border-color: rgba(196,133,90,0.25); color: var(--amber); }
+    .mnemo-def { font-size: 0.81rem; color: var(--text-mid); line-height: 1.5; }
+    .mnemo-divider {
+      display: flex; align-items: center; gap: 8px;
+      margin: 4px 0 2px; font-size: 0.68rem; font-weight: 600;
+      color: var(--text-light); letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    .mnemo-divider::before, .mnemo-divider::after {
+      content: ''; flex: 1; height: 1px; background: rgba(26,74,68,0.1);
+    }
+
+    /* ── Print stylesheet ── */
+    @media print {
+      /* Force only the mnemonics panel to render */
+      .navbar, #view-home, #view-study, #view-flashcards,
+      #view-theory-quiz, #view-theory, #view-exam-select,
+      #view-ncmhce-sim, #view-ncmhce-dx, #view-ncmhce-branch,
+      #view-exam, #view-exam-results { display: none !important; }
+
+      #view-reference { display: block !important; padding: 0 !important; }
+      #view-reference > div { padding: 0 !important; min-height: auto !important; background: #fff !important; }
+      #view-reference > div > div { max-width: 100% !important; padding: 0 16pt !important; }
+
+      #ref-tab-bar,
+      #ref-panel-dsm, #ref-panel-aca, #ref-panel-theorists,
+      #ref-panel-meds, #ref-panel-compare { display: none !important; }
+
+      #ref-panel-mnemonics { display: block !important; }
+      .mnemo-print-header { display: block !important; margin-bottom: 14pt; }
+      #mnemo-intro { display: none !important; }
+      #mnemo-search-container, #mnemo-filter-row, #mnemo-count,
+      .mnemo-print-btn { display: none !important; }
+
+      body { background: #fff !important; font-size: 9pt; }
+      h2 { font-size: 16pt !important; }
+
+      #mnemo-cards {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10pt !important;
+      }
+      .mnemo-card {
+        break-inside: avoid; page-break-inside: avoid;
+        box-shadow: none !important;
+        border: 1pt solid rgba(0,0,0,0.15) !important;
+        border-radius: 6pt !important;
+        padding: 9pt 11pt !important;
+      }
+      .mnemo-acronym { font-size: 13pt !important; }
+      .mnemo-context { font-size: 7.5pt !important; margin-bottom: 7pt !important; }
+      .mnemo-def { font-size: 7.5pt !important; line-height: 1.35 !important; }
+      .mnemo-letter { width: 16px !important; height: 16px !important; min-width: 16px !important; font-size: 6.5pt !important; border-radius: 3pt !important; }
+      .mnemo-letters { gap: 3pt !important; }
+      .mnemo-domain-badge { font-size: 5.5pt !important; padding: 1pt 5pt !important; }
+      .mnemo-divider { font-size: 6pt !important; margin: 3pt 0 1pt !important; }
+    }
 
     /* Compare & Contrast styles */
     .compare-cols { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
@@ -6234,7 +6383,7 @@
 
     /* ══════════ REFERENCE TOOL PANEL SWITCHER ══════════ */
     function showRefTool(name) {
-      ['dsm','aca','theorists','meds','compare'].forEach(t => {
+      ['dsm','aca','theorists','meds','compare','mnemonics'].forEach(t => {
         document.getElementById('ref-panel-' + t).style.display = name === t ? '' : 'none';
         document.getElementById('reftab-' + t).classList.toggle('active', name === t);
       });
@@ -8813,6 +8962,355 @@
     }
 
     renderCompareCards(compareData);
+
+    /* ══════════ MNEMONICS CHEAT SHEET ══════════ */
+
+    // ─────────────────────────────────────────────────────────────────
+    // mnemoData — add new entries here to extend the cheat sheet.
+    // Each entry shape:
+    //   { id, domain, acronym, context, letters: [{ letter, meaning }] }
+    // domain must be one of: Counseling Skills · Assessment ·
+    //   Motivational Interviewing · DBT Skills · Treatment Planning ·
+    //   Multicultural Practice
+    // For a divider row between letter groups (e.g. DARN-CAT), set
+    //   letter: '——' and meaning: 'Label text' — renders as a section divider.
+    // ─────────────────────────────────────────────────────────────────
+    const mnemoData = [
+      // ── Counseling Skills ──────────────────────────────────────
+      {
+        id: 'soler', domain: 'Counseling Skills',
+        acronym: 'SOLER',
+        context: "Ivey's nonverbal attending behaviors for active listening and rapport",
+        letters: [
+          { letter: 'S', meaning: 'Squarely face the client' },
+          { letter: 'O', meaning: 'Open, non-defensive posture' },
+          { letter: 'L', meaning: 'Lean slightly forward' },
+          { letter: 'E', meaning: 'Eye contact (culturally appropriate)' },
+          { letter: 'R', meaning: 'Relaxed body language' }
+        ]
+      },
+      {
+        id: 'wdep', domain: 'Counseling Skills',
+        acronym: 'WDEP',
+        context: "Glasser's Reality Therapy structured conversation — present-focused, choice-based",
+        letters: [
+          { letter: 'W', meaning: 'Wants — What do you want? What is in your quality world?' },
+          { letter: 'D', meaning: 'Doing/Direction — What are you doing right now? Where is it taking you?' },
+          { letter: 'E', meaning: 'Evaluate — Is what you\'re doing helping you get what you want? (client evaluates, not counselor)' },
+          { letter: 'P', meaning: 'Plan — Specific, simple, achievable plan the client commits to' }
+        ]
+      },
+      // ── Assessment ─────────────────────────────────────────────
+      {
+        id: 'abate-stp', domain: 'Assessment',
+        acronym: 'A BATE STP',
+        context: '8 domains of the Mental Status Examination — snapshot of current mental functioning',
+        letters: [
+          { letter: 'A', meaning: 'Appearance — grooming, dress, physical presentation' },
+          { letter: 'B', meaning: 'Behavior / Psychomotor — activity level, agitation, retardation, attitude toward examiner' },
+          { letter: 'A', meaning: 'Affect & Mood — affect (observed) and mood (client-reported)' },
+          { letter: 'T', meaning: 'Thought Process — HOW the client thinks (logical, tangential, loose, circumstantial, flight of ideas)' },
+          { letter: 'E', meaning: 'Thought Content (E) — WHAT the client thinks about (delusions, SI, HI, obsessions, phobias)' },
+          { letter: 'S', meaning: 'Speech — rate, volume, quality (pressured, poverty, mutism)' },
+          { letter: 'T', meaning: 'Perception (T) — hallucinations, illusions, depersonalization, derealization' },
+          { letter: 'P', meaning: 'Cognition & Insight/Judgment — orientation (A&Ox4), memory, concentration, insight, judgment' }
+        ]
+      },
+      {
+        id: 'slap', domain: 'Assessment',
+        acronym: 'SLAP',
+        context: 'Lethality assessment for suicidal ideation — severity of suicide risk',
+        letters: [
+          { letter: 'S', meaning: 'Specificity — How specific is the plan? (method, time, place)' },
+          { letter: 'L', meaning: 'Lethality — How lethal is the method? (firearms > overdose > cutting)' },
+          { letter: 'A', meaning: 'Availability — Does the client have access to the means right now?' },
+          { letter: 'P', meaning: 'Proximity of rescue — Is help nearby? Is the plan designed to avoid discovery?' }
+        ]
+      },
+      {
+        id: 'sig-e-caps', domain: 'Assessment',
+        acronym: 'SIG E CAPS',
+        context: "DSM-5 Major Depressive Episode criteria — \"like a pharmacist's prescription for energy capsules\"",
+        letters: [
+          { letter: 'S', meaning: 'Sleep — increased or decreased (hypersomnia or insomnia)' },
+          { letter: 'I', meaning: 'Interest lost — anhedonia; diminished pleasure in previously enjoyed activities' },
+          { letter: 'G', meaning: 'Guilt / worthlessness — excessive or inappropriate guilt' },
+          { letter: 'E', meaning: 'Energy decreased — fatigue nearly every day' },
+          { letter: 'C', meaning: 'Concentration impaired — difficulty thinking, focusing, or making decisions' },
+          { letter: 'A', meaning: 'Appetite / weight change — significant gain or loss, or change in appetite' },
+          { letter: 'P', meaning: 'Psychomotor — agitation or retardation observable by others' },
+          { letter: 'S', meaning: 'Suicidal ideation — recurrent thoughts of death, passive wish, or active plan' }
+        ]
+      },
+      {
+        id: 'digfast', domain: 'Assessment',
+        acronym: 'DIGFAST',
+        context: 'DSM-5 Manic Episode symptoms — Bipolar I Disorder; ≥3 required (or ≥4 if mood is only irritable)',
+        letters: [
+          { letter: 'D', meaning: 'Distractibility — attention easily pulled to irrelevant stimuli' },
+          { letter: 'I', meaning: 'Impulsivity / reckless behavior — spending sprees, sexual indiscretions, risky decisions' },
+          { letter: 'G', meaning: 'Grandiosity — inflated self-esteem or belief in special powers' },
+          { letter: 'F', meaning: 'Flight of ideas — rapid, loosely connected jumps between topics' },
+          { letter: 'A', meaning: 'Activity increase — goal-directed activity (social, occupational, or sexual)' },
+          { letter: 'S', meaning: 'Sleep decreased — little sleep without feeling tired' },
+          { letter: 'T', meaning: 'Talkativeness — pressured speech, fast and difficult to interrupt' }
+        ]
+      },
+      {
+        id: 'cage', domain: 'Assessment',
+        acronym: 'CAGE',
+        context: '4-item alcohol use screening tool (Ewing, 1984); ≥2 = clinically significant, warrants full assessment',
+        letters: [
+          { letter: 'C', meaning: 'Cut down — "Have you ever felt you should cut down on your drinking?"' },
+          { letter: 'A', meaning: 'Annoyed — "Have people annoyed you by criticizing your drinking?"' },
+          { letter: 'G', meaning: 'Guilty — "Have you ever felt bad or guilty about your drinking?"' },
+          { letter: 'E', meaning: 'Eye-opener — "Have you had a drink first thing in the morning?" (strongest indicator of physical dependence)' }
+        ]
+      },
+      // ── Motivational Interviewing ───────────────────────────────
+      {
+        id: 'pace', domain: 'Motivational Interviewing',
+        acronym: 'PACE',
+        context: 'The four elements of the MI spirit — the counselor\'s fundamental orientation to the relationship',
+        letters: [
+          { letter: 'P', meaning: 'Partnership — collaborative relationship of equals; counselor is not the expert on the client\'s life' },
+          { letter: 'A', meaning: 'Acceptance — unconditional positive regard, accurate empathy, honoring autonomy, affirming worth' },
+          { letter: 'C', meaning: 'Compassion — actively prioritizing the client\'s welfare above the counselor\'s agenda for change' },
+          { letter: 'E', meaning: 'Evocation — calling forth the client\'s own motivation; motivation already exists within the person' }
+        ]
+      },
+      {
+        id: 'oars', domain: 'Motivational Interviewing',
+        acronym: 'OARS',
+        context: 'Four foundational MI micro-skills — express MI spirit and elicit change talk',
+        letters: [
+          { letter: 'O', meaning: 'Open Questions — invite elaboration; cannot be answered with yes/no' },
+          { letter: 'A', meaning: 'Affirmations — genuine recognition of the client\'s strengths, efforts, and resilience' },
+          { letter: 'R', meaning: 'Reflections — the most important MI skill; simple (repeat key words) or complex (infer meaning/feeling)' },
+          { letter: 'S', meaning: 'Summaries — collect and link statements; strategic summaries reinforce change talk' }
+        ]
+      },
+      {
+        id: 'darn-cat', domain: 'Motivational Interviewing',
+        acronym: 'DARN-CAT',
+        context: 'Types of change talk — client language signaling movement toward behavior change',
+        letters: [
+          { letter: '——', meaning: 'Preparatory Change Talk (DARN)' },
+          { letter: 'D', meaning: 'Desire — "I want to quit / change / do better"' },
+          { letter: 'A', meaning: 'Ability — "I could do it if I tried / I\'ve done it before"' },
+          { letter: 'R', meaning: 'Reason — "My health is suffering / my family is affected"' },
+          { letter: 'N', meaning: 'Need — "I have to do something / I can\'t keep going like this"' },
+          { letter: '——', meaning: 'Mobilizing Change Talk (CAT)' },
+          { letter: 'C', meaning: 'Commitment — "I will… / I\'m going to…"' },
+          { letter: 'A', meaning: 'Activation — "I\'m ready to… / I\'m prepared to…"' },
+          { letter: 'T', meaning: 'Taking Steps — "I\'ve already started… / I cut back last week"' }
+        ]
+      },
+      // ── DBT Skills ─────────────────────────────────────────────
+      {
+        id: 'tipp', domain: 'DBT Skills',
+        acronym: 'TIPP',
+        context: 'DBT Distress Tolerance — rapid biological skill for reducing acute crisis-level arousal',
+        letters: [
+          { letter: 'T', meaning: 'Temperature — cold water activates the diving reflex, rapidly slowing heart rate' },
+          { letter: 'I', meaning: 'Intense exercise — burns off physiological crisis arousal' },
+          { letter: 'P', meaning: 'Paced breathing — slow exhale (longer than inhale) activates the parasympathetic system' },
+          { letter: 'P', meaning: 'Progressive muscle relaxation — systematic tension-and-release reduces physical tension' }
+        ]
+      },
+      {
+        id: 'accepts', domain: 'DBT Skills',
+        acronym: 'ACCEPTS',
+        context: 'DBT Distress Tolerance — distraction strategies for surviving crises without making things worse',
+        letters: [
+          { letter: 'A', meaning: 'Activities — engage in absorbing activities to shift attention from distress' },
+          { letter: 'C', meaning: 'Contributing — do something for others; shifts focus outward from self' },
+          { letter: 'C', meaning: 'Comparisons — compare to others coping, or to your own harder past moments' },
+          { letter: 'E', meaning: 'Emotions — generate a different emotion (watch a comedy, listen to music)' },
+          { letter: 'P', meaning: 'Push away — mentally shelve the problem temporarily; return to it later' },
+          { letter: 'T', meaning: 'Thoughts — occupy the mind with other content (counting, puzzles, reading)' },
+          { letter: 'S', meaning: 'Sensations — use intense sensory input to interrupt emotional pain (ice cube, spicy food)' }
+        ]
+      },
+      {
+        id: 'improve', domain: 'DBT Skills',
+        acronym: 'IMPROVE',
+        context: 'DBT Distress Tolerance — strategies to improve the moment and endure a crisis',
+        letters: [
+          { letter: 'I', meaning: 'Imagery — visualize a safe place, coping successfully, or a positive future' },
+          { letter: 'M', meaning: 'Meaning — find or create meaning and purpose in the painful situation' },
+          { letter: 'P', meaning: 'Prayer/Spirituality — connect with something greater than oneself; practice surrender' },
+          { letter: 'R', meaning: 'Relaxation — progressive muscle relaxation, deep breathing' },
+          { letter: 'O', meaning: 'One thing in the moment — radical present focus; attend fully to just one thing' },
+          { letter: 'V', meaning: 'Vacation — take a brief mental or physical break from the stressor' },
+          { letter: 'E', meaning: 'Encouragement — self-talk to coach yourself through the moment' }
+        ]
+      },
+      {
+        id: 'dear-man', domain: 'DBT Skills',
+        acronym: 'DEAR MAN',
+        context: 'DBT Interpersonal Effectiveness — making requests and getting needs met effectively',
+        letters: [
+          { letter: 'D', meaning: 'Describe — state the facts of the situation objectively' },
+          { letter: 'E', meaning: 'Express — share feelings with "I feel…" language, not blame' },
+          { letter: 'A', meaning: 'Assert — clearly state what you want or don\'t want' },
+          { letter: 'R', meaning: 'Reinforce — explain the positive outcome of getting what you need' },
+          { letter: 'M', meaning: 'Mindful — stay focused on your goal; don\'t get derailed by attacks or deflections' },
+          { letter: 'A', meaning: 'Appear confident — confident posture and tone, even if you don\'t feel it' },
+          { letter: 'N', meaning: 'Negotiate — be willing to give to get; offer alternatives if refused' }
+        ]
+      },
+      {
+        id: 'give', domain: 'DBT Skills',
+        acronym: 'GIVE',
+        context: 'DBT Interpersonal Effectiveness — maintaining the relationship while making requests',
+        letters: [
+          { letter: 'G', meaning: 'Gentle — no attacks, threats, or judging; use a soft tone' },
+          { letter: 'I', meaning: 'Interested — listen actively; show genuine curiosity about the other person' },
+          { letter: 'V', meaning: 'Validate — acknowledge the other person\'s feelings, thoughts, and situation' },
+          { letter: 'E', meaning: 'Easy manner — use humor and lightness; avoid excessive heaviness or intensity' }
+        ]
+      },
+      {
+        id: 'fast', domain: 'DBT Skills',
+        acronym: 'FAST',
+        context: 'DBT Interpersonal Effectiveness — maintaining self-respect in interactions',
+        letters: [
+          { letter: 'F', meaning: 'Fair — be fair to yourself AND to the other person' },
+          { letter: 'A', meaning: 'no Apologies — avoid excessive, unnecessary, or pre-emptive apologizing' },
+          { letter: 'S', meaning: 'Stick to values — don\'t compromise your values to please others or avoid conflict' },
+          { letter: 'T', meaning: 'Truthful — don\'t lie, exaggerate, or make up excuses' }
+        ]
+      },
+      {
+        id: 'please', domain: 'DBT Skills',
+        acronym: 'PLEASE',
+        context: 'DBT Emotional Regulation — reduce biological vulnerability to intense emotion',
+        letters: [
+          { letter: 'PL', meaning: 'treat PhysicaL illness — untreated illness increases emotional reactivity' },
+          { letter: 'E', meaning: 'balanced Eating — regular, nutritional eating stabilizes mood and blood sugar' },
+          { letter: 'A', meaning: 'Avoid mood-Altering substances — alcohol and drugs heighten emotional vulnerability' },
+          { letter: 'S', meaning: 'balanced Sleep — adequate, regular sleep; deprivation worsens all emotional states' },
+          { letter: 'E', meaning: 'Exercise / build mastEry — physical activity and competence-building generate positive emotion' }
+        ]
+      },
+      // ── Treatment Planning ──────────────────────────────────────
+      {
+        id: 'smart', domain: 'Treatment Planning',
+        acronym: 'SMART',
+        context: 'Framework for writing effective, client-centered treatment plan goals',
+        letters: [
+          { letter: 'S', meaning: 'Specific — states exactly what the client will do, feel, or achieve' },
+          { letter: 'M', meaning: 'Measurable — progress tracked objectively (frequency counts, scale scores, client ratings)' },
+          { letter: 'A', meaning: 'Achievable / Attainable — realistic given functioning, resources, and motivation stage' },
+          { letter: 'R', meaning: 'Relevant / Meaningful — tied to presenting problem, diagnosis, and client\'s own values' },
+          { letter: 'T', meaning: 'Time-Bound — specifies target date or review interval (e.g., "within 8 weeks")' }
+        ]
+      },
+      // ── Multicultural Practice ──────────────────────────────────
+      {
+        id: 'respectful', domain: 'Multicultural Practice',
+        acronym: 'RESPECTFUL',
+        context: "D'Andrea & Daniels model — 10 dimensions of cultural identity for case conceptualization",
+        letters: [
+          { letter: 'R', meaning: 'Religious/Spiritual Identity' },
+          { letter: 'E', meaning: 'Economic Class Background' },
+          { letter: 'S', meaning: 'Sexual Identity' },
+          { letter: 'P', meaning: 'Psychological Development' },
+          { letter: 'E', meaning: 'Ethnic/Racial Identity' },
+          { letter: 'C', meaning: 'Chronological/Developmental Challenges' },
+          { letter: 'T', meaning: 'Trauma & Threats to Well-Being' },
+          { letter: 'F', meaning: 'Family History & Dynamics' },
+          { letter: 'U', meaning: 'Unique Physical Characteristics' },
+          { letter: 'L', meaning: 'Location of Residence & Language' }
+        ]
+      },
+      {
+        id: 'addressing', domain: 'Multicultural Practice',
+        acronym: 'ADDRESSING',
+        context: 'Hays (1996) framework — 10 cultural factors for culturally sensitive case conceptualization',
+        letters: [
+          { letter: 'A', meaning: 'Age and generational influences' },
+          { letter: 'D', meaning: 'Developmental Disability' },
+          { letter: 'D', meaning: 'Disability (acquired)' },
+          { letter: 'R', meaning: 'Religion and spiritual orientation' },
+          { letter: 'E', meaning: 'Ethnicity and racial identity' },
+          { letter: 'S', meaning: 'Socioeconomic status' },
+          { letter: 'S', meaning: 'Sexual orientation' },
+          { letter: 'I', meaning: 'Indigenous heritage' },
+          { letter: 'N', meaning: 'National origin' },
+          { letter: 'G', meaning: 'Gender' }
+        ]
+      }
+    ];
+
+    // Domain badge color map
+    const mnemoDomainColors = {
+      'Counseling Skills':      { bg: 'rgba(45,125,111,0.09)',  color: 'var(--teal-700)' },
+      'Assessment':             { bg: 'rgba(45,125,111,0.09)',  color: 'var(--teal-700)' },
+      'Motivational Interviewing': { bg: 'rgba(45,125,111,0.09)', color: 'var(--teal-700)' },
+      'DBT Skills':             { bg: 'rgba(196,133,90,0.1)',   color: 'var(--amber)' },
+      'Treatment Planning':     { bg: 'rgba(45,125,111,0.09)',  color: 'var(--teal-700)' },
+      'Multicultural Practice': { bg: 'rgba(196,133,90,0.1)',   color: 'var(--amber)' }
+    };
+
+    let activeMnemoFilter = 'all';
+
+    function renderMnemoCards(data) {
+      const container = document.getElementById('mnemo-cards');
+      const empty = document.getElementById('mnemo-empty');
+      const countEl = document.getElementById('mnemo-count');
+      if (!data.length) {
+        container.innerHTML = '';
+        empty.style.display = 'block';
+        countEl.textContent = '';
+        return;
+      }
+      empty.style.display = 'none';
+      countEl.textContent = data.length + ' mnemonic' + (data.length === 1 ? '' : 's');
+      const col = (d) => mnemoDomainColors[d.domain] || { bg: 'rgba(45,125,111,0.09)', color: 'var(--teal-700)' };
+      container.innerHTML = data.map(d => {
+        const c = col(d);
+        const isAmber = c.color === 'var(--amber)';
+        const lettersHTML = d.letters.map(l => {
+          if (l.letter === '——') {
+            return `<div class="mnemo-divider">${l.meaning}</div>`;
+          }
+          const amberClass = isAmber ? ' amber' : '';
+          return `<div class="mnemo-row">
+            <span class="mnemo-letter${amberClass}">${l.letter}</span>
+            <span class="mnemo-def">${l.meaning}</span>
+          </div>`;
+        }).join('');
+        return `<div class="mnemo-card">
+          <div class="mnemo-card-head">
+            <div class="mnemo-acronym">${d.acronym}</div>
+            <span class="mnemo-domain-badge" style="background:${c.bg}; color:${c.color};">${d.domain}</span>
+          </div>
+          <div class="mnemo-context">${d.context}</div>
+          <div class="mnemo-letters">${lettersHTML}</div>
+        </div>`;
+      }).join('');
+    }
+
+    function setMnemoFilter(domain, el) {
+      activeMnemoFilter = domain;
+      document.querySelectorAll('#mnemo-filter-row .dsm-cat').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      filterMnemo();
+    }
+
+    function filterMnemo() {
+      const q = document.getElementById('mnemo-search').value.toLowerCase().trim();
+      const filtered = mnemoData.filter(d => {
+        const domainMatch = activeMnemoFilter === 'all' || d.domain === activeMnemoFilter;
+        const searchText = (d.acronym + ' ' + d.domain + ' ' + d.context + ' ' + d.letters.map(l => l.letter + ' ' + l.meaning).join(' ')).toLowerCase();
+        return domainMatch && (!q || searchText.includes(q));
+      });
+      renderMnemoCards(filtered);
+    }
+
+    renderMnemoCards(mnemoData);
 
     /* ══════════════════════════════════════════
        NCMHCE — CLINICAL SIMULATION CASES
