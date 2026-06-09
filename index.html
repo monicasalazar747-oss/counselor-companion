@@ -296,6 +296,54 @@
     .domain-panel { display: none; }
     .domain-panel.active { display: block; }
 
+    /* ── Domain sidebar layout ── */
+    .domain-layout { display: flex; align-items: flex-start; max-width: 1360px; margin: 0 auto; }
+    .domain-sidenav {
+      width: 212px; flex-shrink: 0; position: sticky; top: 72px;
+      max-height: calc(100vh - 88px); overflow-y: auto; scrollbar-width: thin;
+      padding: 48px 0 80px 24px;
+    }
+    .domain-sidenav::-webkit-scrollbar { width: 4px; }
+    .domain-sidenav::-webkit-scrollbar-thumb { background: rgba(45,125,111,0.18); border-radius: 4px; }
+    .sidenav-nav ul { list-style: none; padding: 0; margin: 0; }
+    .sidenav-nav li + li { margin-top: 2px; }
+    .sidenav-link {
+      display: flex; align-items: flex-start; gap: 7px; padding: 7px 10px;
+      border-radius: 8px; text-decoration: none; font-size: 0.77rem; font-weight: 500;
+      line-height: 1.4; color: var(--text-mid); border-left: 2px solid transparent;
+      transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+    }
+    .sidenav-link:hover { color: var(--teal-900); background: var(--teal-50); }
+    .sidenav-link:focus-visible { outline: 3px solid rgba(75,166,152,0.5); outline-offset: -2px; }
+    .sidenav-link.active { color: var(--teal-700); font-weight: 600; border-left-color: var(--teal-500); background: var(--teal-50); }
+    .sidenav-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 17px; height: 17px; border-radius: 4px; font-size: 0.64rem;
+      font-weight: 700; color: var(--teal-500); flex-shrink: 0; margin-top: 1px;
+    }
+    .sidenav-link.active .sidenav-num { background: rgba(75,166,152,0.15); color: var(--teal-700); }
+    .sidenav-title { flex: 1; }
+    .domain-main { flex: 1; min-width: 0; }
+    /* Mobile jump dropdown */
+    .domain-jump-row {
+      display: none; align-items: center; gap: 10px; margin-bottom: 20px;
+      padding: 10px 14px; background: var(--teal-50); border-radius: 10px;
+      border: 1px solid rgba(45,125,111,0.15);
+    }
+    .domain-jump-label { font-size: 0.78rem; font-weight: 600; color: var(--teal-700); white-space: nowrap; }
+    .domain-jump-select {
+      flex: 1; font-family: 'Inter', sans-serif; font-size: 0.82rem; color: var(--teal-900);
+      background: #fff; border: 1px solid rgba(45,125,111,0.2); border-radius: 8px;
+      padding: 6px 28px 6px 10px; cursor: pointer; outline: none; -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%232d7d6f' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 10px center;
+    }
+    .domain-jump-select:focus-visible { outline: 3px solid rgba(75,166,152,0.5); }
+    @media (max-width: 1023px) {
+      .domain-sidenav { display: none !important; }
+      .domain-jump-row { display: flex !important; }
+    }
+
     .acc-item { border: 1.5px solid rgba(26,74,68,0.10); border-radius: 12px; overflow: hidden; margin-bottom: 12px; background: #fff; }
     .acc-btn {
       width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px;
@@ -4483,6 +4531,159 @@
       const tabs = document.querySelectorAll('#study-tabs .study-tab');
       tabs.forEach((t, i) => t.classList.toggle('active', i === index));
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      updateDomainScrollspy(index);
+    }
+
+    // ── Domain sidebar: layout injection ──
+    function initDomainLayout() {
+      [0,1,2,3,4].forEach(function(di) {
+        var panel = document.getElementById('domain-' + di);
+        if (!panel) return;
+        var innerDiv = panel.children[0];
+        if (!innerDiv) return;
+
+        // Gather section info from already-initialised acc-items
+        var items = Array.from(panel.querySelectorAll('.acc-item'));
+        var sectionData = items.map(function(item, i) {
+          var btn = item.querySelector('.acc-btn');
+          var titleEl = btn && btn.querySelector('.acc-title-group > span:first-child');
+          var title = titleEl ? titleEl.textContent.trim() : '';
+          if (!title && btn) {
+            // Fallback: strip the number badge text
+            title = btn.textContent.replace(/^\s*\d+\s*/, '').split('\n')[0].trim();
+          }
+          return { id: item.id, num: i + 1, title: title };
+        });
+
+        // ── Desktop sidebar ──
+        var sidebar = document.createElement('aside');
+        sidebar.className = 'domain-sidenav';
+        sidebar.id = 'sidenav-d' + di;
+        sidebar.setAttribute('aria-label', 'Jump to section');
+        var nav = document.createElement('nav');
+        nav.className = 'sidenav-nav';
+        var ul = document.createElement('ul');
+        sectionData.forEach(function(s) {
+          var li = document.createElement('li');
+          var a = document.createElement('a');
+          a.href = '#' + s.id;
+          a.className = 'sidenav-link' + (s.num === 1 ? ' active' : '');
+          a.dataset.target = s.id;
+          a.innerHTML = '<span class="sidenav-num">' + s.num + '</span>'
+                       + '<span class="sidenav-title">' + s.title + '</span>';
+          a.addEventListener('click', function(e) {
+            e.preventDefault();
+            var target = document.getElementById(a.dataset.target);
+            if (!target) return;
+            var targetBtn = target.querySelector('.acc-btn');
+            if (targetBtn && !targetBtn.classList.contains('open')) targetBtn.click();
+            setTimeout(function() {
+              target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 60);
+          });
+          li.appendChild(a);
+          ul.appendChild(li);
+        });
+        nav.appendChild(ul);
+        sidebar.appendChild(nav);
+
+        // ── Mobile jump dropdown ──
+        var jumpRow = document.createElement('div');
+        jumpRow.className = 'domain-jump-row';
+        var lbl = document.createElement('span');
+        lbl.className = 'domain-jump-label';
+        lbl.textContent = 'Jump to:';
+        var sel = document.createElement('select');
+        sel.className = 'domain-jump-select';
+        sel.setAttribute('aria-label', 'Jump to section');
+        var defOpt = document.createElement('option');
+        defOpt.value = '';
+        defOpt.textContent = 'Select a section…';
+        sel.appendChild(defOpt);
+        sectionData.forEach(function(s) {
+          var opt = document.createElement('option');
+          opt.value = s.id;
+          opt.textContent = s.num + '. ' + s.title;
+          sel.appendChild(opt);
+        });
+        sel.addEventListener('change', function() {
+          var val = sel.value;
+          if (!val) return;
+          sel.value = '';
+          var target = document.getElementById(val);
+          if (!target) return;
+          var targetBtn = target.querySelector('.acc-btn');
+          if (targetBtn && !targetBtn.classList.contains('open')) targetBtn.click();
+          setTimeout(function() {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 60);
+        });
+        jumpRow.appendChild(lbl);
+        jumpRow.appendChild(sel);
+
+        // ── Restructure DOM: wrap innerDiv in a flex layout ──
+        var layout = document.createElement('div');
+        layout.className = 'domain-layout';
+        panel.replaceChild(layout, innerDiv);
+        // Remove the old centering/max-width (layout div takes over)
+        innerDiv.style.maxWidth = '';
+        innerDiv.style.margin = '';
+        innerDiv.classList.add('domain-main');
+        layout.appendChild(sidebar);
+        layout.appendChild(innerDiv);
+        // Mobile dropdown goes at the top of the content column
+        innerDiv.insertBefore(jumpRow, innerDiv.firstChild);
+      });
+    }
+
+    // ── Domain sidebar: scroll-based scrollspy ──
+    var _spyRaf = null;
+    var _spyHandler = null;
+
+    function updateDomainScrollspy(di) {
+      // Clean up previous listener
+      if (_spyHandler) {
+        window.removeEventListener('scroll', _spyHandler, true);
+        _spyHandler = null;
+      }
+      if (_spyRaf) { cancelAnimationFrame(_spyRaf); _spyRaf = null; }
+
+      var sidebar = document.getElementById('sidenav-d' + di);
+      if (!sidebar) return;
+      var links = Array.from(sidebar.querySelectorAll('.sidenav-link'));
+      if (!links.length) return;
+
+      var panel = document.getElementById('domain-' + di);
+      var items = panel ? Array.from(panel.querySelectorAll('.acc-item[id]')) : [];
+
+      function setActive(id) {
+        links.forEach(function(l) {
+          l.classList.toggle('active', l.dataset.target === id);
+        });
+      }
+
+      function tick() {
+        _spyRaf = null;
+        // The last item whose top edge is at/above the threshold is "active"
+        var THRESHOLD = 100;
+        var activeId = items.length ? items[0].id : null;
+        for (var i = 0; i < items.length; i++) {
+          if (items[i].getBoundingClientRect().top <= THRESHOLD) {
+            activeId = items[i].id;
+          } else {
+            break;
+          }
+        }
+        if (activeId) setActive(activeId);
+      }
+
+      tick(); // run immediately on domain switch
+
+      _spyHandler = function() {
+        if (_spyRaf) return;
+        _spyRaf = requestAnimationFrame(tick);
+      };
+      window.addEventListener('scroll', _spyHandler, { passive: true });
     }
 
     function showStudyDomain(n) {
@@ -4658,12 +4859,15 @@
     // initialise any accordions that start open
     document.addEventListener('DOMContentLoaded', function() {
       if (typeof initDomainAccordions === 'function') initDomainAccordions();
+      if (typeof initDomainLayout === 'function') initDomainLayout();
       document.querySelectorAll('.acc-content.open').forEach(function(el) {
         el.style.maxHeight = 'none';
       });
       if (typeof renderSmartPanel === 'function') renderSmartPanel();
       if (typeof refreshDueBadges === 'function') refreshDueBadges();
       if (typeof buildSearchIndex === 'function') buildSearchIndex();
+      // Start scrollspy for the default active domain (0)
+      if (typeof updateDomainScrollspy === 'function') updateDomainScrollspy(0);
     });
 
     /* ── Theory detail data ── */
