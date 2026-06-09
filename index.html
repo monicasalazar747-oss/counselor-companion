@@ -312,6 +312,15 @@
     .acc-content.open { max-height: 9000px; }
     .acc-inner { padding: 24px 22px; }
 
+    /* ── Domain section accordion: summaries & controls ── */
+    .acc-title-group { display: flex; flex-direction: column; gap: 2px; }
+    .acc-summary { font-size: 0.76rem; color: var(--text-light); font-weight: 400; line-height: 1.35; }
+    .acc-btn.open .acc-summary { display: none; }
+    .domain-controls { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 16px; }
+    .domain-ctrl-btn { font-family: 'Inter', sans-serif; font-size: 0.74rem; font-weight: 600; letter-spacing: 0.01em; color: var(--teal-700); background: var(--teal-50); border: 1px solid rgba(45,125,111,0.2); border-radius: 8px; padding: 5px 13px; cursor: pointer; transition: background 0.15s ease; }
+    .domain-ctrl-btn:hover { background: rgba(45,125,111,0.12); }
+    .domain-ctrl-btn:focus-visible { outline: 3px solid rgba(75,166,152,0.5); outline-offset: -2px; }
+
     .theory-card {
       background: var(--sage-bg); border: 1.5px solid rgba(26,74,68,0.08);
       border-radius: 12px; padding: 20px; cursor: pointer;
@@ -4518,8 +4527,137 @@
       }
     }
 
+    function expandAllSections(panel) {
+      if (!panel) return;
+      panel.querySelectorAll('.acc-item .acc-btn').forEach(function(btn) {
+        var content = btn.nextElementSibling;
+        if (!content || content.classList.contains('open')) return;
+        content.classList.add('open');
+        btn.classList.add('open');
+        btn.setAttribute('aria-expanded', 'true');
+        content.style.maxHeight = 'none';
+      });
+    }
+
+    function collapseAllSections(panel) {
+      if (!panel) return;
+      panel.querySelectorAll('.acc-item .acc-btn').forEach(function(btn) {
+        var content = btn.nextElementSibling;
+        if (!content || !content.classList.contains('open')) return;
+        content.style.maxHeight = content.scrollHeight + 'px';
+        content.offsetHeight;
+        content.style.maxHeight = '0';
+        content.classList.remove('open');
+        btn.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      });
+    }
+
+    function initDomainAccordions() {
+      var summaries = [
+        // domain-0 — Counseling Skills (5 sections)
+        ['13 theories: founders, core philosophy, key concepts & signature techniques',
+         "Ivey's hierarchy, SOLER attending, active listening, reflection & confrontation",
+         "Types, stages (Tuckman), Yalom's 11 therapeutic factors & leader roles",
+         'CBT, DBT, EMDR, motivational interviewing, ACT & solution-focused approaches',
+         'Cultural humility, ADDRESSING model, worldview & culturally responsive practice'],
+        // domain-1 — Intake & Assessment (5 sections)
+        ['ABCDE components, clinical observations & cognitive screening tools',
+         '9 items, 0–27 score range, severity thresholds & clinical cut-offs',
+         '7 items, 0–21 score, mild / moderate / severe cut-offs',
+         '20 items, DSM-5 aligned, 0–80 score, ≥33 = probable PTSD',
+         '4 items, ≥2 = positive screen; rapid validated screener'],
+        // domain-2 — Treatment Planning (6 sections)
+        ['Specific, measurable, attainable, relevant, time-limited goal framework',
+         'CBT for depression/anxiety, DBT for BPD, CPT for PTSD & more',
+         'Six levels 0.5–4, six assessment dimensions, SUD treatment placement',
+         '6 steps: warning signs, coping strategies, support contacts & crisis resources',
+         'Integrated treatment, MICA/CAMI, sequential vs. parallel vs. integrated care',
+         'Clinical stability, goal attainment, step-down planning & aftercare'],
+        // domain-3 — Ethics & Practice (6 sections)
+        ['Nine sections A–I, 2014 edition; structure, purpose & key provisions',
+         'Tarasoff, duty to warn, mandatory reporting, HIPAA basics & exceptions',
+         'Elements of valid consent, competency, minor rights & right to refuse',
+         'Dual roles, power differential, sexual misconduct & boundary violations',
+         'Supervisor models & roles, licensure requirements, professional identity',
+         'Systematic models, ACA 2014 standards, telehealth competence & consent'],
+        // domain-4 — Core Attributes (7 sections)
+        ['Empathy, unconditional positive regard, congruence — necessary & sufficient',
+         "Working alliance, Bordin's three components, rupture-repair processes",
+         'Definition, types (subjective/objective), management & ethical implications',
+         'Awareness, knowledge & skills domains; cultural self-reflection & humility',
+         'Compassion fatigue, burnout, vicarious trauma & prevention strategies',
+         'Alliance, expectations, techniques — what works across modalities',
+         'Counselor personhood as primary tool: presence, intentionality & self-awareness']
+      ];
+
+      [0,1,2,3,4].forEach(function(di) {
+        var panel = document.getElementById('domain-' + di);
+        if (!panel) return;
+        var items = Array.from(panel.querySelectorAll('.acc-item'));
+        var sums = summaries[di];
+
+        // Insert Expand all / Collapse all controls before the first section
+        if (items.length > 0) {
+          var ctrl = document.createElement('div');
+          ctrl.className = 'domain-controls';
+          ctrl.innerHTML =
+            '<button class="domain-ctrl-btn" onclick="expandAllSections(this.closest(\'.domain-panel\'))" aria-label="Expand all sections">Expand all</button>' +
+            '<button class="domain-ctrl-btn" onclick="collapseAllSections(this.closest(\'.domain-panel\'))" aria-label="Collapse all sections">Collapse all</button>';
+          items[0].parentNode.insertBefore(ctrl, items[0]);
+        }
+
+        items.forEach(function(item, i) {
+          // Stable ID for deep linking and search auto-expand
+          item.id = 'd' + di + '-s' + (i + 1);
+
+          var btn = item.querySelector('.acc-btn');
+          var content = item.querySelector('.acc-content');
+
+          // Default every section to collapsed
+          if (btn && content && btn.classList.contains('open')) {
+            btn.classList.remove('open');
+            btn.setAttribute('aria-expanded', 'false');
+            content.classList.remove('open');
+            content.style.maxHeight = '0';
+            var icon = btn.querySelector('.acc-icon');
+            if (icon) icon.style.transform = '';
+          }
+
+          // Inject one-line summary into the button
+          if (btn && sums && sums[i]) {
+            var outerSpan = btn.querySelector('span');
+            if (!outerSpan) return;
+            outerSpan.style.alignItems = 'flex-start';
+            // Collect title text nodes and remove them
+            var titleText = '';
+            var toRemove = [];
+            outerSpan.childNodes.forEach(function(node) {
+              if (node.nodeType === Node.TEXT_NODE && node.textContent.trim()) {
+                titleText += node.textContent.trim();
+                toRemove.push(node);
+              }
+            });
+            toRemove.forEach(function(n) { n.parentNode.removeChild(n); });
+            // Rebuild as title + summary group
+            var group = document.createElement('span');
+            group.className = 'acc-title-group';
+            var titleEl = document.createElement('span');
+            titleEl.textContent = titleText;
+            var sumEl = document.createElement('span');
+            sumEl.className = 'acc-summary';
+            sumEl.textContent = sums[i];
+            group.appendChild(titleEl);
+            group.appendChild(sumEl);
+            outerSpan.appendChild(group);
+          }
+        });
+      });
+    }
+
     // initialise any accordions that start open
     document.addEventListener('DOMContentLoaded', function() {
+      if (typeof initDomainAccordions === 'function') initDomainAccordions();
       document.querySelectorAll('.acc-content.open').forEach(function(el) {
         el.style.maxHeight = 'none';
       });
