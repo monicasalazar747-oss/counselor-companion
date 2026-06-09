@@ -527,10 +527,15 @@
         <button class="nav-link" id="nav-exams" onclick="showView('exam-select')">Practice Exams</button>
         <button class="nav-link" id="nav-reference" onclick="showView('reference')">Reference Tools</button>
       </div>
-      <!-- Hamburger (mobile) -->
-      <button class="mobile-menu-btn" id="mobile-menu-btn" onclick="toggleMobileNav()" aria-label="Toggle menu" aria-expanded="false">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-      </button>
+      <!-- Search + hamburger (right side) -->
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button class="search-nav-btn" onclick="openSearch()" aria-label="Search site" title="Search (press /)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        <button class="mobile-menu-btn" id="mobile-menu-btn" onclick="toggleMobileNav()" aria-label="Toggle menu" aria-expanded="false">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
     </div>
   </nav>
 
@@ -541,6 +546,23 @@
       <button class="mobile-nav-item" id="mnav-study" onclick="showView('study'); closeMobileNav()">Study Materials</button>
       <button class="mobile-nav-item" id="mnav-exams" onclick="showView('exam-select'); closeMobileNav()">Practice Exams</button>
       <button class="mobile-nav-item" id="mnav-reference" onclick="showView('reference'); closeMobileNav()">Reference Tools</button>
+    </div>
+  </div>
+
+  <!-- ══════════ GLOBAL SEARCH OVERLAY ══════════ -->
+  <div id="search-overlay" style="display:none;" onclick="handleSearchOverlayClick(event)">
+    <div style="max-width:640px; margin:68px auto 0; padding:12px 16px;" onclick="event.stopPropagation()">
+      <div class="sr-box">
+        <!-- Input row -->
+        <div class="sr-input-row">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(26,74,68,0.45)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input id="global-search-input" type="text" placeholder="Search theories, disorders, ethics codes, medications…" autocomplete="off" spellcheck="false" oninput="handleSearchInput(this.value)" onkeydown="handleSearchKey(event)">
+          <button onclick="closeSearch()" style="flex-shrink:0; font-size:0.7rem; font-family:'Inter',sans-serif; padding:3px 8px; border-radius:5px; border:1px solid rgba(26,74,68,0.16); background:rgba(26,74,68,0.04); color:var(--text-light); cursor:pointer; letter-spacing:0.02em;">ESC</button>
+        </div>
+        <!-- Results -->
+        <div id="search-results"></div>
+      </div>
+      <p style="text-align:center; font-size:0.7rem; color:rgba(255,255,255,0.4); font-family:'Inter',sans-serif; margin-top:10px;">Press <kbd style="background:rgba(255,255,255,0.15); border-radius:3px; padding:1px 5px;">/</kbd> from any page to open search</p>
     </div>
   </div>
 
@@ -4383,6 +4405,32 @@
     .bm-toggle-btn.bookmarked { background: rgba(196,133,90,0.08); color: var(--amber); border-color: rgba(196,133,90,0.35); }
     .bm-toggle-btn:hover { border-color: var(--amber); color: var(--amber); }
 
+    /* ── Global Search ── */
+    .search-nav-btn { display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:9px; border:1.5px solid rgba(45,125,111,0.2); background:none; cursor:pointer; color:var(--teal-700); transition:background 0.15s ease, border-color 0.15s ease; flex-shrink:0; }
+    .search-nav-btn:hover { background:var(--teal-50); border-color:rgba(45,125,111,0.35); }
+    #search-overlay { position:fixed; inset:0; z-index:9999; background:rgba(8,22,20,0.62); backdrop-filter:blur(5px); -webkit-backdrop-filter:blur(5px); }
+    .sr-box { background:#fff; border-radius:18px; box-shadow:0 24px 80px rgba(0,0,0,0.22), 0 0 0 1px rgba(26,74,68,0.08); overflow:hidden; }
+    .sr-input-row { display:flex; align-items:center; gap:12px; padding:15px 18px; border-bottom:1.5px solid rgba(26,74,68,0.09); }
+    #global-search-input { flex:1; border:none; outline:none; font-family:'Inter',sans-serif; font-size:1rem; color:var(--text-dark); background:transparent; min-width:0; }
+    #global-search-input::placeholder { color:rgba(26,74,68,0.35); }
+    #search-results { max-height:62vh; overflow-y:auto; padding:6px 10px 12px; }
+    .sr-empty { padding:28px 16px; text-align:center; color:var(--text-light); font-size:0.875rem; font-family:'Inter',sans-serif; }
+    .sr-hint { padding:16px 8px 4px; }
+    .sr-hint-label { font-size:0.67rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-light); font-family:'Inter',sans-serif; margin-bottom:9px; }
+    .sr-hint-chips { display:flex; flex-wrap:wrap; gap:6px; }
+    .sr-hint-chip { font-size:0.78rem; padding:4px 11px; border-radius:20px; background:var(--teal-50); color:var(--teal-700); border:1px solid rgba(45,125,111,0.18); cursor:pointer; font-family:'Inter',sans-serif; font-weight:500; transition:background 0.12s ease; }
+    .sr-hint-chip:hover { background:var(--teal-100); }
+    .sr-group { margin-bottom:4px; }
+    .sr-group-header { display:flex; align-items:center; justify-content:space-between; padding:8px 8px 3px; }
+    .sr-type-badge { font-size:0.67rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; padding:2px 9px; border-radius:20px; font-family:'Inter',sans-serif; }
+    .sr-group-count { font-size:0.7rem; color:var(--text-light); font-family:'Inter',sans-serif; }
+    .sr-item { display:block; width:100%; text-align:left; padding:9px 10px; border-radius:9px; border:none; background:none; cursor:pointer; transition:background 0.1s ease; }
+    .sr-item:hover { background:var(--teal-50); }
+    .sr-title { display:block; font-size:0.875rem; font-weight:600; color:var(--teal-900); font-family:'Inter',sans-serif; line-height:1.4; }
+    .sr-snippet { display:block; font-size:0.775rem; color:var(--text-mid); font-family:'Inter',sans-serif; margin-top:1px; line-height:1.5; }
+    .sr-item mark { background:rgba(196,133,90,0.28); color:inherit; border-radius:2px; padding:0 1px; font-style:normal; }
+    .sr-count-line { font-size:0.7rem; color:var(--text-light); font-family:'Inter',sans-serif; padding:6px 8px 2px; }
+
     /* ── SRS ── */
     .srs-btn { display: inline-flex; align-items: center; gap: 7px; font-family: 'Inter', sans-serif; font-size: 0.84rem; font-weight: 600; padding: 10px 22px; border-radius: 10px; cursor: pointer; border: 1.5px solid; transition: transform 0.12s ease, background 0.12s ease; }
     .srs-btn:hover { transform: translateY(-1px); }
@@ -4477,6 +4525,7 @@
       });
       if (typeof renderSmartPanel === 'function') renderSmartPanel();
       if (typeof refreshDueBadges === 'function') refreshDueBadges();
+      if (typeof buildSearchIndex === 'function') buildSearchIndex();
     });
 
     /* ── Theory detail data ── */
@@ -9576,6 +9625,278 @@
       document.getElementById('theory-quiz-results').style.display = 'none';
       document.getElementById('theory-quiz-start').style.display = '';
     }
+
+    /* ══════════ GLOBAL SEARCH ══════════ */
+
+    var _searchIndex = null;
+    var _searchTimer = null;
+    var _searchNavMap = [];
+
+    function _escHtml(s) {
+      return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+    function _stripTags(s) { return String(s||'').replace(/<[^>]+>/g,''); }
+
+    function buildSearchIndex() {
+      _searchIndex = [];
+
+      // ── Theories (overview + flashcard concepts) ──
+      if (typeof theories !== 'undefined') {
+        Object.entries(theories).forEach(function(entry) {
+          var id = entry[0], t = entry[1];
+          var conceptText = (t.concepts||[]).map(function(c){ return c.term+' '+_stripTags(c.def); }).join(' ');
+          _searchIndex.push({
+            type:'Theories', title:t.name,
+            body:[t.founder||'',t.philosophy||'',conceptText,...(t.techniques||[])].join(' '),
+            snippet:t.philosophy||'',
+            nav:function(){ showView('study'); showDomain(0); setTimeout(function(){ if(typeof showTheory==='function') showTheory(id); },180); }
+          });
+          (t.concepts||[]).forEach(function(c){
+            _searchIndex.push({
+              type:'Flashcards', title:c.term,
+              body:t.name+' '+_stripTags(c.def),
+              snippet:_stripTags(c.def).slice(0,120),
+              nav:function(){ if(typeof showFlashcards==='function') showFlashcards(id); }
+            });
+          });
+        });
+      }
+
+      // ── DSM-5 ──
+      if (typeof dsmData !== 'undefined') {
+        dsmData.forEach(function(d){
+          _searchIndex.push({
+            type:'DSM-5',
+            title:d.name+(d.code?' ('+d.code+')':''),
+            body:[d.code||'',d.category||'',...(d.criteria||[]),d.duration||'',...(d.specifiers||[]),d.examTip||'',...(d.diffDx||[])].join(' '),
+            snippet:(d.criteria&&d.criteria[0])||d.examTip||'',
+            nav:function(){
+              showView('reference'); showRefTool('dsm');
+              setTimeout(function(){ var el=document.getElementById('dsm-search'); if(el){el.value=d.name;if(typeof filterDSM==='function')filterDSM();} },80);
+            }
+          });
+        });
+      }
+
+      // ── ACA Ethics ──
+      if (typeof acaData !== 'undefined') {
+        acaData.forEach(function(d){
+          _searchIndex.push({
+            type:'ACA Ethics',
+            title:d.code+' — '+d.title,
+            body:[d.summary||'',...(d.provisions||[]),...(d.keyRules||[]),d.tip||''].join(' '),
+            snippet:d.summary||'',
+            nav:function(){
+              showView('reference'); showRefTool('aca');
+              setTimeout(function(){ var el=document.getElementById('aca-search'); if(el){el.value=d.code;if(typeof filterACA==='function')filterACA();} },80);
+            }
+          });
+        });
+      }
+
+      // ── Theorist Index ──
+      if (typeof theoristData !== 'undefined') {
+        theoristData.forEach(function(d){
+          _searchIndex.push({
+            type:'Theorists',
+            title:d.name+' · '+d.approach,
+            body:[d.school||'',d.approach||'',d.tagline||'',...(d.contributions||[]),...(d.techniques||[]),d.tip||''].join(' '),
+            snippet:d.tagline||'',
+            nav:function(){
+              showView('reference'); showRefTool('theorists');
+              setTimeout(function(){ var el=document.getElementById('th-search'); if(el){el.value=d.name;if(typeof filterTheorists==='function')filterTheorists();} },80);
+            }
+          });
+        });
+      }
+
+      // ── Medications ──
+      if (typeof medsData !== 'undefined') {
+        medsData.forEach(function(d){
+          _searchIndex.push({
+            type:'Medications',
+            title:d.generic+(d.category?' · '+d.category:''),
+            body:[d.brand||'',d.class||'',...(d.indications||[]),d.mechanism||'',...(d.sideEffects||[]),...(d.counselorNotes||[]),d.examTip||''].join(' '),
+            snippet:d.brand||'',
+            nav:function(){
+              showView('reference'); showRefTool('meds');
+              setTimeout(function(){ var el=document.getElementById('med-search'); if(el){el.value=d.generic.split(' ')[0];if(typeof filterMeds==='function')filterMeds();} },80);
+            }
+          });
+        });
+      }
+
+      // ── Study Domain accordion sections (DOM walk) ──
+      var domainNames = ['Counseling Skills','Intake & Assessment','Treatment Planning','Ethics & Practice','Core Attributes'];
+      [0,1,2,3,4].forEach(function(idx){
+        var panel = document.getElementById('domain-'+idx);
+        if (!panel) return;
+        panel.querySelectorAll('.acc-btn').forEach(function(btn){
+          var item = btn.closest('.acc-item');
+          if (!item) return;
+          var titleText = btn.textContent.replace(/\s+/g,' ').trim();
+          var inner = item.querySelector('.acc-inner');
+          var bodyText = inner ? _stripTags(inner.innerHTML).replace(/\s+/g,' ').trim().slice(0,600) : '';
+          (function(di, b){
+            _searchIndex.push({
+              type:'Study Domains',
+              title:titleText+' ('+domainNames[di]+')',
+              body:bodyText, snippet:bodyText.slice(0,130),
+              nav:function(){
+                showView('study'); showDomain(di);
+                setTimeout(function(){ if(!b.classList.contains('open')) b.click(); b.scrollIntoView({behavior:'smooth',block:'start'}); },200);
+              }
+            });
+          })(idx, btn);
+        });
+      });
+    }
+
+    function _showSearchHint() {
+      var el = document.getElementById('search-results');
+      if (!el) return;
+      el.innerHTML = '<div class="sr-hint">'
+        +'<div class="sr-hint-label">Try searching for</div>'
+        +'<div class="sr-hint-chips">'
+        +'<span class="sr-hint-chip" onclick="populateSearch(\'transference\')">transference</span>'
+        +'<span class="sr-hint-chip" onclick="populateSearch(\'ADHD\')">ADHD</span>'
+        +'<span class="sr-hint-chip" onclick="populateSearch(\'informed consent\')">informed consent</span>'
+        +'<span class="sr-hint-chip" onclick="populateSearch(\'SSRIs\')">SSRIs</span>'
+        +'<span class="sr-hint-chip" onclick="populateSearch(\'CBT\')">CBT</span>'
+        +'<span class="sr-hint-chip" onclick="populateSearch(\'Maslow\')">Maslow</span>'
+        +'<span class="sr-hint-chip" onclick="populateSearch(\'confidentiality\')">confidentiality</span>'
+        +'<span class="sr-hint-chip" onclick="populateSearch(\'DBT\')">DBT</span>'
+        +'</div></div>';
+    }
+
+    function openSearch() {
+      var overlay = document.getElementById('search-overlay');
+      if (!overlay) return;
+      overlay.style.display = '';
+      if (!_searchIndex) buildSearchIndex();
+      var input = document.getElementById('global-search-input');
+      if (input) { input.value = ''; setTimeout(function(){ input.focus(); }, 60); }
+      _showSearchHint();
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSearch() {
+      var overlay = document.getElementById('search-overlay');
+      if (overlay) overlay.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+
+    function handleSearchOverlayClick(e) {
+      if (e.target === document.getElementById('search-overlay')) closeSearch();
+    }
+
+    function populateSearch(term) {
+      var input = document.getElementById('global-search-input');
+      if (!input) return;
+      input.value = term; input.focus();
+      handleSearchInput(term);
+    }
+
+    function handleSearchInput(val) {
+      clearTimeout(_searchTimer);
+      if (!val || val.trim().length < 2) { _showSearchHint(); return; }
+      _searchTimer = setTimeout(function(){
+        if (!_searchIndex) buildSearchIndex();
+        var results = _runSearch(val.trim());
+        document.getElementById('search-results').innerHTML = _renderSearchResults(results, val.trim());
+      }, 130);
+    }
+
+    function handleSearchKey(e) {
+      if (e.key === 'Escape') { closeSearch(); return; }
+      if (e.key === 'Enter') { var first = document.querySelector('.sr-item'); if (first) first.click(); }
+    }
+
+    function _runSearch(query) {
+      if (!query || !_searchIndex) return [];
+      var words = query.toLowerCase().split(/\s+/).filter(function(w){ return w.length > 1; });
+      if (!words.length) return [];
+      var results = [];
+      _searchIndex.forEach(function(item, idx){
+        var score = 0;
+        var tl = item.title.toLowerCase();
+        var bl = item.body.toLowerCase();
+        words.forEach(function(w){
+          var re = new RegExp(w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g');
+          if (tl === w) score += 5;
+          else if (tl.startsWith(w)) score += 4;
+          else if (tl.includes(w)) score += 3;
+          score += Math.min((bl.match(re)||[]).length, 3);
+        });
+        if (score > 0) results.push(Object.assign({}, item, {_mapIdx:results.length, score:score}));
+      });
+      results.sort(function(a,b){ return b.score - a.score; });
+      results = results.slice(0, 30);
+      _searchNavMap = results;
+      return results;
+    }
+
+    function executeSearchNav(pos) {
+      var item = _searchNavMap[pos];
+      if (item && item.nav) { closeSearch(); item.nav(); }
+    }
+
+    function _hlMatch(text, query) {
+      var out = _escHtml(text);
+      query.split(/\s+/).filter(function(w){ return w.length>1; }).forEach(function(w){
+        var re = new RegExp('('+w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
+        out = out.replace(re,'<mark>$1</mark>');
+      });
+      return out;
+    }
+
+    function _renderSearchResults(results, query) {
+      if (!results.length) {
+        return '<div class="sr-empty">No results for "<strong>'+_escHtml(query)+'</strong>" — try a shorter term or different keyword.</div>';
+      }
+      var TYPE_ORDER = ['Study Domains','Theories','Flashcards','DSM-5','ACA Ethics','Theorists','Medications'];
+      var TYPE_COLORS = {
+        'Study Domains':{ bg:'rgba(45,125,111,0.1)', c:'var(--teal-700)' },
+        'Theories':     { bg:'rgba(26,74,68,0.09)', c:'#1a4a44' },
+        'Flashcards':   { bg:'rgba(45,125,111,0.07)', c:'#2d7d6f' },
+        'DSM-5':        { bg:'rgba(90,70,130,0.1)', c:'#5A4682' },
+        'ACA Ethics':   { bg:'rgba(60,110,160,0.1)', c:'#3C6EA0' },
+        'Theorists':    { bg:'rgba(196,133,90,0.14)', c:'var(--amber)' },
+        'Medications':  { bg:'rgba(192,82,82,0.1)', c:'#C05252' }
+      };
+      var groups = {};
+      results.forEach(function(r, pos){
+        if (!groups[r.type]) groups[r.type] = [];
+        groups[r.type].push({r:r, pos:pos});
+      });
+      var html = '<div class="sr-count-line">'+results.length+' result'+(results.length===1?'':'s')+'</div>';
+      TYPE_ORDER.forEach(function(type){
+        if (!groups[type]) return;
+        var col = TYPE_COLORS[type] || {bg:'rgba(26,74,68,0.08)',c:'var(--text-mid)'};
+        html += '<div class="sr-group"><div class="sr-group-header">'
+          +'<span class="sr-type-badge" style="background:'+col.bg+';color:'+col.c+';">'+_escHtml(type)+'</span>'
+          +'<span class="sr-group-count">'+groups[type].length+'</span>'
+          +'</div>';
+        groups[type].forEach(function(obj){
+          var r = obj.r, pos = obj.pos;
+          var snipRaw = _stripTags(r.snippet||'');
+          var snip = snipRaw.length > 130 ? snipRaw.slice(0,130)+'…' : snipRaw;
+          html += '<button class="sr-item" onclick="executeSearchNav('+pos+')">'
+            +'<span class="sr-title">'+_hlMatch(r.title, query)+'</span>'
+            +(snip ? '<span class="sr-snippet">'+_hlMatch(snip, query)+'</span>' : '')
+            +'</button>';
+        });
+        html += '</div>';
+      });
+      return html;
+    }
+
+    /* ── Global keyboard shortcut: "/" opens search ── */
+    document.addEventListener('keydown', function(e) {
+      if (e.key === '/' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+        e.preventDefault(); openSearch();
+      }
+    });
 
     /* ── Navbar scroll state ── */
     (function() {
