@@ -558,6 +558,65 @@
       border-color: rgba(45,125,111,0.32) !important;
       transform: translateY(-3px) !important;
     }
+
+    /* ── Settings modal ── */
+    .settings-overlay {
+      position: fixed; inset: 0; z-index: 9000;
+      background: rgba(8,24,22,0.45); backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .settings-overlay.open { opacity: 1; pointer-events: all; }
+    .settings-modal {
+      background: #fff; border-radius: 20px; width: 100%; max-width: 480px;
+      box-shadow: 0 8px 40px rgba(26,74,68,0.18), 0 2px 8px rgba(26,74,68,0.08);
+      padding: 32px; margin: 16px;
+      transform: translateY(8px); transition: transform 0.22s ease;
+    }
+    .settings-overlay.open .settings-modal { transform: translateY(0); }
+    .settings-close-btn {
+      background: none; border: none; cursor: pointer;
+      width: 36px; height: 36px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-mid); flex-shrink: 0;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .settings-close-btn:hover { background: rgba(26,74,68,0.07); color: var(--teal-700); }
+    .settings-close-btn:focus-visible { outline: 2px solid var(--teal-500); outline-offset: 2px; }
+    .settings-gear-btn {
+      background: none; border: none; cursor: pointer;
+      width: 36px; height: 36px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-mid); flex-shrink: 0;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .settings-gear-btn:hover { background: rgba(26,74,68,0.07); color: var(--teal-700); }
+    .settings-gear-btn:focus-visible { outline: 2px solid var(--teal-500); outline-offset: 2px; }
+    .settings-gear-btn:active { transform: rotate(30deg); }
+    .settings-danger-zone {
+      border: 1.5px solid rgba(192,82,82,0.2); border-radius: 12px;
+      padding: 16px 18px; background: rgba(192,82,82,0.03);
+    }
+    .settings-reset-btn {
+      background: #C05252; color: #fff; border: none; cursor: pointer;
+      font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 600;
+      padding: 9px 20px; border-radius: 8px;
+      transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+      box-shadow: 0 2px 8px rgba(192,82,82,0.25);
+    }
+    .settings-reset-btn:hover { background: #a83a3a; box-shadow: 0 4px 12px rgba(192,82,82,0.35); }
+    .settings-reset-btn:active { transform: translateY(1px); box-shadow: none; }
+    .settings-reset-btn:focus-visible { outline: 2px solid #C05252; outline-offset: 2px; }
+    .settings-export-btn {
+      background: var(--sage-bg); color: var(--teal-700); cursor: pointer;
+      border: 1.5px solid rgba(45,125,111,0.2);
+      font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 600;
+      padding: 9px 20px; border-radius: 8px;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+    .settings-export-btn:hover { background: var(--teal-100); border-color: rgba(45,125,111,0.35); }
+    .settings-export-btn:focus-visible { outline: 2px solid var(--teal-500); outline-offset: 2px; }
   </style>
 </head>
 <body>
@@ -589,12 +648,60 @@
         <button class="search-nav-btn" onclick="openSearch()" aria-label="Search site" title="Search (press /)">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </button>
+        <button class="settings-gear-btn" onclick="openSettings()" aria-label="Settings" title="Settings">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
         <button class="mobile-menu-btn" id="mobile-menu-btn" onclick="toggleMobileNav()" aria-label="Toggle menu" aria-expanded="false">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
         </button>
       </div>
     </div>
   </nav>
+
+  <!-- Settings Modal -->
+  <div class="settings-overlay" id="settings-overlay" role="dialog" aria-modal="true" aria-labelledby="settings-title" onclick="if(event.target===this)closeSettings()">
+    <div class="settings-modal">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:24px;">
+        <h2 id="settings-title" style="font-family:'Playfair Display',serif; font-size:1.35rem; font-weight:700; color:var(--teal-900); margin:0; letter-spacing:-0.02em;">Settings</h2>
+        <button onclick="closeSettings()" class="settings-close-btn" aria-label="Close settings">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <!-- Stats snapshot -->
+      <div style="background:var(--sage-bg); border-radius:12px; padding:14px 16px; margin-bottom:24px; display:flex; gap:24px; flex-wrap:wrap;">
+        <div>
+          <div id="sset-total" style="font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; color:var(--teal-900); line-height:1;">0</div>
+          <div style="font-size:0.7rem; color:var(--text-light); margin-top:3px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">Questions answered</div>
+        </div>
+        <div>
+          <div id="sset-accuracy" style="font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; color:var(--teal-900); line-height:1;">—</div>
+          <div style="font-size:0.7rem; color:var(--text-light); margin-top:3px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">Accuracy</div>
+        </div>
+        <div>
+          <div id="sset-streak" style="font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; color:var(--teal-900); line-height:1;">0</div>
+          <div style="font-size:0.7rem; color:var(--text-light); margin-top:3px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">Day streak</div>
+        </div>
+        <div>
+          <div id="sset-cards" style="font-family:'Playfair Display',serif; font-size:1.5rem; font-weight:700; color:var(--teal-900); line-height:1;">0</div>
+          <div style="font-size:0.7rem; color:var(--text-light); margin-top:3px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">Flashcard reviews</div>
+        </div>
+      </div>
+
+      <!-- Export -->
+      <p style="font-size:0.875rem; color:var(--text-mid); line-height:1.6; margin:0 0 12px;">Export a full backup of your progress history as JSON.</p>
+      <button class="settings-export-btn" onclick="exportProgress()" style="margin-bottom:20px;">↓ Export progress JSON</button>
+
+      <hr style="border:none; border-top:1px solid rgba(26,74,68,0.08); margin-bottom:20px;">
+
+      <!-- Danger zone -->
+      <div class="settings-danger-zone">
+        <p style="font-size:0.875rem; font-weight:700; color:#C05252; margin:0 0 6px;">Reset my progress</p>
+        <p style="font-size:0.82rem; color:var(--text-mid); line-height:1.6; margin:0 0 14px;">Permanently deletes all quiz attempts, flashcard reviews, and tracked stats. Your SRS review schedule (spaced repetition boxes) is stored separately and is not affected. This cannot be undone.</p>
+        <button class="settings-reset-btn" onclick="confirmResetProgress()">Reset everything</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Mobile nav dropdown -->
   <div class="mobile-nav-dropdown" id="mobile-nav-dropdown">
@@ -10477,6 +10584,18 @@
       clearInterval(examTimerInterval);
       examResultsDeck = examDeck;
       updateStats(examDeck, examAnswers);
+      examDeck.forEach(function(q, i) {
+        if (examAnswers[i] < 0) return; // skipped — don't record unanswered
+        StudyProgress.recordQuizAttempt({
+          question_id: String(q.id),
+          source: 'domain_exam',
+          domain: q.domain,
+          topic_tags: [q.domain],
+          answer_given: examAnswers[i],
+          correct_answer: q.ans,
+          is_correct: examAnswers[i] === q.ans
+        });
+      });
       renderResults();
       showView('exam-results');
     }
@@ -10718,6 +10837,161 @@
       { theory:'MI', q:'Decisional balance in MI involves exploring:', opts:['The financial costs of the client\'s problem behavior','The pros and cons of changing AND the pros and cons of staying the same','The client\'s readiness on a 1–10 scale','The cultural factors influencing the client\'s ambivalence'], ans:1, exp:'Decisional balance explores all four cells: benefits of current behavior, costs of current behavior, benefits of change, and costs of change. In MI it is used selectively — primarily in contemplation — to evoke change talk, not as a neutral exercise.' },
     ];
 
+    /* ══════════ StudyProgress — Client-Side Data Layer ══════════
+       Schema v1. All quiz/flashcard activity flows through this module.
+       Nothing outside this module reads or writes localStorage directly
+       for progress tracking.
+
+       localStorage key: lpc_progress_v1
+
+       To extend the schema later, bump CURRENT_VERSION and add a
+       migration function to MIGRATIONS keyed by the NEW version number.
+       Migrations run forward automatically on every _load() call.
+    ══════════════════════════════════════════════════════════════ */
+    const StudyProgress = (function() {
+      const KEY = 'lpc_progress_v1';
+      const CURRENT_VERSION = 1;
+
+      // Add future schema migrations here: { 2: (data) => { ...patch data...; data.schema_version = 2; return data; } }
+      const MIGRATIONS = {};
+
+      function _blank() {
+        return { schema_version: CURRENT_VERSION, created_at: Date.now(), updated_at: Date.now(), quiz_attempts: [], flashcard_reviews: [] };
+      }
+
+      function _migrate(data) {
+        let v = data.schema_version || 1;
+        while (v < CURRENT_VERSION) { const fn = MIGRATIONS[v + 1]; if (fn) data = fn(data); v++; }
+        return data;
+      }
+
+      function _load() {
+        try {
+          const raw = localStorage.getItem(KEY);
+          if (!raw) return _blank();
+          let d = JSON.parse(raw);
+          if (d.schema_version !== CURRENT_VERSION) d = _migrate(d);
+          return d;
+        } catch(e) { return _blank(); }
+      }
+
+      function _save(data) {
+        try { data.updated_at = Date.now(); localStorage.setItem(KEY, JSON.stringify(data)); } catch(e) {}
+      }
+
+      function _uid(prefix) {
+        return prefix + '_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+      }
+
+      // ── Public API ──────────────────────────────────────────
+
+      /**
+       * recordQuizAttempt({ question_id, source, domain, topic_tags?, answer_given, correct_answer, is_correct, time_ms? })
+       * source: 'theory_quiz' | 'domain_exam' | 'ncmhce'
+       */
+      function recordQuizAttempt(opts) {
+        const data = _load();
+        data.quiz_attempts.push({
+          id: _uid('qa'),
+          question_id: opts.question_id,
+          source: opts.source,
+          domain: opts.domain,
+          topic_tags: opts.topic_tags || [],
+          answer_given: opts.answer_given,
+          correct_answer: opts.correct_answer,
+          is_correct: !!opts.is_correct,
+          time_ms: opts.time_ms || null,
+          ts: Date.now()
+        });
+        _save(data);
+      }
+
+      /**
+       * recordFlashcardReview({ card_id, domain, topic_tags?, rating })
+       * rating: 'got_it' | 'almost' | 'missed'
+       */
+      function recordFlashcardReview(opts) {
+        const data = _load();
+        data.flashcard_reviews.push({
+          id: _uid('fr'),
+          card_id: opts.card_id,
+          domain: opts.domain,
+          topic_tags: opts.topic_tags || [],
+          rating: opts.rating,
+          ts: Date.now()
+        });
+        _save(data);
+      }
+
+      /** Returns overall stats: total_questions, correct, accuracy, total_flashcards, streak_days, last_active */
+      function getStats() {
+        const data = _load();
+        const qa = data.quiz_attempts, fr = data.flashcard_reviews;
+        const total = qa.length, correct = qa.filter(a => a.is_correct).length;
+        const allTs = qa.concat(fr).map(r => r.ts);
+        const daySet = new Set(allTs.map(ts => new Date(ts).toISOString().split('T')[0]));
+        let streak = 0;
+        const d = new Date();
+        while (daySet.has(d.toISOString().split('T')[0])) { streak++; d.setDate(d.getDate() - 1); }
+        return {
+          total_questions: total,
+          correct: correct,
+          accuracy: total > 0 ? Math.round((correct / total) * 1000) / 1000 : null,
+          total_flashcards: fr.length,
+          streak_days: streak,
+          last_active: allTs.length ? Math.max.apply(null, allTs) : null
+        };
+      }
+
+      /** Returns per-domain stats array, sorted by total activity descending */
+      function getStatsByDomain() {
+        const data = _load(), map = {};
+        function ensure(domain) {
+          if (!map[domain]) map[domain] = { domain: domain, attempted: 0, correct: 0, accuracy: null, flashcard_reviews: 0, got_it: 0 };
+        }
+        data.quiz_attempts.forEach(a => {
+          ensure(a.domain); map[a.domain].attempted++; if (a.is_correct) map[a.domain].correct++;
+        });
+        data.flashcard_reviews.forEach(r => {
+          ensure(r.domain); map[r.domain].flashcard_reviews++; if (r.rating === 'got_it') map[r.domain].got_it++;
+        });
+        return Object.values(map).map(function(d) {
+          return Object.assign({}, d, { accuracy: d.attempted > 0 ? Math.round((d.correct / d.attempted) * 1000) / 1000 : null });
+        }).sort(function(a, b) { return (b.attempted + b.flashcard_reviews) - (a.attempted + a.flashcard_reviews); });
+      }
+
+      /** Returns top-n weakest domains (min 5 attempts, lowest accuracy first) */
+      function getWeakAreas(n) {
+        return getStatsByDomain().filter(function(d) { return d.attempted >= 5; })
+          .sort(function(a, b) { return a.accuracy - b.accuracy; }).slice(0, n || 5);
+      }
+
+      /** Returns activity counts by date for the last `days` days */
+      function getRecentActivity(days) {
+        days = days || 7;
+        const data = _load(), counts = {}, cutoff = Date.now() - days * 86400000;
+        data.quiz_attempts.concat(data.flashcard_reviews).forEach(function(r) {
+          if (r.ts >= cutoff) { const d = new Date(r.ts).toISOString().split('T')[0]; counts[d] = (counts[d] || 0) + 1; }
+        });
+        const dates = [];
+        for (let i = days - 1; i >= 0; i--) {
+          const dt = new Date(); dt.setDate(dt.getDate() - i); dates.push(dt.toISOString().split('T')[0]);
+        }
+        return { dates: dates, counts_by_date: counts };
+      }
+
+      /** Wipes all progress history. SRS scheduling data (cc_srs) is unaffected. */
+      function resetProgress() { localStorage.removeItem(KEY); }
+
+      /** Returns the full data object as a formatted JSON string for download. */
+      function exportJSON() { return JSON.stringify(_load(), null, 2); }
+
+      /** Escape hatch for migrations only — do not use in feature code. */
+      function _getRaw() { return _load(); }
+
+      return { recordQuizAttempt, recordFlashcardReview, getStats, getStatsByDomain, getWeakAreas, getRecentActivity, resetProgress, exportJSON, _getRaw };
+    })();
+
     /* ══════════ SRS — Leitner Box Engine ══════════
        5 boxes. Correct → next box. Wrong → box 1.
        Intervals (days): box1=1, box2=2, box3=4, box4=8, box5=16
@@ -10837,6 +11111,12 @@
       if (!card) return;
       const id = SRS.cardId(card);
       const result = SRS.update('fc', id, correct);
+      StudyProgress.recordFlashcardReview({
+        card_id: id,
+        domain: card.theory || 'Flashcard',
+        topic_tags: [card.type, card.term].filter(Boolean),
+        rating: correct ? 'got_it' : 'missed'
+      });
       const label = document.getElementById('fc-srs-box-label');
       if (label) {
         const boxIdx = result.box - 1;
@@ -10932,6 +11212,15 @@
       tqTheoryMap[q.theory].t++;
       if (isCorrect) tqTheoryMap[q.theory].c++;
       if (q._id) SRS.update('quiz', q._id, isCorrect);
+      StudyProgress.recordQuizAttempt({
+        question_id: q._id || ('tq_unknown_' + tqIndex),
+        source: 'theory_quiz',
+        domain: q.theory || 'Theory',
+        topic_tags: [q.theory].filter(Boolean),
+        answer_given: chosen,
+        correct_answer: q.ans,
+        is_correct: isCorrect
+      });
 
       q.opts.forEach((_,i) => {
         const btn = document.getElementById(`tq-opt-${i}`);
@@ -11290,6 +11579,48 @@
       }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
       document.querySelectorAll('.fade-up').forEach(function(el) { observer.observe(el); });
     })();
+
+    /* ── Settings modal ── */
+    function openSettings() {
+      const s = StudyProgress.getStats();
+      document.getElementById('sset-total').textContent = s.total_questions;
+      document.getElementById('sset-accuracy').textContent = s.accuracy !== null ? Math.round(s.accuracy * 100) + '%' : '—';
+      document.getElementById('sset-streak').textContent = s.streak_days;
+      document.getElementById('sset-cards').textContent = s.total_flashcards;
+      document.getElementById('settings-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSettings() {
+      document.getElementById('settings-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function confirmResetProgress() {
+      if (confirm('Reset all study progress?\n\nThis permanently deletes your attempt history and tracked stats. Your SRS review schedule is not affected.\n\nThis cannot be undone.')) {
+        StudyProgress.resetProgress();
+        localStorage.removeItem('lpcWeakStats'); // also clear legacy domain stats
+        closeSettings();
+        renderSmartPanel();
+      }
+    }
+
+    function exportProgress() {
+      const json = StudyProgress.exportJSON();
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'lpc-study-progress-' + new Date().toISOString().split('T')[0] + '.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && document.getElementById('settings-overlay').classList.contains('open')) closeSettings();
+    });
   </script>
 
 </body>
