@@ -729,6 +729,20 @@
         </div>
       </div>
 
+      <!-- Confidence prompts toggle -->
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:20px;">
+        <div>
+          <p style="font-size:0.875rem; font-weight:600; color:var(--teal-900); margin:0 0 3px;">Confidence prompts</p>
+          <p style="font-size:0.78rem; color:var(--text-mid); margin:0; line-height:1.5;">Rate Sure / Unsure / Guessed before answering. Surfaces false-confidence gaps in your dashboard.</p>
+        </div>
+        <label class="toggle-switch" style="margin-left:8px;">
+          <input type="checkbox" id="settings-conf-toggle" onchange="setConfidenceEnabled(this.checked)" checked>
+          <span class="toggle-knob"></span>
+        </label>
+      </div>
+
+      <hr style="border:none; border-top:1px solid rgba(26,74,68,0.08); margin-bottom:20px;">
+
       <!-- Export -->
       <p style="font-size:0.875rem; color:var(--text-mid); line-height:1.6; margin:0 0 12px;">Export a full backup of your progress history as JSON.</p>
       <button class="settings-export-btn" onclick="exportProgress()" style="margin-bottom:20px;">↓ Export progress JSON</button>
@@ -3598,7 +3612,18 @@
               <span id="tq-num" style="font-size:0.72rem; font-weight:700; color:var(--text-light); text-transform:uppercase; letter-spacing:0.05em; font-family:'Inter',sans-serif;"></span>
               <span id="tq-theory-badge" style="font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; padding:2px 9px; border-radius:20px; background:var(--teal-50); color:var(--teal-700); border:1px solid rgba(45,125,111,0.15); font-family:'Inter',sans-serif;"></span>
             </div>
-            <p id="tq-question" style="font-size:0.9875rem; font-weight:600; color:var(--teal-900); line-height:1.65; margin-bottom:18px;"></p>
+            <p id="tq-question" style="font-size:0.9875rem; font-weight:600; color:var(--teal-900); line-height:1.65; margin-bottom:12px;"></p>
+
+            <!-- Confidence prompt -->
+            <div id="tq-conf-row" style="display:none; margin-bottom:14px;">
+              <p style="font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-light); margin-bottom:7px; font-family:'Inter',sans-serif;">How confident are you?</p>
+              <div style="display:flex; gap:7px; flex-wrap:wrap;">
+                <button class="conf-pill" id="tq-conf-sure"    onclick="setTQConfidence('sure')">Sure</button>
+                <button class="conf-pill" id="tq-conf-unsure"  onclick="setTQConfidence('unsure')">Unsure</button>
+                <button class="conf-pill" id="tq-conf-guessed" onclick="setTQConfidence('guessed')">Guessed</button>
+              </div>
+            </div>
+
             <div id="tq-options" style="display:flex; flex-direction:column; gap:8px;"></div>
             <div id="tq-feedback" style="display:none; margin-top:14px; border-radius:10px; padding:13px 16px; font-size:0.83rem; line-height:1.65;"></div>
             <div style="margin-top:18px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
@@ -3959,7 +3984,18 @@
               Flag
             </button>
           </div>
-          <p id="exam-question-text" style="font-size:1rem; font-weight:500; color:var(--teal-900); line-height:1.7; margin-bottom:24px;"></p>
+          <p id="exam-question-text" style="font-size:1rem; font-weight:500; color:var(--teal-900); line-height:1.7; margin-bottom:16px;"></p>
+
+          <!-- Confidence prompt (hidden when setting off or after answer selected) -->
+          <div id="exam-conf-row" style="display:none; margin-bottom:18px;">
+            <p style="font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-light); margin-bottom:7px; font-family:'Inter',sans-serif;">How confident are you?</p>
+            <div style="display:flex; gap:7px; flex-wrap:wrap;">
+              <button class="conf-pill" id="exam-conf-sure"    onclick="setExamConfidence('sure')">Sure</button>
+              <button class="conf-pill" id="exam-conf-unsure"  onclick="setExamConfidence('unsure')">Unsure</button>
+              <button class="conf-pill" id="exam-conf-guessed" onclick="setExamConfidence('guessed')">Guessed</button>
+            </div>
+          </div>
+
           <div id="exam-options" style="display:flex; flex-direction:column; gap:10px;"></div>
         </div>
 
@@ -4140,9 +4176,21 @@
           </div>
 
           <!-- Flashcard Reviews -->
-          <div class="prog-panel">
+          <div class="prog-panel" style="margin-bottom:20px;">
             <h3 class="prog-section-title">Flashcard Reviews</h3>
             <div id="prog-fc-section">
+              <!-- Injected by renderProgressDashboard -->
+            </div>
+          </div>
+
+          <!-- False Confidence (hidden until confidence data exists) -->
+          <div id="prog-false-conf-panel" class="prog-panel" style="display:none;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px; flex-wrap:wrap;">
+              <h3 class="prog-section-title" style="margin-bottom:0;">Calibration Check</h3>
+              <span style="font-size:0.75rem; color:var(--text-light);">where confidence didn't match outcome</span>
+            </div>
+            <p style="font-size:0.78rem; color:var(--text-light); margin-bottom:18px; line-height:1.5;">Wrong when Sure = high-priority gaps. Right when Guessed = lucky — worth reviewing.</p>
+            <div id="prog-false-conf-body">
               <!-- Injected by renderProgressDashboard -->
             </div>
           </div>
@@ -5004,6 +5052,19 @@
     .srs-miss:hover { background: rgba(192,82,82,0.11); }
     .srs-almost { background: rgba(196,133,90,0.07); color: #c47e2a; border-color: rgba(196,133,90,0.28); }
     .srs-almost:hover { background: rgba(196,133,90,0.14); }
+    /* ── Confidence pills ── */
+    .conf-pill { display:inline-flex; align-items:center; font-family:'Inter',sans-serif; font-size:0.75rem; font-weight:600; padding:5px 14px; border-radius:20px; cursor:pointer; border:1.5px solid rgba(26,74,68,0.14); background:rgba(26,74,68,0.03); color:var(--text-mid); transition:background 0.12s ease, border-color 0.12s ease, color 0.12s ease; user-select:none; }
+    .conf-pill:hover { background:rgba(26,74,68,0.07); border-color:rgba(26,74,68,0.22); }
+    .conf-pill.conf-sure   { background:rgba(45,125,111,0.10); border-color:rgba(45,125,111,0.42); color:var(--teal-700); }
+    .conf-pill.conf-unsure { background:rgba(80,100,160,0.09); border-color:rgba(80,100,160,0.32); color:#5064A0; }
+    .conf-pill.conf-guessed{ background:rgba(196,133,90,0.10); border-color:rgba(196,133,90,0.38); color:#c47e2a; }
+    /* ── Toggle switch ── */
+    .toggle-switch { position:relative; display:inline-block; width:38px; height:22px; flex-shrink:0; }
+    .toggle-switch input { opacity:0; width:0; height:0; }
+    .toggle-knob { position:absolute; cursor:pointer; inset:0; background:rgba(26,74,68,0.14); border-radius:22px; transition:background 0.2s ease; }
+    .toggle-knob::before { content:''; position:absolute; width:16px; height:16px; left:3px; bottom:3px; background:#fff; border-radius:50%; transition:transform 0.2s ease; box-shadow:0 1px 3px rgba(0,0,0,0.18); }
+    .toggle-switch input:checked + .toggle-knob { background:var(--teal-700); }
+    .toggle-switch input:checked + .toggle-knob::before { transform:translateX(16px); }
     .srs-due-pill { display: inline-flex; align-items: center; gap: 4px; font-size: 0.68rem; font-weight: 700; padding: 2px 9px; border-radius: 20px; background: rgba(196,133,90,0.18); color: var(--amber); border: 1px solid rgba(196,133,90,0.3); font-family: 'Inter', sans-serif; white-space: nowrap; }
     .srs-box-track { display: flex; gap: 4px; align-items: center; }
     .srs-box-pip { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
@@ -10644,7 +10705,7 @@
     }
 
     /* ── Exam state ── */
-    let examDeck = [], examAnswers = [], examFlagged = [], examIndex = 0;
+    let examDeck = [], examAnswers = [], examFlagged = [], examConfidences = [], examIndex = 0;
     let examConfigId = '', examTimerInterval = null, examSecondsLeft = 0;
     let examResultsDeck = [];
 
@@ -10654,6 +10715,7 @@
       examConfigId = configId;
       examDeck = cfg.pick();
       examAnswers = new Array(examDeck.length).fill(-1);
+      examConfidences = new Array(examDeck.length).fill(null);
       const bm = loadBookmarks();
       examFlagged = examDeck.map(q => bm.has(q.id));
       examIndex = 0;
@@ -10727,6 +10789,30 @@
 
       const bmCount = examFlagged.filter(Boolean).length;
       document.getElementById('exam-flag-count').textContent = bmCount > 0 ? `${bmCount} bookmarked` : '';
+
+      // Confidence strip
+      const confRow = document.getElementById('exam-conf-row');
+      if (confRow) {
+        if (isConfidenceEnabled()) {
+          confRow.style.display = '';
+          const c = examConfidences[examIndex];
+          ['sure','unsure','guessed'].forEach(g => {
+            const btn = document.getElementById('exam-conf-' + g);
+            if (btn) { btn.className = 'conf-pill' + (c === g ? ' conf-' + g : ''); }
+          });
+        } else {
+          confRow.style.display = 'none';
+        }
+      }
+    }
+
+    function setExamConfidence(grade) {
+      examConfidences[examIndex] = grade;
+      // Update pill highlights in-place without full re-render
+      ['sure','unsure','guessed'].forEach(g => {
+        const btn = document.getElementById('exam-conf-' + g);
+        if (btn) btn.className = 'conf-pill' + (g === grade ? ' conf-' + g : '');
+      });
     }
 
     function selectAnswer(i) {
@@ -10774,7 +10860,8 @@
           topic_tags: [q.domain],
           answer_given: examAnswers[i],
           correct_answer: q.ans,
-          is_correct: examAnswers[i] === q.ans
+          is_correct: examAnswers[i] === q.ans,
+          confidence: examConfidences[i] || null
         });
       });
       renderResults();
@@ -11067,8 +11154,9 @@
       // ── Public API ──────────────────────────────────────────
 
       /**
-       * recordQuizAttempt({ question_id, source, domain, topic_tags?, answer_given, correct_answer, is_correct, time_ms? })
+       * recordQuizAttempt({ question_id, source, domain, topic_tags?, answer_given, correct_answer, is_correct, time_ms?, confidence? })
        * source: 'theory_quiz' | 'domain_exam' | 'ncmhce'
+       * confidence: 'sure' | 'unsure' | 'guessed' | null
        */
       function recordQuizAttempt(opts) {
         const data = _load();
@@ -11081,6 +11169,7 @@
           answer_given: opts.answer_given,
           correct_answer: opts.correct_answer,
           is_correct: !!opts.is_correct,
+          confidence: opts.confidence || null,
           time_ms: opts.time_ms || null,
           ts: Date.now()
         });
@@ -11346,7 +11435,7 @@
       showView('flashcards');
     }
 
-    let tqIndex = 0, tqScore = 0, tqDeck = [], tqAnswered = false;
+    let tqIndex = 0, tqScore = 0, tqDeck = [], tqAnswered = false, tqCurrentConfidence = null;
     const tqTheoryMap = {};
 
     function _launchTQDeck(deck) {
@@ -11377,6 +11466,7 @@
 
     function renderTheoryQuestion() {
       tqAnswered = false;
+      tqCurrentConfidence = null;
       const q = tqDeck[tqIndex];
       const total = tqDeck.length;
       document.getElementById('tq-num').textContent = `Question ${tqIndex+1} of ${total}`;
@@ -11392,11 +11482,28 @@
           <span style="font-size:0.9rem; color:var(--text-dark); line-height:1.55;">${opt}</span>
         </button>`
       ).join('');
+      // Confidence strip
+      const confRow = document.getElementById('tq-conf-row');
+      if (confRow) confRow.style.display = isConfidenceEnabled() ? '' : 'none';
+      ['sure','unsure','guessed'].forEach(g => {
+        const btn = document.getElementById('tq-conf-' + g);
+        if (btn) btn.className = 'conf-pill';
+      });
+    }
+
+    function setTQConfidence(grade) {
+      tqCurrentConfidence = grade;
+      ['sure','unsure','guessed'].forEach(g => {
+        const btn = document.getElementById('tq-conf-' + g);
+        if (btn) btn.className = 'conf-pill' + (g === grade ? ' conf-' + g : '');
+      });
     }
 
     function selectTQ(chosen) {
       if (tqAnswered) return;
       tqAnswered = true;
+      const confRow = document.getElementById('tq-conf-row');
+      if (confRow) confRow.style.display = 'none';
       const q = tqDeck[tqIndex];
       const isCorrect = chosen === q.ans;
       if (isCorrect) tqScore++;
@@ -11411,7 +11518,8 @@
         topic_tags: [q.theory].filter(Boolean),
         answer_given: chosen,
         correct_answer: q.ans,
-        is_correct: isCorrect
+        is_correct: isCorrect,
+        confidence: tqCurrentConfidence
       });
 
       q.opts.forEach((_,i) => {
@@ -12055,7 +12163,83 @@
           + '<div style="height:100%; width:' + missedPct + '%; background:#C05252; border-radius:0 5px 5px 0; transition:width 0.7s ease;"></div>'
           + '</div>'
           + (frDomainRows.length ? '<p style="font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--text-light); margin-bottom:8px;">By Theory</p><div style="border-top:1px solid rgba(26,74,68,0.08);">' + frDomainRows + '</div>' : '');
+
+      // ── False Confidence ──
+      var nceMap = {};
+      nceBank.forEach(function(q) { nceMap[String(q.id)] = q; });
+
+      var withConf = rawData.quiz_attempts.filter(function(a) { return a.confidence !== null && a.confidence !== undefined; });
+      // Wrong but rated Sure — highest priority gaps
+      var wrongSure = withConf.filter(function(a) { return !a.is_correct && a.confidence === 'sure'; });
+      // Right but Guessed — lucky, worth reviewing
+      var rightGuessed = withConf.filter(function(a) { return a.is_correct && a.confidence === 'guessed'; });
+
+      var falseConfPanel = document.getElementById('prog-false-conf-panel');
+      var falseConfBody = document.getElementById('prog-false-conf-body');
+      if (!falseConfPanel || !falseConfBody) return;
+
+      if (withConf.length === 0) {
+        falseConfPanel.style.display = 'none';
+        return;
+      }
+      falseConfPanel.style.display = '';
+
+      function confItemHtml(a, colorClass, labelText) {
+        var q = nceMap[a.question_id];
+        var qPreview = q ? q.q.slice(0, 72) + (q.q.length > 72 ? '…' : '') : a.question_id;
+        var domainLabel = (DOMAIN_LABELS && DOMAIN_LABELS[a.domain]) ? DOMAIN_LABELS[a.domain] : a.domain;
+        var dateStr = new Date(a.ts).toLocaleDateString('en-US', {month:'short', day:'numeric'});
+        return '<div style="display:flex; align-items:flex-start; gap:12px; padding:10px 0; border-bottom:1px solid rgba(26,74,68,0.06);">'
+          + '<div style="flex:1; min-width:0;">'
+          + '<div style="font-size:0.82rem; color:var(--text-dark); line-height:1.45; margin-bottom:4px;">' + qPreview + '</div>'
+          + '<div style="display:flex; gap:7px; align-items:center; flex-wrap:wrap;">'
+          + '<span style="font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; padding:2px 8px; border-radius:10px; background:rgba(26,74,68,0.06); color:var(--text-mid);">' + domainLabel + '</span>'
+          + '<span style="font-size:0.68rem; color:var(--text-light);">' + dateStr + '</span>'
+          + '</div></div>'
+          + '<span class="conf-pill conf-' + a.confidence + '" style="cursor:default; font-size:0.7rem; padding:3px 9px; flex-shrink:0;">' + (a.confidence === 'sure' ? 'Sure' : a.confidence === 'unsure' ? 'Unsure' : 'Guessed') + '</span>'
+          + '</div>';
+      }
+
+      var html = '';
+
+      if (wrongSure.length > 0) {
+        var recent = wrongSure.slice().sort(function(a,b){return b.ts-a.ts;}).slice(0,6);
+        html += '<div style="margin-bottom:20px;">'
+          + '<div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">'
+          + '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#C05252" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
+          + '<span style="font-size:0.78rem; font-weight:700; color:#C05252;">Wrong — but rated Sure (' + wrongSure.length + ')</span>'
+          + '<span style="font-size:0.72rem; color:var(--text-light);">high priority</span>'
+          + '</div>'
+          + '<div style="border-top:1px solid rgba(192,82,82,0.12);">'
+          + recent.map(function(a){ return confItemHtml(a); }).join('')
+          + (wrongSure.length > 6 ? '<p style="font-size:0.75rem; color:var(--text-light); padding-top:8px; text-align:center;">+ ' + (wrongSure.length - 6) + ' more</p>' : '')
+          + '</div></div>';
+      }
+
+      if (rightGuessed.length > 0) {
+        var recent2 = rightGuessed.slice().sort(function(a,b){return b.ts-a.ts;}).slice(0,6);
+        html += '<div>'
+          + '<div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">'
+          + '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#c47e2a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
+          + '<span style="font-size:0.78rem; font-weight:700; color:#c47e2a;">Right — but only Guessed (' + rightGuessed.length + ')</span>'
+          + '<span style="font-size:0.72rem; color:var(--text-light);">lucky — review these</span>'
+          + '</div>'
+          + '<div style="border-top:1px solid rgba(196,133,90,0.12);">'
+          + recent2.map(function(a){ return confItemHtml(a); }).join('')
+          + (rightGuessed.length > 6 ? '<p style="font-size:0.75rem; color:var(--text-light); padding-top:8px; text-align:center;">+ ' + (rightGuessed.length - 6) + ' more</p>' : '')
+          + '</div></div>';
+      }
+
+      if (wrongSure.length === 0 && rightGuessed.length === 0) {
+        html = '<p style="font-size:0.85rem; color:var(--text-mid); font-style:italic;">No calibration gaps yet — either your confidence is well-matched, or you haven\'t rated confidence on any questions.</p>';
+      }
+
+      falseConfBody.innerHTML = html;
     }
+
+    /* ── Confidence prompt setting ── */
+    function isConfidenceEnabled() { return localStorage.getItem('lpc_conf_prompt') !== 'off'; }
+    function setConfidenceEnabled(on) { localStorage.setItem('lpc_conf_prompt', on ? 'on' : 'off'); }
 
     /* ── Settings modal ── */
     function openSettings() {
@@ -12064,6 +12248,8 @@
       document.getElementById('sset-accuracy').textContent = s.accuracy !== null ? Math.round(s.accuracy * 100) + '%' : '—';
       document.getElementById('sset-streak').textContent = s.streak_days;
       document.getElementById('sset-cards').textContent = s.total_flashcards;
+      const confToggle = document.getElementById('settings-conf-toggle');
+      if (confToggle) confToggle.checked = isConfidenceEnabled();
       document.getElementById('settings-overlay').classList.add('open');
       document.body.style.overflow = 'hidden';
     }
