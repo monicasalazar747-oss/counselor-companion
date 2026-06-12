@@ -683,6 +683,7 @@
         <button class="nav-link" id="nav-exams" onclick="showView('exam-select')">Practice Exams</button>
         <button class="nav-link" id="nav-reference" onclick="showView('reference')">Reference Tools</button>
         <button class="nav-link" id="nav-progress" onclick="showView('progress')">Progress</button>
+        <button class="nav-link" id="nav-plan" onclick="showView('study-plan')">Study Plan</button>
       </div>
       <!-- Search + hamburger (right side) -->
       <div style="display:flex; align-items:center; gap:8px;">
@@ -788,6 +789,7 @@
       <button class="mobile-nav-item" id="mnav-exams" onclick="showView('exam-select'); closeMobileNav()">Practice Exams</button>
       <button class="mobile-nav-item" id="mnav-reference" onclick="showView('reference'); closeMobileNav()">Reference Tools</button>
       <button class="mobile-nav-item" id="mnav-progress" onclick="showView('progress'); closeMobileNav()">Progress</button>
+      <button class="mobile-nav-item" id="mnav-plan" onclick="showView('study-plan'); closeMobileNav()">Study Plan</button>
     </div>
   </div>
 
@@ -4225,6 +4227,113 @@
     </div>
   </div>
 
+  <!-- ══════════ VIEW: STUDY PLAN ══════════ -->
+  <div id="view-study-plan" class="view">
+    <div style="min-height:100vh; padding-top:88px; padding-bottom:80px; background:var(--sage-bg);">
+      <div style="max-width:860px; margin:0 auto; padding:0 24px;">
+
+        <!-- Page header -->
+        <div style="margin-bottom:28px;">
+          <span class="badge" style="background:rgba(45,125,111,0.09); color:var(--teal-700); border:1px solid rgba(45,125,111,0.15); margin-bottom:12px;">Study Plan</span>
+          <div style="display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+            <div>
+              <h1 style="font-family:'Playfair Display',serif; font-size:clamp(1.6rem,3.5vw,2.1rem); font-weight:700; color:var(--teal-900); letter-spacing:-0.03em; margin-bottom:6px;">Personalized Study Plan</h1>
+              <p style="font-size:0.9rem; color:var(--text-mid); line-height:1.6;">Prioritized by domain performance and time remaining. Mark items done as you go.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- No exam date state -->
+        <div id="plan-no-date">
+          <div style="text-align:center; padding:64px 32px; background:#fff; border-radius:20px; border:1.5px solid rgba(26,74,68,0.08); box-shadow:0 2px 8px rgba(26,74,68,0.05);">
+            <div style="width:64px; height:64px; border-radius:18px; background:linear-gradient(145deg,rgba(75,166,152,0.15),rgba(45,125,111,0.08)); margin:0 auto 20px; display:flex; align-items:center; justify-content:center;">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--teal-500)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
+            <p style="font-size:1rem; font-weight:600; color:var(--teal-900); margin-bottom:8px; font-family:'Playfair Display',serif;">Set your exam date first</p>
+            <p style="font-size:0.88rem; color:var(--text-mid); line-height:1.7; margin-bottom:24px; max-width:360px; margin-left:auto; margin-right:auto;">Your study plan is built around your target exam date. Open Settings to choose NCE or NCMHCE and pick a date.</p>
+            <button class="btn-primary" onclick="openSettings()" style="font-size:0.9rem; padding:12px 28px;">Open Settings →</button>
+          </div>
+        </div>
+
+        <!-- Plan main (shown when exam date is set) -->
+        <div id="plan-main" style="display:none;">
+
+          <!-- Config panel -->
+          <div class="prog-panel" style="margin-bottom:20px;">
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:18px;">
+              <h3 class="prog-section-title" style="margin-bottom:0;">Plan settings</h3>
+              <button onclick="regenerateStudyPlan()" style="display:inline-flex; align-items:center; gap:6px; font-family:'Inter',sans-serif; font-size:0.82rem; font-weight:600; color:#fff; background:var(--teal-700); border:none; border-radius:10px; padding:9px 18px; cursor:pointer; transition:background 0.15s ease;" onmouseover="this.style.background='var(--teal-900)'" onmouseout="this.style.background='var(--teal-700)'">&#8635; Regenerate plan</button>
+            </div>
+
+            <!-- Mode selector -->
+            <div style="margin-bottom:18px;">
+              <p style="font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-light); margin-bottom:9px; font-family:'Inter',sans-serif;">Prioritization mode</p>
+              <div style="display:flex; gap:6px; flex-wrap:wrap;" id="plan-mode-pills">
+                <button class="plan-mode-pill active" data-mode="balanced" onclick="setPlanMode('balanced')">Balanced</button>
+                <button class="plan-mode-pill" data-mode="catchup" onclick="setPlanMode('catchup')">Catch-Up</button>
+                <button class="plan-mode-pill" data-mode="drill" onclick="setPlanMode('drill')">Drill Weak</button>
+                <button class="plan-mode-pill" data-mode="examwt" onclick="setPlanMode('examwt')">Exam-Weighted</button>
+                <button class="plan-mode-pill" data-mode="custom" onclick="setPlanMode('custom')">Custom</button>
+              </div>
+              <p id="plan-mode-desc" style="font-size:0.78rem; color:var(--text-mid); margin-top:9px; line-height:1.5; font-family:'Inter',sans-serif; min-height:1.4em;"></p>
+            </div>
+
+            <!-- Custom weights (shown only in custom mode) -->
+            <div id="plan-custom-weights" style="display:none; background:var(--sage-bg); border-radius:10px; padding:14px 16px; margin-bottom:18px;">
+              <p style="font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-light); margin-bottom:12px; font-family:'Inter',sans-serif;">Weights <span id="plan-weights-note" style="color:var(--teal-700); font-size:0.68rem;"></span></p>
+              <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;" class="plan-weights-grid">
+                <div>
+                  <label style="font-size:0.78rem; font-weight:600; color:var(--text-dark); display:block; margin-bottom:6px; font-family:'Inter',sans-serif;">Accuracy</label>
+                  <input type="range" id="plan-w-acc" min="0" max="100" step="5" value="50" oninput="updatePlanWeightsDisplay()" style="width:100%; accent-color:var(--teal-700); margin-bottom:4px;">
+                  <span id="plan-w-acc-val" style="font-size:0.82rem; font-weight:700; color:var(--teal-700); font-family:'Inter',sans-serif;">50%</span>
+                </div>
+                <div>
+                  <label style="font-size:0.78rem; font-weight:600; color:var(--text-dark); display:block; margin-bottom:6px; font-family:'Inter',sans-serif;">Coverage</label>
+                  <input type="range" id="plan-w-cov" min="0" max="100" step="5" value="30" oninput="updatePlanWeightsDisplay()" style="width:100%; accent-color:var(--teal-700); margin-bottom:4px;">
+                  <span id="plan-w-cov-val" style="font-size:0.82rem; font-weight:700; color:var(--teal-700); font-family:'Inter',sans-serif;">30%</span>
+                </div>
+                <div>
+                  <label style="font-size:0.78rem; font-weight:600; color:var(--text-dark); display:block; margin-bottom:6px; font-family:'Inter',sans-serif;">Exam weight</label>
+                  <input type="range" id="plan-w-wt" min="0" max="100" step="5" value="20" oninput="updatePlanWeightsDisplay()" style="width:100%; accent-color:var(--teal-700); margin-bottom:4px;">
+                  <span id="plan-w-wt-val" style="font-size:0.82rem; font-weight:700; color:var(--teal-700); font-family:'Inter',sans-serif;">20%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sessions per week -->
+            <div>
+              <p style="font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-light); margin-bottom:9px; font-family:'Inter',sans-serif;">Study sessions per week</p>
+              <div style="display:flex; gap:6px;" id="plan-spw-pills">
+                <button class="plan-mode-pill" data-spw="3" onclick="setPlanSPW(3)">3 / week</button>
+                <button class="plan-mode-pill active" data-spw="5" onclick="setPlanSPW(5)">5 / week</button>
+                <button class="plan-mode-pill" data-spw="7" onclick="setPlanSPW(7)">7 / week</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Priority breakdown (collapsible) -->
+          <div class="prog-panel" style="margin-bottom:20px;">
+            <button onclick="togglePriorityBreakdown()" style="display:flex; align-items:center; justify-content:space-between; width:100%; background:none; border:none; cursor:pointer; padding:0; text-align:left;">
+              <h3 class="prog-section-title" style="margin-bottom:0;">How priorities are calculated</h3>
+              <span id="priority-toggle-icon" style="font-size:0.75rem; color:var(--text-light); font-family:'Inter',sans-serif; flex-shrink:0; margin-left:12px;">Show &#9660;</span>
+            </button>
+            <div id="priority-breakdown-body" style="display:none; margin-top:14px;">
+              <p id="priority-formula-note" style="font-size:0.75rem; color:var(--text-light); margin-bottom:14px; line-height:1.6; font-family:'Inter',sans-serif;"></p>
+              <div id="priority-breakdown-table"></div>
+            </div>
+          </div>
+
+          <!-- Weekly plan blocks -->
+          <div id="plan-weeks"></div>
+
+          <!-- Metadata footer -->
+          <p id="plan-meta" style="font-size:0.72rem; color:var(--text-light); text-align:center; margin-top:16px; font-family:'Inter',sans-serif;"></p>
+
+        </div><!-- /plan-main -->
+      </div>
+    </div>
+  </div>
+
   <!-- ══════════ VIEW: REFERENCE TOOLS ══════════ -->
   <div id="view-reference" class="view">
     <div style="min-height:100vh; padding-top:88px; padding-bottom:80px; background:var(--sage-bg);">
@@ -5090,6 +5199,21 @@
     .toggle-knob::before { content:''; position:absolute; width:16px; height:16px; left:3px; bottom:3px; background:#fff; border-radius:50%; transition:transform 0.2s ease; box-shadow:0 1px 3px rgba(0,0,0,0.18); }
     .toggle-switch input:checked + .toggle-knob { background:var(--teal-700); }
     .toggle-switch input:checked + .toggle-knob::before { transform:translateX(16px); }
+    /* ── Study Plan ── */
+    .plan-mode-pill { display:inline-flex; align-items:center; font-family:'Inter',sans-serif; font-size:0.78rem; font-weight:600; padding:6px 14px; border-radius:20px; cursor:pointer; border:1.5px solid rgba(26,74,68,0.14); background:rgba(26,74,68,0.03); color:var(--text-mid); transition:background 0.12s ease, border-color 0.12s ease, color 0.12s ease; }
+    .plan-mode-pill:hover { background:rgba(26,74,68,0.07); border-color:rgba(26,74,68,0.22); }
+    .plan-mode-pill.active { background:var(--teal-700); border-color:var(--teal-700); color:#fff; }
+    .plan-item { display:flex; align-items:flex-start; gap:12px; padding:12px 0; border-bottom:1px solid rgba(26,74,68,0.06); }
+    .plan-item.done .plan-item-label { text-decoration:line-through; color:var(--text-light); }
+    .plan-item-cb { width:18px; height:18px; border-radius:5px; border:1.5px solid rgba(26,74,68,0.22); appearance:none; -webkit-appearance:none; cursor:pointer; flex-shrink:0; margin-top:2px; transition:background 0.12s ease, border-color 0.12s ease; background-size:12px; background-repeat:no-repeat; background-position:center; }
+    .plan-item-cb:checked { background-color:var(--teal-700); border-color:var(--teal-700); background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E"); }
+    .plan-week-header { display:flex; align-items:center; justify-content:space-between; gap:12px; cursor:pointer; padding:14px 16px; border-radius:12px; background:#fff; border:1.5px solid rgba(26,74,68,0.08); box-shadow:0 1px 4px rgba(26,74,68,0.05); transition:background 0.12s ease; width:100%; text-align:left; font-family:'Inter',sans-serif; }
+    .plan-week-header:hover { background:var(--teal-50); }
+    .plan-week-header:focus-visible { outline:2px solid var(--teal-500); outline-offset:2px; }
+    .plan-week-body { background:#fff; border:1.5px solid rgba(26,74,68,0.08); border-top:none; border-radius:0 0 12px 12px; padding:0 16px; }
+    .plan-action-btn { display:inline-flex; align-items:center; gap:5px; font-family:'Inter',sans-serif; font-size:0.76rem; font-weight:600; color:var(--teal-700); background:rgba(45,125,111,0.07); border:1.5px solid rgba(45,125,111,0.18); border-radius:8px; padding:5px 11px; cursor:pointer; transition:background 0.12s ease; white-space:nowrap; }
+    .plan-action-btn:hover { background:rgba(45,125,111,0.14); }
+    .plan-action-btn:focus-visible { outline:2px solid var(--teal-500); outline-offset:2px; }
     /* ── Exam countdown badge ── */
     .exam-countdown-badge { display:inline-flex; align-items:center; gap:5px; font-family:'Inter',sans-serif; font-size:0.75rem; font-weight:600; color:var(--teal-700); background:rgba(45,125,111,0.08); border:1.5px solid rgba(45,125,111,0.20); border-radius:20px; padding:5px 11px; cursor:pointer; transition:background 0.12s ease, border-color 0.12s ease; white-space:nowrap; }
     .exam-countdown-badge:hover { background:rgba(45,125,111,0.14); border-color:rgba(45,125,111,0.32); }
@@ -5101,7 +5225,7 @@
 
   <!-- ══════════ JS ══════════ -->
   <script>
-    const navIds = { home: 'nav-home', study: 'nav-study', 'exam-select': 'nav-exams', exam: 'nav-exams', 'exam-results': 'nav-exams', 'ncmhce-sim': 'nav-exams', 'ncmhce-dx': 'nav-exams', 'ncmhce-branch': 'nav-exams', theory: 'nav-study', flashcards: 'nav-study', 'theory-quiz': 'nav-study', reference: 'nav-reference', progress: 'nav-progress' };
+    const navIds = { home: 'nav-home', study: 'nav-study', 'exam-select': 'nav-exams', exam: 'nav-exams', 'exam-results': 'nav-exams', 'ncmhce-sim': 'nav-exams', 'ncmhce-dx': 'nav-exams', 'ncmhce-branch': 'nav-exams', theory: 'nav-study', flashcards: 'nav-study', 'theory-quiz': 'nav-study', reference: 'nav-reference', progress: 'nav-progress', 'study-plan': 'nav-plan' };
 
     function showView(name) {
       document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -5114,13 +5238,14 @@
       const navEl = document.getElementById(navIds[name]);
       if (navEl) navEl.classList.add('active');
       // sync mobile nav active state
-      const mobileMap = { home:'mnav-home', study:'mnav-study', 'exam-select':'mnav-exams', exam:'mnav-exams', 'exam-results':'mnav-exams', 'ncmhce-sim':'mnav-exams', 'ncmhce-dx':'mnav-exams', 'ncmhce-branch':'mnav-exams', theory:'mnav-study', flashcards:'mnav-study', 'theory-quiz':'mnav-study', reference:'mnav-reference', progress:'mnav-progress' };
+      const mobileMap = { home:'mnav-home', study:'mnav-study', 'exam-select':'mnav-exams', exam:'mnav-exams', 'exam-results':'mnav-exams', 'ncmhce-sim':'mnav-exams', 'ncmhce-dx':'mnav-exams', 'ncmhce-branch':'mnav-exams', theory:'mnav-study', flashcards:'mnav-study', 'theory-quiz':'mnav-study', reference:'mnav-reference', progress:'mnav-progress', 'study-plan':'mnav-plan' };
       document.querySelectorAll('.mobile-nav-item').forEach(l => l.classList.remove('active'));
       const mEl = document.getElementById(mobileMap[name]);
       if (mEl) mEl.classList.add('active');
       if (name === 'exam-select') { if (typeof renderSmartPanel === 'function') renderSmartPanel(); }
       if (name === 'theory-quiz') { if (typeof refreshDueBadges === 'function') refreshDueBadges(); }
       if (name === 'progress') { if (typeof renderProgressDashboard === 'function') renderProgressDashboard(); }
+      if (name === 'study-plan') { if (typeof renderStudyPlan === 'function') renderStudyPlan(); }
     }
 
     function showDomain(index) {
@@ -11994,6 +12119,423 @@
         + '<defs><linearGradient id="pg-grad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--teal-500)" stop-opacity="0.5"/><stop offset="100%" stop-color="var(--teal-500)" stop-opacity="0"/></linearGradient></defs>'
         + gridLines + fills + lines + singleDots + dots + xLabels.join('') + noData + passingLabel
         + '</svg>';
+    }
+
+    /* ══════════ STUDY PLAN ══════════ */
+
+    const NCE_EXAM_WEIGHTS = {
+      CHR: 0.18, HGD: 0.13, SCD: 0.11, GCG: 0.12,
+      CD:  0.12, AT:  0.12, RPE: 0.10, PCO: 0.12
+    };
+
+    const PLAN_MODES = [
+      { id: 'balanced', label: 'Balanced',      wAcc: 0.50, wCov: 0.30, wWt: 0.20, desc: 'Accuracy is the primary signal, with coverage and exam weight as secondary factors. Good for most students at any stage.' },
+      { id: 'catchup',  label: 'Catch-Up',      wAcc: 0.25, wCov: 0.55, wWt: 0.20, desc: 'Coverage-heavy — ensures untouched domains get scheduled first. Best when many areas are still unseen.' },
+      { id: 'drill',    label: 'Drill Weak',     wAcc: 0.70, wCov: 0.15, wWt: 0.15, desc: 'Accuracy-heavy — focuses sharply on your lowest-scoring domains. Best in the final weeks before the exam.' },
+      { id: 'examwt',   label: 'Exam-Weighted',  wAcc: 0.40, wCov: 0.25, wWt: 0.35, desc: 'Gives extra weight to domains with more NCE questions (CHR has ~18%). Best for maximizing score impact per session.' },
+      { id: 'custom',   label: 'Custom',         wAcc: null, wCov: null, wWt: null,  desc: 'Set your own weights for accuracy deficit, coverage deficit, and exam domain weight.' }
+    ];
+
+    const DOMAIN_EXAM_IDS = {
+      CHR: 'chr', HGD: 'hgd', SCD: 'scd', GCG: 'gcg',
+      CD: 'cd', AT: 'at', RPE: 'rpe', PCO: 'pco'
+    };
+
+    // Theory flashcard deck IDs (all under CHR)
+    const CHR_THEORY_IDS = ['psychodynamic','adlerian','existential','gestalt','behavioral','cbt','reality','sfbt','narrative','dbt','act','mi'];
+
+    var planCurrentMode = 'balanced';
+    var planCurrentSPW = 5;
+
+    /* ── Storage helpers ── */
+    function loadPlan() { try { return JSON.parse(localStorage.getItem('lpc_study_plan_v1')); } catch(e) { return null; } }
+    function savePlan(p) { localStorage.setItem('lpc_study_plan_v1', JSON.stringify(p)); }
+    function loadPlanDone() { try { return new Set(JSON.parse(localStorage.getItem('lpc_plan_done')) || []); } catch(e) { return new Set(); } }
+    function savePlanDone(s) { localStorage.setItem('lpc_plan_done', JSON.stringify([...s])); }
+
+    /* ── Config UI helpers ── */
+    function setPlanMode(mode) {
+      planCurrentMode = mode;
+      document.querySelectorAll('.plan-mode-pill[data-mode]').forEach(function(p) {
+        p.classList.toggle('active', p.dataset.mode === mode);
+      });
+      var m = PLAN_MODES.find(function(p) { return p.id === mode; });
+      var descEl = document.getElementById('plan-mode-desc');
+      if (descEl && m) descEl.textContent = m.desc;
+      var customEl = document.getElementById('plan-custom-weights');
+      if (customEl) customEl.style.display = mode === 'custom' ? '' : 'none';
+      if (mode !== 'custom' && m) _syncBreakdownWeightLabels(m.wAcc, m.wCov, m.wWt);
+    }
+
+    function setPlanSPW(n) {
+      planCurrentSPW = n;
+      document.querySelectorAll('.plan-mode-pill[data-spw]').forEach(function(p) {
+        p.classList.toggle('active', parseInt(p.dataset.spw) === n);
+      });
+    }
+
+    function updatePlanWeightsDisplay() {
+      var a = parseInt(document.getElementById('plan-w-acc').value || '50');
+      var c = parseInt(document.getElementById('plan-w-cov').value || '30');
+      var w = parseInt(document.getElementById('plan-w-wt').value || '20');
+      var total = a + c + w || 1;
+      var na = Math.round(a / total * 100), nc = Math.round(c / total * 100), nw = 100 - na - nc;
+      document.getElementById('plan-w-acc-val').textContent = na + '%';
+      document.getElementById('plan-w-cov-val').textContent = nc + '%';
+      document.getElementById('plan-w-wt-val').textContent = nw + '%';
+      var noteEl = document.getElementById('plan-weights-note');
+      if (noteEl) noteEl.textContent = '(normalized to ' + na + ' + ' + nc + ' + ' + nw + ' = 100)';
+      _syncBreakdownWeightLabels(a / total, c / total, w / total);
+    }
+
+    function _syncBreakdownWeightLabels(wAcc, wCov, wWt) {
+      var noteEl = document.getElementById('priority-formula-note');
+      if (noteEl) noteEl.textContent = 'Score = accuracy deficit × ' + wAcc.toFixed(2) + ' + coverage deficit × ' + wCov.toFixed(2) + ' + exam domain weight × ' + wWt.toFixed(2) + '. Domains sorted highest-score first.';
+    }
+
+    function togglePriorityBreakdown() {
+      var body = document.getElementById('priority-breakdown-body');
+      var icon = document.getElementById('priority-toggle-icon');
+      if (!body) return;
+      var isOpen = body.style.display !== 'none';
+      body.style.display = isOpen ? 'none' : '';
+      if (icon) icon.innerHTML = isOpen ? 'Show &#9660;' : 'Hide &#9650;';
+    }
+
+    function _getActivePlanWeights() {
+      if (planCurrentMode === 'custom') {
+        var a = parseInt(document.getElementById('plan-w-acc').value || '50');
+        var c = parseInt(document.getElementById('plan-w-cov').value || '30');
+        var w = parseInt(document.getElementById('plan-w-wt').value || '20');
+        var total = a + c + w || 1;
+        return { wAcc: a / total, wCov: c / total, wWt: w / total };
+      }
+      var m = PLAN_MODES.find(function(p) { return p.id === planCurrentMode; }) || PLAN_MODES[0];
+      return { wAcc: m.wAcc, wCov: m.wCov, wWt: m.wWt };
+    }
+
+    function _buildPriorityScores(wAcc, wCov, wWt) {
+      var rawData = StudyProgress._getRaw();
+      var nceAcc = {};
+      rawData.quiz_attempts.filter(function(a) { return a.source === 'domain_exam'; }).forEach(function(a) {
+        if (!nceAcc[a.domain]) nceAcc[a.domain] = { correct: 0, total: 0 };
+        nceAcc[a.domain].total++;
+        if (a.is_correct) nceAcc[a.domain].correct++;
+      });
+      var domainTotals = {};
+      nceBank.forEach(function(q) { domainTotals[q.domain] = (domainTotals[q.domain] || 0) + 1; });
+      var scores = {};
+      Object.keys(DOMAIN_LABELS).forEach(function(code) {
+        var s = nceAcc[code];
+        var bankSize = domainTotals[code] || 1;
+        var attempts = s ? s.total : 0;
+        var accuracy = s && s.total > 0 ? s.correct / s.total : null;
+        var accDef = accuracy === null ? 1.0 : 1.0 - accuracy;
+        var covDef = Math.max(0, 1.0 - (attempts / bankSize));
+        var examWt = NCE_EXAM_WEIGHTS[code] || 0.125;
+        scores[code] = {
+          score: wAcc * accDef + wCov * covDef + wWt * examWt,
+          accDef: accDef, covDef: covDef, examWt: examWt,
+          attempts: attempts, accuracy: accuracy
+        };
+      });
+      return scores;
+    }
+
+    /* ── Plan generation ── */
+    function _buildPlan() {
+      var examDate = getExamDate();
+      if (!examDate) return null;
+      var days = getDaysUntilExam();
+      if (days === null || days <= 0) return null;
+
+      var weights = _getActivePlanWeights();
+      var wAcc = weights.wAcc, wCov = weights.wCov, wWt = weights.wWt;
+      var scores = _buildPriorityScores(wAcc, wCov, wWt);
+
+      var totalWeeks = Math.max(1, Math.min(16, Math.floor(days / 7)));
+      var totalSessions = totalWeeks * planCurrentSPW;
+
+      // Normalize scores → allocate sessions proportionally, floor then distribute remainder
+      var totalScore = Object.values(scores).reduce(function(s, v) { return s + v.score; }, 0);
+      var entries = Object.keys(DOMAIN_LABELS).map(function(code) {
+        return { code: code, rawAlloc: (scores[code].score / totalScore) * totalSessions };
+      });
+      var allocations = {};
+      var allocatedTotal = 0;
+      entries.forEach(function(e) {
+        allocations[e.code] = Math.max(1, Math.floor(e.rawAlloc));
+        allocatedTotal += allocations[e.code];
+      });
+      var remainder = totalSessions - allocatedTotal;
+      if (remainder > 0) {
+        entries.slice().sort(function(a, b) { return (b.rawAlloc % 1) - (a.rawAlloc % 1); })
+          .slice(0, remainder).forEach(function(e) { allocations[e.code]++; });
+      }
+
+      // Sort domains by priority descending for round-robin ordering
+      var sortedCodes = Object.keys(DOMAIN_LABELS).sort(function(a, b) { return scores[b].score - scores[a].score; });
+
+      // Build activity queues per domain, using stable IDs: pi_{DOMAIN}_{type}_{seqN}
+      var queues = {};
+      sortedCodes.forEach(function(code) {
+        var n = allocations[code];
+        var examId = DOMAIN_EXAM_IDS[code];
+        var domLabel = DOMAIN_LABELS[code];
+        var acts = [];
+        var tIdx = 0, drillN = 0, fcN = 0, tqN = 0;
+        if (code === 'CHR') {
+          for (var i = 0; i < n; i++) {
+            var mod = i % 3;
+            if (mod === 0) {
+              acts.push({ id: 'pi_CHR_drill_' + drillN++, type: 'drill', label: 'Drill 5 Counseling Theory questions', action: "startExam('chr')" });
+            } else if (mod === 1) {
+              var tid = CHR_THEORY_IDS[tIdx % CHR_THEORY_IDS.length];
+              var tname = (typeof theories !== 'undefined' && theories[tid]) ? theories[tid].name : tid;
+              acts.push({ id: 'pi_CHR_fc_' + fcN++, type: 'flashcards', label: 'Review ' + tname + ' flashcards', action: "showFlashcards('" + tid + "')" });
+              tIdx++;
+            } else {
+              acts.push({ id: 'pi_CHR_tq_' + tqN++, type: 'theory_quiz', label: 'Theory quiz — all 13 theories', action: 'startTheoryQuiz()' });
+            }
+          }
+        } else {
+          for (var j = 0; j < n; j++) {
+            acts.push({ id: 'pi_' + code + '_drill_' + j, type: 'drill', label: 'Drill 5 ' + domLabel + ' questions', action: "startExam('" + examId + "')" });
+          }
+        }
+        queues[code] = acts;
+      });
+
+      // Round-robin flatten: highest-priority domain first each pass
+      var allActivities = [];
+      var more = true;
+      while (more) {
+        more = false;
+        sortedCodes.forEach(function(code) {
+          if (queues[code].length > 0) {
+            var act = queues[code].shift();
+            var sc = scores[code];
+            var pctStr = sc.accuracy !== null ? Math.round(sc.accuracy * 100) + '% accuracy' : 'not started yet';
+            var attStr = sc.attempts > 0 ? sc.attempts + ' question' + (sc.attempts !== 1 ? 's' : '') + ' seen' : '';
+            var why = [pctStr, attStr].filter(Boolean).join(' · ');
+            allActivities.push({
+              id: act.id,
+              domain: code,
+              domainLabel: DOMAIN_LABELS[code],
+              type: act.type,
+              label: act.label,
+              action: act.action,
+              why: why
+            });
+            more = true;
+          }
+        });
+      }
+
+      // Group into weeks
+      var MO = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      var today = new Date(); today.setHours(0, 0, 0, 0);
+      var weeks = [];
+      for (var w = 0; w < totalWeeks; w++) {
+        var ws = new Date(today); ws.setDate(today.getDate() + w * 7);
+        var we = new Date(ws); we.setDate(ws.getDate() + 6);
+        var dateRange = MO[ws.getMonth()] + ' ' + ws.getDate() + ' – ' + MO[we.getMonth()] + ' ' + we.getDate();
+        var si = w * planCurrentSPW;
+        var ei = Math.min(si + planCurrentSPW, allActivities.length);
+        var items = allActivities.slice(si, ei);
+        if (items.length === 0) break;
+        weeks.push({ weekNum: w + 1, dateRange: dateRange, items: items });
+      }
+
+      return {
+        generatedAt: today.toISOString().split('T')[0],
+        examDate: examDate,
+        examType: getExamType(),
+        mode: planCurrentMode,
+        sessionsPerWeek: planCurrentSPW,
+        weights: { acc: wAcc, cov: wCov, wt: wWt },
+        scores: scores,
+        weeks: weeks
+      };
+    }
+
+    /* ── Render: weekly blocks ── */
+    function _renderPlanWeeks(plan) {
+      var container = document.getElementById('plan-weeks');
+      if (!container) return;
+      var done = loadPlanDone();
+
+      if (!plan || !plan.weeks || plan.weeks.length === 0) {
+        container.innerHTML = '<div class="prog-panel" style="text-align:center; padding:40px;"><p style="color:var(--text-mid); font-size:0.9rem;">No weeks to display. Verify your exam date is in the future.</p></div>';
+        return;
+      }
+
+      var html = '';
+      plan.weeks.forEach(function(week, wi) {
+        var completedN = week.items.filter(function(it) { return done.has(it.id); }).length;
+        var total = week.items.length;
+        var pct = total > 0 ? Math.round((completedN / total) * 100) : 0;
+        var isFirst = wi === 0;
+        var progressColor = pct === 100 ? 'var(--teal-500)' : pct > 0 ? 'var(--amber)' : 'rgba(26,74,68,0.15)';
+
+        html += '<div style="margin-bottom:12px;">'
+          + '<button class="plan-week-header" onclick="togglePlanWeek(' + wi + ')" id="whdr-' + wi + '">'
+          + '<div style="display:flex; align-items:center; gap:10px; flex:1; min-width:0;">'
+          + '<span style="font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--teal-500); font-family:\'Inter\',sans-serif; flex-shrink:0;">Week ' + week.weekNum + '</span>'
+          + '<span style="font-size:0.84rem; font-weight:600; color:var(--teal-900);">' + week.dateRange + '</span>'
+          + (isFirst ? '<span style="font-size:0.68rem; font-weight:700; padding:2px 8px; border-radius:10px; background:rgba(196,133,90,0.12); color:var(--amber); border:1px solid rgba(196,133,90,0.2); font-family:\'Inter\',sans-serif; flex-shrink:0;">Current</span>' : '')
+          + '</div>'
+          + '<div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">'
+          + '<div style="width:56px; height:5px; border-radius:3px; background:rgba(26,74,68,0.10); overflow:hidden;">'
+          + '<div id="wpb-' + wi + '" style="width:' + pct + '%; height:100%; background:' + progressColor + '; border-radius:3px; transition:width 0.3s ease;"></div>'
+          + '</div>'
+          + '<span id="wpl-' + wi + '" style="font-size:0.72rem; color:var(--text-light); font-family:\'Inter\',sans-serif; min-width:26px;">' + completedN + '/' + total + '</span>'
+          + '<span id="warr-' + wi + '" style="font-size:0.75rem; color:var(--text-light);">' + (isFirst ? '&#9650;' : '&#9660;') + '</span>'
+          + '</div>'
+          + '</button>'
+          + '<div id="wbdy-' + wi + '" class="plan-week-body" style="' + (isFirst ? '' : 'display:none;') + '">';
+
+        week.items.forEach(function(item) {
+          var isDone = done.has(item.id);
+          var typeBg = item.type === 'drill' ? 'rgba(45,125,111,0.07)' : item.type === 'flashcards' ? 'rgba(80,100,160,0.07)' : 'rgba(196,133,90,0.07)';
+          var typeBorder = item.type === 'drill' ? 'rgba(45,125,111,0.20)' : item.type === 'flashcards' ? 'rgba(80,100,160,0.22)' : 'rgba(196,133,90,0.22)';
+          var typeColor = item.type === 'drill' ? 'var(--teal-700)' : item.type === 'flashcards' ? '#5064A0' : '#c47e2a';
+          var typeLabel = item.type === 'drill' ? 'Domain drill' : item.type === 'flashcards' ? 'Flashcards' : 'Theory quiz';
+
+          html += '<div class="plan-item' + (isDone ? ' done' : '') + '" id="prow_' + item.id + '">'
+            + '<input type="checkbox" class="plan-item-cb" id="pcb_' + item.id + '" ' + (isDone ? 'checked' : '') + ' onchange="togglePlanItem(\'' + item.id + '\',' + wi + ')">'
+            + '<div style="flex:1; min-width:0;">'
+            + '<div style="display:flex; align-items:center; gap:7px; margin-bottom:5px; flex-wrap:wrap;">'
+            + '<span style="font-size:0.67rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; padding:2px 7px; border-radius:8px; font-family:\'Inter\',sans-serif; background:rgba(26,74,68,0.07); color:var(--text-mid);">' + item.domain + '</span>'
+            + '<span style="font-size:0.67rem; font-weight:600; font-family:\'Inter\',sans-serif; padding:2px 7px; border-radius:8px; background:' + typeBg + '; color:' + typeColor + '; border:1px solid ' + typeBorder + ';">' + typeLabel + '</span>'
+            + '</div>'
+            + '<div class="plan-item-label" style="font-size:0.875rem; font-weight:500; color:var(--text-dark); margin-bottom:3px;">' + item.label + '</div>'
+            + '<div style="font-size:0.72rem; color:var(--text-light); font-family:\'Inter\',sans-serif;">' + item.why + '</div>'
+            + '</div>'
+            + '<button class="plan-action-btn" onclick="' + item.action + '" style="flex-shrink:0; margin-top:2px;' + (isDone ? ' opacity:0.4; pointer-events:none;' : '') + '">Start &#8594;</button>'
+            + '</div>';
+        });
+
+        html += '</div></div>'; // close week body + wrapper
+      });
+
+      container.innerHTML = html;
+    }
+
+    /* ── Render: priority breakdown table ── */
+    function _renderPriorityBreakdown(scores, wAcc, wCov, wWt) {
+      var el = document.getElementById('priority-breakdown-table');
+      if (!el) return;
+      _syncBreakdownWeightLabels(wAcc, wCov, wWt);
+      var sorted = Object.entries(scores).sort(function(a, b) { return b[1].score - a[1].score; });
+      var html = '<div style="overflow-x:auto;"><table style="width:100%; border-collapse:collapse; font-family:\'Inter\',sans-serif; font-size:0.78rem;">'
+        + '<thead><tr>'
+        + '<th style="text-align:left; padding:5px 8px 5px 0; border-bottom:1px solid rgba(26,74,68,0.10); color:var(--text-light); font-size:0.67rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em;">Domain</th>'
+        + '<th style="text-align:right; padding:5px 8px; border-bottom:1px solid rgba(26,74,68,0.10); color:var(--text-light); font-size:0.67rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em;">Accuracy</th>'
+        + '<th style="text-align:right; padding:5px 8px; border-bottom:1px solid rgba(26,74,68,0.10); color:var(--text-light); font-size:0.67rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em;">Unseen</th>'
+        + '<th style="text-align:right; padding:5px 8px; border-bottom:1px solid rgba(26,74,68,0.10); color:var(--text-light); font-size:0.67rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em;">NCE %</th>'
+        + '<th style="text-align:right; padding:5px 0 5px 8px; border-bottom:1px solid rgba(26,74,68,0.10); color:var(--text-light); font-size:0.67rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em;">Priority</th>'
+        + '</tr></thead><tbody>';
+      sorted.forEach(function(pair, i) {
+        var code = pair[0], sc = pair[1];
+        var label = DOMAIN_LABELS[code] || code;
+        var accColor = sc.accuracy === null ? 'var(--text-light)' : sc.accuracy >= 0.75 ? 'var(--teal-700)' : sc.accuracy >= 0.5 ? '#c47e2a' : '#C05252';
+        var priColor = i === 0 ? '#C05252' : i <= 2 ? '#c47e2a' : 'var(--teal-700)';
+        html += '<tr>'
+          + '<td style="padding:8px 8px 8px 0; border-bottom:1px solid rgba(26,74,68,0.05); color:var(--text-dark); font-weight:500;">' + label + '</td>'
+          + '<td style="text-align:right; padding:8px; border-bottom:1px solid rgba(26,74,68,0.05); color:' + accColor + '; font-weight:600;">' + (sc.accuracy !== null ? Math.round(sc.accuracy * 100) + '%' : '—') + '</td>'
+          + '<td style="text-align:right; padding:8px; border-bottom:1px solid rgba(26,74,68,0.05); color:var(--text-mid);">' + Math.round(sc.covDef * 100) + '%</td>'
+          + '<td style="text-align:right; padding:8px; border-bottom:1px solid rgba(26,74,68,0.05); color:var(--text-mid);">' + Math.round(sc.examWt * 100) + '%</td>'
+          + '<td style="text-align:right; padding:8px 0 8px 8px; border-bottom:1px solid rgba(26,74,68,0.05); color:' + priColor + '; font-weight:700;">' + (i === 0 ? '&#9650; ' : '') + sc.score.toFixed(3) + '</td>'
+          + '</tr>';
+      });
+      html += '</tbody></table></div>';
+      el.innerHTML = html;
+    }
+
+    /* ── Main render entry point ── */
+    function renderStudyPlan() {
+      var examDate = getExamDate();
+      var noDel = document.getElementById('plan-no-date');
+      var mainEl = document.getElementById('plan-main');
+      if (!examDate) {
+        if (noDel) noDel.style.display = '';
+        if (mainEl) mainEl.style.display = 'none';
+        return;
+      }
+      if (noDel) noDel.style.display = 'none';
+      if (mainEl) mainEl.style.display = '';
+
+      // Load saved plan or generate fresh
+      var plan = loadPlan();
+      if (plan && plan.mode) { planCurrentMode = plan.mode; setPlanMode(plan.mode); }
+      if (plan && plan.sessionsPerWeek) { planCurrentSPW = plan.sessionsPerWeek; setPlanSPW(plan.sessionsPerWeek); }
+      if (!plan) {
+        plan = _buildPlan();
+        if (plan) savePlan(plan);
+      }
+      if (!plan) return;
+
+      _renderPlanWeeks(plan);
+      _renderPriorityBreakdown(plan.scores, plan.weights.acc, plan.weights.cov, plan.weights.wt);
+      var metaEl = document.getElementById('plan-meta');
+      if (metaEl) metaEl.textContent = 'Generated ' + plan.generatedAt + ' · ' + plan.weeks.length + ' week' + (plan.weeks.length !== 1 ? 's' : '') + ' · ' + plan.sessionsPerWeek + ' sessions/week';
+    }
+
+    /* ── Regenerate (called by button) ── */
+    function regenerateStudyPlan() {
+      var plan = _buildPlan();
+      if (!plan) return;
+      // Clear done items — IDs may shift with new allocations
+      savePlanDone(new Set());
+      savePlan(plan);
+      _renderPlanWeeks(plan);
+      _renderPriorityBreakdown(plan.scores, plan.weights.acc, plan.weights.cov, plan.weights.wt);
+      var metaEl = document.getElementById('plan-meta');
+      if (metaEl) metaEl.textContent = 'Generated ' + plan.generatedAt + ' · ' + plan.weeks.length + ' week' + (plan.weeks.length !== 1 ? 's' : '') + ' · ' + plan.sessionsPerWeek + ' sessions/week';
+    }
+
+    /* ── Week accordion toggle ── */
+    function togglePlanWeek(wi) {
+      var body = document.getElementById('wbdy-' + wi);
+      var arr = document.getElementById('warr-' + wi);
+      if (!body) return;
+      var open = body.style.display !== 'none';
+      body.style.display = open ? 'none' : '';
+      if (arr) arr.innerHTML = open ? '&#9660;' : '&#9650;';
+    }
+
+    /* ── Item done/undone toggle ── */
+    function togglePlanItem(id, weekIdx) {
+      var done = loadPlanDone();
+      if (done.has(id)) done.delete(id); else done.add(id);
+      savePlanDone(done);
+
+      var isDone = done.has(id);
+      var row = document.getElementById('prow_' + id);
+      var cb  = document.getElementById('pcb_' + id);
+      if (row) {
+        row.className = 'plan-item' + (isDone ? ' done' : '');
+        var btn = row.querySelector('.plan-action-btn');
+        if (btn) { btn.style.opacity = isDone ? '0.4' : ''; btn.style.pointerEvents = isDone ? 'none' : ''; }
+      }
+      if (cb) cb.checked = isDone;
+
+      // Update week progress bar without full re-render
+      var plan = loadPlan();
+      if (!plan || weekIdx == null) return;
+      var week = plan.weeks[weekIdx];
+      if (!week) return;
+      var completedN = week.items.filter(function(it) { return done.has(it.id); }).length;
+      var total = week.items.length;
+      var pct = total > 0 ? Math.round((completedN / total) * 100) : 0;
+      var bar = document.getElementById('wpb-' + weekIdx);
+      var lbl = document.getElementById('wpl-' + weekIdx);
+      if (bar) {
+        bar.style.width = pct + '%';
+        bar.style.background = pct === 100 ? 'var(--teal-500)' : pct > 0 ? 'var(--amber)' : 'rgba(26,74,68,0.15)';
+      }
+      if (lbl) lbl.textContent = completedN + '/' + total;
     }
 
     function renderProgressDashboard() {
