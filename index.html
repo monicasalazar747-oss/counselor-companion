@@ -686,6 +686,7 @@
       </div>
       <!-- Search + hamburger (right side) -->
       <div style="display:flex; align-items:center; gap:8px;">
+        <button class="exam-countdown-badge" id="nav-countdown" onclick="showView('progress')" style="display:none;" aria-label="Exam countdown"></button>
         <button class="search-nav-btn" onclick="openSearch()" aria-label="Search site" title="Search (press /)">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         </button>
@@ -728,6 +729,27 @@
           <div style="font-size:0.7rem; color:var(--text-light); margin-top:3px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">Flashcard reviews</div>
         </div>
       </div>
+
+      <!-- Exam setup -->
+      <div style="margin-bottom:20px;">
+        <p style="font-size:0.875rem; font-weight:600; color:var(--teal-900); margin:0 0 10px;">My exam</p>
+        <div style="display:flex; gap:16px; margin-bottom:12px; flex-wrap:wrap;">
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.84rem; color:var(--text-mid); font-family:'Inter',sans-serif;">
+            <input type="radio" name="settings-exam-type" id="settings-exam-nce" value="nce" onchange="setExamType('nce')" style="accent-color:var(--teal-700); cursor:pointer;">
+            NCE
+          </label>
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.84rem; color:var(--text-mid); font-family:'Inter',sans-serif;">
+            <input type="radio" name="settings-exam-type" id="settings-exam-ncmhce" value="ncmhce" onchange="setExamType('ncmhce')" style="accent-color:var(--teal-700); cursor:pointer;">
+            NCMHCE
+          </label>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <input type="date" id="settings-exam-date" onchange="setExamDate(this.value)" placeholder="Target exam date" style="font-family:'Inter',sans-serif; font-size:0.83rem; padding:7px 10px; border-radius:8px; border:1.5px solid rgba(26,74,68,0.16); background:#fff; color:var(--text-dark); outline:none; flex:1; transition:border-color 0.15s ease;" onfocus="this.style.borderColor='var(--teal-500)'" onblur="this.style.borderColor='rgba(26,74,68,0.16)'">
+          <button onclick="clearExamDate()" style="font-size:0.75rem; color:var(--text-light); background:none; border:none; cursor:pointer; padding:4px 6px; font-family:'Inter',sans-serif; transition:color 0.12s ease;" onmouseover="this.style.color='var(--teal-700)'" onmouseout="this.style.color='var(--text-light)'">Clear</button>
+        </div>
+      </div>
+
+      <hr style="border:none; border-top:1px solid rgba(26,74,68,0.08); margin-bottom:20px;">
 
       <!-- Confidence prompts toggle -->
       <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:20px;">
@@ -4066,6 +4088,9 @@
           <p style="font-size:0.9rem; color:var(--text-mid); line-height:1.6;">Every question answered and flashcard reviewed — tracked locally in your browser.</p>
         </div>
 
+        <!-- ── READINESS PANEL (shown when exam date is set) ── -->
+        <div id="prog-readiness-panel" style="display:none;"></div>
+
         <!-- ── EMPTY STATE ── -->
         <div id="progress-empty">
           <div style="text-align:center; padding:64px 32px; background:#fff; border-radius:20px; border:1.5px solid rgba(26,74,68,0.08); box-shadow:0 2px 8px rgba(26,74,68,0.05);">
@@ -5065,6 +5090,10 @@
     .toggle-knob::before { content:''; position:absolute; width:16px; height:16px; left:3px; bottom:3px; background:#fff; border-radius:50%; transition:transform 0.2s ease; box-shadow:0 1px 3px rgba(0,0,0,0.18); }
     .toggle-switch input:checked + .toggle-knob { background:var(--teal-700); }
     .toggle-switch input:checked + .toggle-knob::before { transform:translateX(16px); }
+    /* ── Exam countdown badge ── */
+    .exam-countdown-badge { display:inline-flex; align-items:center; gap:5px; font-family:'Inter',sans-serif; font-size:0.75rem; font-weight:600; color:var(--teal-700); background:rgba(45,125,111,0.08); border:1.5px solid rgba(45,125,111,0.20); border-radius:20px; padding:5px 11px; cursor:pointer; transition:background 0.12s ease, border-color 0.12s ease; white-space:nowrap; }
+    .exam-countdown-badge:hover { background:rgba(45,125,111,0.14); border-color:rgba(45,125,111,0.32); }
+    @media (max-width:767px) { .exam-countdown-badge { display:none !important; } }
     .srs-due-pill { display: inline-flex; align-items: center; gap: 4px; font-size: 0.68rem; font-weight: 700; padding: 2px 9px; border-radius: 20px; background: rgba(196,133,90,0.18); color: var(--amber); border: 1px solid rgba(196,133,90,0.3); font-family: 'Inter', sans-serif; white-space: nowrap; }
     .srs-box-track { display: flex; gap: 4px; align-items: center; }
     .srs-box-pip { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
@@ -11996,6 +12025,9 @@
         }
       }
 
+      // ── Readiness panel (always, when exam date set) ──
+      renderReadinessPanel();
+
       if (isEmpty) return;
 
       // ── Stat cards ──
@@ -12237,6 +12269,120 @@
       falseConfBody.innerHTML = html;
     }
 
+    /* ── Exam setup helpers ── */
+    function getExamType() { return localStorage.getItem('lpc_exam_type') || 'nce'; }
+    function getExamDate() { return localStorage.getItem('lpc_exam_date') || null; }
+    function setExamType(t) {
+      localStorage.setItem('lpc_exam_type', t);
+      updateCountdownBadge();
+      if (document.getElementById('prog-readiness-panel')) renderReadinessPanel();
+    }
+    function setExamDate(d) {
+      if (d) localStorage.setItem('lpc_exam_date', d);
+      else localStorage.removeItem('lpc_exam_date');
+      updateCountdownBadge();
+      if (document.getElementById('prog-readiness-panel')) renderReadinessPanel();
+    }
+    function clearExamDate() {
+      localStorage.removeItem('lpc_exam_date');
+      const inp = document.getElementById('settings-exam-date');
+      if (inp) inp.value = '';
+      updateCountdownBadge();
+      if (document.getElementById('prog-readiness-panel')) renderReadinessPanel();
+    }
+    function getDaysUntilExam() {
+      var d = getExamDate();
+      if (!d) return null;
+      var today = new Date(); today.setHours(0, 0, 0, 0);
+      var exam = new Date(d + 'T00:00:00');
+      return Math.round((exam - today) / 86400000);
+    }
+    function updateCountdownBadge() {
+      var badge = document.getElementById('nav-countdown');
+      if (!badge) return;
+      var days = getDaysUntilExam();
+      if (days === null || days < 0) { badge.style.display = 'none'; return; }
+      var type = getExamType().toUpperCase();
+      badge.textContent = days === 0 ? type + ' · Today' : type + ' · ' + days + 'd';
+      badge.style.display = '';
+    }
+    function renderReadinessPanel() {
+      var panel = document.getElementById('prog-readiness-panel');
+      if (!panel) return;
+      var examDate = getExamDate();
+      if (!examDate) { panel.style.display = 'none'; return; }
+      panel.style.display = '';
+      var days = getDaysUntilExam();
+      var examType = getExamType().toUpperCase();
+
+      var rawData = StudyProgress._getRaw();
+      var nceAcc = {};
+      rawData.quiz_attempts.filter(function(a) { return a.source === 'domain_exam'; }).forEach(function(a) {
+        if (!nceAcc[a.domain]) nceAcc[a.domain] = { correct: 0, total: 0 };
+        nceAcc[a.domain].total++;
+        if (a.is_correct) nceAcc[a.domain].correct++;
+      });
+
+      function domainStatus(code) {
+        var s = nceAcc[code];
+        if (!s || s.total === 0) return { label: 'Not yet started', color: 'rgba(74,99,96,0.5)', bg: 'rgba(74,99,96,0.05)', border: 'rgba(74,99,96,0.12)' };
+        var pct = s.correct / s.total;
+        if (pct >= 0.75 && s.total >= 10) return { label: 'Solid coverage', color: 'var(--teal-700)', bg: 'rgba(45,125,111,0.07)', border: 'rgba(45,125,111,0.20)' };
+        if (pct < 0.50) return { label: 'Priority area', color: '#C05252', bg: 'rgba(192,82,82,0.07)', border: 'rgba(192,82,82,0.20)' };
+        return { label: 'Needs more practice', color: '#c47e2a', bg: 'rgba(196,133,90,0.07)', border: 'rgba(196,133,90,0.20)' };
+      }
+
+      var sorted = Object.entries(DOMAIN_LABELS).map(function(pair) {
+        var code = pair[0], label = pair[1];
+        var st = domainStatus(code);
+        var s = nceAcc[code];
+        var attempts = s ? s.total : 0;
+        var pct = s && s.total > 0 ? Math.round((s.correct / s.total) * 100) : null;
+        var order = st.label === 'Priority area' ? 0 : st.label === 'Needs more practice' ? 1 : st.label === 'Not yet started' ? 2 : 3;
+        return { code: code, label: label, st: st, attempts: attempts, pct: pct, order: order };
+      }).sort(function(a, b) { return a.order - b.order; });
+
+      var domainRows = sorted.map(function(d) {
+        var subtext = d.attempts > 0
+          ? d.attempts + ' attempt' + (d.attempts !== 1 ? 's' : '') + (d.pct !== null ? ' · ' + d.pct + '% correct' : '')
+          : 'No attempts yet';
+        return '<div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 0; border-bottom:1px solid rgba(26,74,68,0.06); flex-wrap:wrap;">'
+          + '<div style="min-width:0; flex:1;">'
+          + '<div style="font-size:0.84rem; font-weight:600; color:var(--text-dark); line-height:1.3;">' + d.label + '</div>'
+          + '<div style="font-size:0.7rem; color:var(--text-light); margin-top:2px;">' + subtext + '</div>'
+          + '</div>'
+          + '<span style="font-size:0.72rem; font-weight:600; font-family:\'Inter\',sans-serif; padding:3px 10px; border-radius:12px; white-space:nowrap; background:' + d.st.bg + '; color:' + d.st.color + '; border:1.5px solid ' + d.st.border + ';">' + d.st.label + '</span>'
+          + '</div>';
+      }).join('');
+
+      var weeksStr = '';
+      if (days !== null && days > 0) {
+        var w = Math.floor(days / 7), r = days % 7;
+        weeksStr = w > 0 && r > 0 ? w + ' week' + (w !== 1 ? 's' : '') + ' and ' + r + ' day' + (r !== 1 ? 's' : '')
+          : w > 0 ? w + ' week' + (w !== 1 ? 's' : '') : days + ' day' + (days !== 1 ? 's' : '');
+      }
+      var timeNote = days === null ? '' : days < 0 ? 'Your exam date has passed.'
+        : days === 0 ? 'Your exam is today.'
+        : weeksStr + ' until your ' + examType + ' — here\'s where to focus your remaining study time.';
+
+      var dateDisplay = new Date(examDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+      panel.innerHTML = '<div class="prog-panel">'
+        + '<div style="background:rgba(26,74,68,0.04); border-left:3px solid rgba(45,125,111,0.35); border-radius:0 10px 10px 0; padding:12px 14px; margin-bottom:20px;">'
+        + '<p style="font-size:0.78rem; font-weight:700; color:var(--teal-700); margin:0 0 4px; font-family:\'Inter\',sans-serif;">Study aid only.</p>'
+        + '<p style="font-size:0.75rem; color:var(--text-mid); line-height:1.6; margin:0 0 6px;">This tool tracks your practice activity to help you identify areas for further review. It is not a predictor of exam outcome, does not assess readiness to pass, and cannot tell you whether you are prepared for your exam.</p>'
+        + '<p style="font-size:0.72rem; color:var(--text-light); line-height:1.5; margin:0;">This site is not affiliated with, endorsed by, or sponsored by the National Board for Certified Counselors (NBCC) or any credentialing body.</p>'
+        + '</div>'
+        + '<div style="display:flex; align-items:baseline; justify-content:space-between; gap:12px; margin-bottom:6px; flex-wrap:wrap;">'
+        + '<h3 class="prog-section-title" style="margin-bottom:0;">Exam Readiness Overview</h3>'
+        + '<span style="font-size:0.75rem; color:var(--text-light);">' + examType + ' · ' + dateDisplay + '</span>'
+        + '</div>'
+        + '<p style="font-size:0.78rem; color:var(--text-mid); line-height:1.6; margin-bottom:' + (timeNote ? '4px' : '18px') + ';">A snapshot of your study coverage by domain — not a prediction of your outcome.</p>'
+        + (timeNote ? '<p style="font-size:0.82rem; font-style:italic; color:var(--teal-700); margin-bottom:18px; line-height:1.5;">' + timeNote + '</p>' : '')
+        + '<div style="border-top:1px solid rgba(26,74,68,0.08);">' + domainRows + '</div>'
+        + '</div>';
+    }
+
     /* ── Confidence prompt setting ── */
     function isConfidenceEnabled() { return localStorage.getItem('lpc_conf_prompt') !== 'off'; }
     function setConfidenceEnabled(on) { localStorage.setItem('lpc_conf_prompt', on ? 'on' : 'off'); }
@@ -12250,6 +12396,14 @@
       document.getElementById('sset-cards').textContent = s.total_flashcards;
       const confToggle = document.getElementById('settings-conf-toggle');
       if (confToggle) confToggle.checked = isConfidenceEnabled();
+      // Sync exam setup fields
+      const t = getExamType();
+      const nceRadio = document.getElementById('settings-exam-nce');
+      const ncmhceRadio = document.getElementById('settings-exam-ncmhce');
+      if (nceRadio) nceRadio.checked = (t === 'nce');
+      if (ncmhceRadio) ncmhceRadio.checked = (t === 'ncmhce');
+      const dateInput = document.getElementById('settings-exam-date');
+      if (dateInput) dateInput.value = getExamDate() || '';
       document.getElementById('settings-overlay').classList.add('open');
       document.body.style.overflow = 'hidden';
     }
@@ -12284,6 +12438,10 @@
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape' && document.getElementById('settings-overlay').classList.contains('open')) closeSettings();
     });
+
+    // Init countdown badge on load and refresh every 60s
+    updateCountdownBadge();
+    setInterval(updateCountdownBadge, 60000);
   </script>
 
 </body>
