@@ -684,6 +684,10 @@
         <button class="nav-link" id="nav-reference" onclick="showView('reference')">Reference Tools</button>
         <button class="nav-link" id="nav-progress" onclick="showView('progress')">Progress</button>
         <button class="nav-link" id="nav-plan" onclick="showView('study-plan')">Study Plan</button>
+        <button class="nav-link" id="nav-audio" onclick="showView('audio')" style="display:inline-flex;align-items:center;gap:5px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+          Audio
+        </button>
       </div>
       <!-- Search + hamburger (right side) -->
       <div style="display:flex; align-items:center; gap:8px;">
@@ -790,6 +794,7 @@
       <button class="mobile-nav-item" id="mnav-reference" onclick="showView('reference'); closeMobileNav()">Reference Tools</button>
       <button class="mobile-nav-item" id="mnav-progress" onclick="showView('progress'); closeMobileNav()">Progress</button>
       <button class="mobile-nav-item" id="mnav-plan" onclick="showView('study-plan'); closeMobileNav()">Study Plan</button>
+      <button class="mobile-nav-item" id="mnav-audio" onclick="showView('audio'); closeMobileNav()">🎧 Audio Review</button>
     </div>
   </div>
 
@@ -3811,6 +3816,15 @@
                 <button onclick="startSim('case3')" class="btn-primary" style="font-size:0.83rem; padding:10px 18px; justify-content:space-between; background:var(--teal-900);">
                   <span>Jaylen, 16 — Adolescent</span><span style="opacity:0.7; font-size:0.75rem;">Depression &amp; SI</span>
                 </button>
+                <button onclick="startSim('case4')" class="btn-primary" style="font-size:0.83rem; padding:10px 18px; justify-content:space-between; background:var(--teal-900);">
+                  <span>Priya, 21 — College Sophomore</span><span style="opacity:0.7; font-size:0.75rem;">Eating Disorders</span>
+                </button>
+                <button onclick="startSim('case5')" class="btn-primary" style="font-size:0.83rem; padding:10px 18px; justify-content:space-between; background:var(--teal-900);">
+                  <span>Darnell, 34 — The Upswing &amp; the Bottle</span><span style="opacity:0.7; font-size:0.75rem;">Bipolar + SUD</span>
+                </button>
+                <button onclick="startSim('case6')" class="btn-primary" style="font-size:0.83rem; padding:10px 18px; justify-content:space-between; background:var(--teal-900);">
+                  <span>Noah, 10 — Caught in the Middle</span><span style="opacity:0.7; font-size:0.75rem;">Child / Custody &amp; Ethics</span>
+                </button>
               </div>
             </div>
           </div>
@@ -4371,6 +4385,10 @@
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M4 7h16M4 12h10M4 17h7"/></svg>
             Mnemonics
           </button>
+          <button class="ref-tool-tab" id="reftab-stats" onclick="showRefTool('stats')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            Stats Helper
+          </button>
         </div>
 
         <!-- ── PANEL: DSM-5 Glossary ── -->
@@ -4634,9 +4652,253 @@
 
         </div><!-- /ref-panel-mnemonics -->
 
+        <!-- ── PANEL: Stats Helper ── -->
+        <div id="ref-panel-stats" style="display:none;">
+
+          <div style="margin-bottom:28px;">
+            <p style="color:var(--text-mid); font-size:0.95rem; line-height:1.7; max-width:680px;">Interactive calculators for core psychometric concepts tested on the NCE. Plug in numbers to see every step worked out — and more importantly, to understand what the answer <em>means</em>.</p>
+          </div>
+
+          <!-- ── SEM ── -->
+          <div class="sh-card">
+            <div class="sh-card-hd">
+              <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                <span style="font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--teal-500);">1 of 5</span>
+                <span class="sh-badge">SEM</span>
+              </div>
+              <h3 class="sh-title">Standard Error of Measurement</h3>
+              <p class="sh-desc">No test is perfectly reliable — every score carries some measurement error. The SEM tells you <strong>how wide that error band is in score units</strong>. A client scoring 112 on an IQ test (SD=15, reliability=0.90, SEM≈4.74) likely has a true ability somewhere near 107–117. Higher reliability → smaller SEM → more trustworthy scores.</p>
+              <div class="sh-formula">SEM = SD &times; &radic;(1 &minus; r<sub>xx</sub>)</div>
+              <div class="sh-legend">
+                <div><strong>SD</strong> — test's standard deviation (from the test manual)</div>
+                <div><strong>r<sub>xx</sub></strong> — reliability coefficient (0 to 1)</div>
+                <div><strong>SEM</strong> — measurement error expressed in score units</div>
+              </div>
+            </div>
+            <div class="sh-card-bd">
+              <div class="sh-inputs">
+                <div class="sh-field">
+                  <label class="sh-label" for="sem-sd">Test SD</label>
+                  <input class="sh-input" id="sem-sd" type="number" placeholder="e.g. 15" min="0.01" step="0.1">
+                  <span class="sh-hint">IQ tests: 15 &nbsp;·&nbsp; Most achievement tests: 10–15</span>
+                </div>
+                <div class="sh-field">
+                  <label class="sh-label" for="sem-r">Reliability (r<sub>xx</sub>)</label>
+                  <input class="sh-input" id="sem-r" type="number" placeholder="e.g. 0.90" min="0" max="1" step="0.01">
+                  <span class="sh-hint">Enter as decimal: 0.85, 0.92, etc.</span>
+                </div>
+              </div>
+              <button class="sh-btn" onclick="calcSEM()">Calculate &amp; Show Steps &rarr;</button>
+              <div id="sem-output" class="sh-output" style="display:none;"></div>
+            </div>
+          </div>
+
+          <!-- ── Confidence Intervals ── -->
+          <div class="sh-card">
+            <div class="sh-card-hd">
+              <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                <span style="font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--teal-500);">2 of 5</span>
+                <span class="sh-badge">Confidence Intervals</span>
+              </div>
+              <h3 class="sh-title">Confidence Intervals Around a Score</h3>
+              <p class="sh-desc">An obtained score is a point estimate — our best single guess, not the truth. A confidence interval frames that guess with appropriate uncertainty. "I'm 95% confident the client's true IQ is between 103 and 117" is more clinically honest than "IQ = 110." The CI is built from the SEM and a critical z-value for the chosen confidence level.</p>
+              <div class="sh-formula">CI = X &plusmn; (z* &times; SEM)</div>
+              <div class="sh-legend">
+                <div><strong>X</strong> — obtained (observed) score</div>
+                <div><strong>z*</strong> — critical z for chosen confidence</div>
+                <div><strong>SEM</strong> — from the test manual or Calculator 1</div>
+                <div><strong>&plusmn;</strong> — creates lower and upper bounds</div>
+              </div>
+            </div>
+            <div class="sh-card-bd">
+              <div class="sh-inputs">
+                <div class="sh-field">
+                  <label class="sh-label" for="ci-x">Obtained Score (X)</label>
+                  <input class="sh-input" id="ci-x" type="number" placeholder="e.g. 110">
+                </div>
+                <div class="sh-field">
+                  <label class="sh-label" for="ci-sem">SEM</label>
+                  <input class="sh-input" id="ci-sem" type="number" placeholder="e.g. 4.74" min="0.01" step="0.01">
+                  <span class="sh-hint">Use Calculator 1 to find SEM first</span>
+                </div>
+                <div class="sh-field">
+                  <label class="sh-label" for="ci-level">Confidence Level</label>
+                  <select class="sh-input sh-select" id="ci-level">
+                    <option value="68">68% (&plusmn;1.000&times;SEM)</option>
+                    <option value="85">85% (&plusmn;1.440&times;SEM)</option>
+                    <option value="90">90% (&plusmn;1.645&times;SEM)</option>
+                    <option value="95" selected>95% (&plusmn;1.960&times;SEM)</option>
+                    <option value="99">99% (&plusmn;2.576&times;SEM)</option>
+                  </select>
+                </div>
+              </div>
+              <button class="sh-btn" onclick="calcCI()">Calculate &amp; Show Steps &rarr;</button>
+              <div id="ci-output" class="sh-output" style="display:none;"></div>
+            </div>
+          </div>
+
+          <!-- ── Score Conversions ── -->
+          <div class="sh-card">
+            <div class="sh-card-hd">
+              <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                <span style="font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--teal-500);">3 of 5</span>
+                <span class="sh-badge">z / T / IQ / %ile</span>
+              </div>
+              <h3 class="sh-title">z-Scores, T-Scores &amp; Percentile Conversions</h3>
+              <p class="sh-desc">Different tests use different score scales, but they all describe the same underlying normal distribution. The <strong>z-score is the common currency</strong> — everything converts through it. A z-score of +1 is always the 84th percentile, always a T-score of 60, always an IQ-type score of 115 — regardless of the test name.</p>
+              <div class="sh-formula">z = (X &minus; M) / SD &nbsp;&bull;&nbsp; T = 50 + 10z &nbsp;&bull;&nbsp; IQ = 100 + 15z &nbsp;&bull;&nbsp; Stanine = round(5 + 2z)</div>
+            </div>
+            <div class="sh-card-bd">
+              <div style="margin-bottom:14px;">
+                <label class="sh-label" style="display:block; margin-bottom:8px;">I know the…</label>
+                <div style="display:flex; flex-wrap:wrap; gap:7px;">
+                  <button class="sh-type-btn active" id="stype-raw" onclick="setScoreType('raw')">Raw Score</button>
+                  <button class="sh-type-btn" id="stype-z" onclick="setScoreType('z')">z-Score</button>
+                  <button class="sh-type-btn" id="stype-t" onclick="setScoreType('t')">T-Score (M=50)</button>
+                  <button class="sh-type-btn" id="stype-iq" onclick="setScoreType('iq')">IQ-type (M=100)</button>
+                  <button class="sh-type-btn" id="stype-pct" onclick="setScoreType('pct')">Percentile</button>
+                </div>
+              </div>
+              <div class="sh-inputs" id="score-inputs">
+                <div class="sh-field"><label class="sh-label" for="sv-x">Raw Score (X)</label><input class="sh-input" id="sv-x" type="number" placeholder="e.g. 68"></div>
+                <div class="sh-field"><label class="sh-label" for="sv-m">Test Mean (M)</label><input class="sh-input" id="sv-m" type="number" placeholder="e.g. 50"></div>
+                <div class="sh-field"><label class="sh-label" for="sv-sd">Test SD</label><input class="sh-input" id="sv-sd" type="number" placeholder="e.g. 10" min="0.01"></div>
+              </div>
+              <button class="sh-btn" onclick="calcScoreConv()">Convert &amp; Show Steps &rarr;</button>
+              <div id="score-output" class="sh-output" style="display:none;"></div>
+            </div>
+          </div>
+
+          <!-- ── Correlation Coefficient ── -->
+          <div class="sh-card">
+            <div class="sh-card-hd">
+              <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                <span style="font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--teal-500);">4 of 5</span>
+                <span class="sh-badge">r</span>
+              </div>
+              <h3 class="sh-title">Reading a Correlation Coefficient</h3>
+              <p class="sh-desc">A correlation (r) captures two things: <strong>direction</strong> (positive or negative) and <strong>strength</strong> (0 = none, &plusmn;1 = perfect). The coefficient of determination (r&sup2;) tells you the percentage of <em>shared variance</em> — how much of one variable's variability is explained by the other. Crucially: <strong>correlation &ne; causation</strong>.</p>
+              <div class="sh-formula">r &isin; [&minus;1, +1] &nbsp;&bull;&nbsp; r&sup2; = shared variance (%) &nbsp;&bull;&nbsp; r &ge; 0.70 for clinical-grade reliability</div>
+            </div>
+            <div class="sh-card-bd">
+              <div class="sh-inputs">
+                <div class="sh-field">
+                  <label class="sh-label" for="corr-r">Correlation Coefficient (r)</label>
+                  <input class="sh-input" id="corr-r" type="number" placeholder="e.g. &minus;0.62" min="-1" max="1" step="0.01">
+                  <span class="sh-hint">Any value from &minus;1 to +1</span>
+                </div>
+              </div>
+              <button class="sh-btn" onclick="calcCorr()">Interpret &amp; Show Steps &rarr;</button>
+              <div id="corr-output" class="sh-output" style="display:none;"></div>
+            </div>
+          </div>
+
+          <!-- ── Reliability–Validity Ceiling ── -->
+          <div class="sh-card" style="margin-bottom:0;">
+            <div class="sh-card-hd">
+              <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
+                <span style="font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--teal-500);">5 of 5</span>
+                <span class="sh-badge">Reliability &harr; Validity</span>
+              </div>
+              <h3 class="sh-title">Reliability–Validity Relationship &amp; Ceiling</h3>
+              <p class="sh-desc">Reliability is a <em>necessary but not sufficient</em> condition for validity. A test cannot be valid without being reliable, but a reliable test isn't automatically valid. Key formula: <strong>the maximum possible validity coefficient equals the square root of the reliability coefficient</strong>. As reliability drops, the ceiling on validity drops with it — unreliable tests cannot be meaningfully valid.</p>
+              <div class="sh-formula">r<sub>validity(max)</sub> = &radic;r<sub>reliability</sub></div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px;">
+                <div style="padding:12px 14px; background:rgba(45,125,111,0.05); border-radius:10px; border:1px solid rgba(45,125,111,0.12); font-size:0.83rem; color:var(--text-mid); line-height:1.65;"><strong style="color:var(--teal-700); display:block; margin-bottom:4px;">Reliability types</strong>Test-retest, internal consistency (Cronbach's &alpha;), inter-rater reliability, alternate forms — all ask: does this test give consistent results?</div>
+                <div style="padding:12px 14px; background:rgba(45,125,111,0.05); border-radius:10px; border:1px solid rgba(45,125,111,0.12); font-size:0.83rem; color:var(--text-mid); line-height:1.65;"><strong style="color:var(--teal-700); display:block; margin-bottom:4px;">Validity types</strong>Content, criterion-related (concurrent + predictive), construct — all ask: does this test measure what it claims to measure for <em>this specific purpose</em>?</div>
+              </div>
+            </div>
+            <div class="sh-card-bd">
+              <div class="sh-inputs">
+                <div class="sh-field">
+                  <label class="sh-label" for="rv-r">Reliability Coefficient (r<sub>xx</sub>)</label>
+                  <input class="sh-input" id="rv-r" type="number" placeholder="e.g. 0.85" min="0" max="1" step="0.01">
+                  <span class="sh-hint">Typically 0.70–0.99 for well-developed instruments</span>
+                </div>
+              </div>
+              <button class="sh-btn" onclick="calcRV()">Show Ceiling &amp; Reference Table &rarr;</button>
+              <div id="rv-output" class="sh-output" style="display:none;"></div>
+            </div>
+          </div>
+
+        </div><!-- /ref-panel-stats -->
+
       </div>
     </div>
-  </div>
+  </div><!-- /view-reference -->
+
+  <!-- ══════════ VIEW: AUDIO REVIEW ══════════ -->
+  <div id="view-audio" class="view">
+    <div style="min-height:100vh; padding-top:88px; padding-bottom:120px; background:var(--sage-bg);">
+      <div style="max-width:960px; margin:0 auto; padding:0 24px;">
+
+        <div style="margin-bottom:32px;">
+          <span class="badge" style="background:rgba(45,125,111,0.09); color:var(--teal-700); border:1px solid rgba(45,125,111,0.15); margin-bottom:12px;">Audio Review</span>
+          <h2 style="font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; color:var(--teal-900); letter-spacing:-0.03em; margin-bottom:8px;">Hands-Free Study Mode</h2>
+          <p style="font-size:0.95rem; color:var(--text-mid); max-width:620px; line-height:1.75;">Listen to domain summaries hands-free — while commuting, exercising, or reviewing before bed. Tap any track to start. Playback continues if you navigate away.</p>
+        </div>
+
+        <!-- Playback tip -->
+        <div style="display:flex; align-items:flex-start; gap:12px; padding:13px 16px; background:rgba(196,133,90,0.07); border:1.5px solid rgba(196,133,90,0.2); border-radius:12px; margin-bottom:28px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <p style="font-size:0.82rem; color:var(--text-mid); line-height:1.65;"><strong style="color:var(--teal-900);">Uses your browser's built-in text-to-speech.</strong> For best results use Chrome or Safari on desktop. Keep the browser tab open for background playback; if audio cuts out, tap Play again. Speed controls appear in the player bar.</p>
+        </div>
+
+        <!-- Track grid -->
+        <div id="ap-track-grid" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:16px;"></div>
+
+      </div>
+    </div>
+  </div><!-- /view-audio -->
+
+  <!-- ══════════ AUDIO MINI-PLAYER (floats over all views) ══════════ -->
+  <div id="ap-mini" role="region" aria-label="Audio player" style="display:none; position:fixed; bottom:0; left:0; right:0; z-index:9000; flex-direction:column; background:rgba(26,74,68,0.97); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); box-shadow:0 -2px 24px rgba(0,0,0,0.28); padding-bottom:env(safe-area-inset-bottom,0px);">
+    <!-- Section progress bar -->
+    <div style="height:3px; background:rgba(255,255,255,0.12); position:relative;">
+      <div id="ap-progress-bar" style="height:100%; background:var(--teal-400,#4BA6A0); border-radius:0 2px 2px 0; width:0%; transition:width 0.4s ease;"></div>
+    </div>
+    <!-- Main player bar -->
+    <div style="display:flex; align-items:center; gap:12px; padding:10px 20px; flex-wrap:wrap;">
+      <!-- Track info -->
+      <div style="flex:1; min-width:0; margin-right:4px;">
+        <div id="ap-track-title" style="font-size:0.78rem; font-weight:700; color:rgba(255,255,255,0.95); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; letter-spacing:0.01em;"></div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:2px;">
+          <div id="ap-section-label" style="font-size:0.72rem; color:rgba(255,255,255,0.55); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"></div>
+          <div id="ap-section-counter" style="font-size:0.68rem; color:rgba(255,255,255,0.35); flex-shrink:0;"></div>
+        </div>
+      </div>
+      <!-- Controls -->
+      <div style="display:flex; align-items:center; gap:4px; flex-shrink:0;">
+        <button class="ap-ctrl" onclick="apPrevTrack()" aria-label="Previous track" title="Previous track">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4 19 20"/><line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+        </button>
+        <button class="ap-ctrl" onclick="apPrevSection()" aria-label="Previous section" title="Previous section">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/><polyline points="9 18 3 12 9 6"/></svg>
+        </button>
+        <button class="ap-ctrl ap-play-btn" id="ap-play-btn" onclick="apTogglePlay()" aria-label="Play" style="width:42px; height:42px; border-radius:50%; background:rgba(255,255,255,0.15); font-size:1rem;">
+          <svg id="ap-play-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </button>
+        <button class="ap-ctrl" onclick="apNextSection()" aria-label="Next section" title="Next section">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/><polyline points="15 18 21 12 15 6"/></svg>
+        </button>
+        <button class="ap-ctrl" onclick="apNextTrack()" aria-label="Next track" title="Next track">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <!-- Speed -->
+      <div style="display:flex; align-items:center; gap:3px; flex-shrink:0;">
+        <button class="ap-speed" data-rate="0.8" onclick="apSetRate(0.8)">0.8×</button>
+        <button class="ap-speed active" data-rate="1" onclick="apSetRate(1)">1×</button>
+        <button class="ap-speed" data-rate="1.25" onclick="apSetRate(1.25)">1.25×</button>
+        <button class="ap-speed" data-rate="1.5" onclick="apSetRate(1.5)">1.5×</button>
+        <button class="ap-speed" data-rate="2" onclick="apSetRate(2)">2×</button>
+      </div>
+      <!-- Close -->
+      <button class="ap-ctrl" onclick="apStop()" aria-label="Close player" title="Close player" style="margin-left:4px; opacity:0.6;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div><!-- /ap-mini -->
 
   <style>
     /* Reference tool tab switcher */
@@ -4659,6 +4921,78 @@
     .ref-tool-tab:hover { background: var(--teal-50); color: var(--teal-700); }
     .ref-tool-tab.active { background: var(--teal-700); color: #fff; }
     .ref-tool-tab:focus-visible { outline: 3px solid rgba(75,166,152,0.5); outline-offset: 2px; }
+
+    /* ── Stats Helper ── */
+    .sh-card { background: #fff; border-radius: 16px; border: 1.5px solid rgba(26,74,68,0.09); box-shadow: 0 2px 10px rgba(26,74,68,0.04), 0 1px 3px rgba(26,74,68,0.06); margin-bottom: 20px; overflow: hidden; }
+    .sh-card-hd { padding: 22px 24px 0; }
+    .sh-card-bd { padding: 16px 24px 24px; }
+    .sh-badge { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; padding: 3px 10px; background: rgba(45,125,111,0.09); color: var(--teal-700); border-radius: 20px; }
+    .sh-title { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 700; color: var(--teal-900); letter-spacing: -0.02em; margin-bottom: 10px; }
+    .sh-desc { font-size: 0.875rem; color: var(--text-mid); line-height: 1.72; margin-bottom: 16px; }
+    .sh-formula { font-family: 'Courier New', Courier, monospace; font-size: 0.9rem; background: var(--sage-bg); border: 1.5px solid rgba(26,74,68,0.09); border-radius: 10px; padding: 13px 16px; color: var(--teal-900); margin-bottom: 14px; letter-spacing: 0.01em; line-height: 1.6; }
+    .sh-legend { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap: 8px; font-size: 0.8rem; color: var(--text-mid); line-height: 1.5; margin-bottom: 20px; }
+    .sh-legend strong { color: var(--teal-700); }
+    .sh-inputs { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px,1fr)); gap: 12px; margin-bottom: 14px; }
+    .sh-field { display: flex; flex-direction: column; gap: 5px; }
+    .sh-label { font-size: 0.75rem; font-weight: 700; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.055em; }
+    .sh-hint { font-size: 0.74rem; color: var(--text-light); }
+    .sh-input { padding: 10px 13px; border-radius: 9px; border: 1.5px solid rgba(26,74,68,0.14); font-family: 'Inter', sans-serif; font-size: 0.9rem; color: var(--text-dark); outline: none; width: 100%; box-sizing: border-box; transition: border-color 0.15s ease; background: #fff; }
+    .sh-input:focus { border-color: var(--teal-500); box-shadow: 0 0 0 3px rgba(75,166,152,0.12); }
+    .sh-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; cursor: pointer; }
+    .sh-btn { background: var(--teal-700); color: #fff; border: none; border-radius: 10px; padding: 11px 20px; font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 600; cursor: pointer; letter-spacing: 0.01em; transition: background 0.15s ease, transform 0.1s ease; }
+    .sh-btn:hover { background: var(--teal-900); }
+    .sh-btn:active { transform: scale(0.98); }
+    .sh-btn:focus-visible { outline: 3px solid rgba(75,166,152,0.5); outline-offset: 2px; }
+    .sh-type-btn { font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 600; padding: 7px 13px; border-radius: 8px; border: 1.5px solid rgba(26,74,68,0.15); background: #fff; color: var(--text-mid); cursor: pointer; transition: all 0.15s ease; white-space: nowrap; }
+    .sh-type-btn:hover { background: var(--teal-50); color: var(--teal-700); border-color: rgba(45,125,111,0.25); }
+    .sh-type-btn.active { background: var(--teal-700); color: #fff; border-color: var(--teal-700); }
+    .sh-type-btn:focus-visible { outline: 3px solid rgba(75,166,152,0.5); outline-offset: 2px; }
+    .sh-output { margin-top: 20px; padding: 20px; background: rgba(45,125,111,0.035); border-radius: 13px; border: 1.5px solid rgba(45,125,111,0.12); }
+    .sh-step { display: flex; gap: 14px; margin-bottom: 16px; align-items: flex-start; }
+    .sh-step:last-child { margin-bottom: 0; }
+    .sh-step-n { width: 26px; height: 26px; border-radius: 50%; background: var(--teal-50); border: 1.5px solid rgba(45,125,111,0.2); color: var(--teal-700); font-size: 0.74rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+    .sh-step-lbl { font-size: 0.74rem; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.055em; margin-bottom: 4px; }
+    .sh-math { font-family: 'Courier New', Courier, monospace; font-size: 0.88rem; color: var(--teal-900); line-height: 1.6; }
+    .sh-res { background: var(--teal-700); color: #fff; border-radius: 12px; padding: 16px 20px; margin-top: 16px; }
+    .sh-res-val { font-size: 1.6rem; font-family: 'Playfair Display', serif; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 6px; }
+    .sh-res-note { font-size: 0.82rem; color: rgba(255,255,255,0.75); line-height: 1.65; }
+    .sh-res-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: rgba(255,255,255,0.55); margin-bottom: 4px; }
+    .sh-interp { font-size: 0.83rem; color: var(--text-mid); line-height: 1.7; margin-top: 12px; }
+    .sh-tip { margin-top: 12px; padding: 12px 15px; background: rgba(196,133,90,0.06); border: 1.5px solid rgba(196,133,90,0.22); border-radius: 10px; font-size: 0.82rem; color: var(--text-mid); line-height: 1.65; }
+    .sh-tip strong { color: var(--amber); }
+    .sh-note { margin-top: 12px; padding: 12px 15px; background: rgba(45,125,111,0.05); border: 1.5px solid rgba(45,125,111,0.13); border-radius: 10px; font-size: 0.82rem; color: var(--text-mid); line-height: 1.65; }
+    .sh-note strong { color: var(--teal-700); }
+    .sh-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px,1fr)); gap: 8px; margin-top: 14px; }
+    .sh-grid-item { text-align: center; padding: 12px 8px; border-radius: 10px; background: #fff; border: 1.5px solid rgba(26,74,68,0.09); }
+    .sh-grid-item.hi { background: rgba(45,125,111,0.07); border-color: rgba(45,125,111,0.2); }
+    .sh-grid-val { font-size: 1.15rem; font-weight: 700; color: var(--teal-900); font-family: 'Playfair Display', serif; }
+    .sh-grid-name { font-size: 0.73rem; color: var(--text-mid); margin-top: 3px; }
+    .sh-mag-pills { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+    .sh-mag-pill { font-size: 0.72rem; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+    .sh-err { color: #C05252; font-size: 0.85rem; padding: 10px 0; }
+
+    /* ── Audio Review Player ── */
+    .ap-ctrl { background: none; border: none; color: rgba(255,255,255,0.75); cursor: pointer; padding: 7px; border-radius: 8px; display: flex; align-items: center; justify-content: center; transition: color 0.15s ease, background 0.15s ease; }
+    .ap-ctrl:hover { color: #fff; background: rgba(255,255,255,0.1); }
+    .ap-ctrl:focus-visible { outline: 2px solid rgba(255,255,255,0.5); outline-offset: 2px; }
+    .ap-play-btn { color: #fff !important; }
+    .ap-speed { font-family: 'Inter', sans-serif; font-size: 0.72rem; font-weight: 600; padding: 4px 9px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.15); background: none; color: rgba(255,255,255,0.5); cursor: pointer; transition: all 0.15s ease; letter-spacing: 0.01em; }
+    .ap-speed:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.85); }
+    .ap-speed.active { background: rgba(255,255,255,0.2); color: #fff; border-color: rgba(255,255,255,0.35); }
+    .ap-speed:focus-visible { outline: 2px solid rgba(255,255,255,0.5); }
+    .ap-track-card { background: #fff; border-radius: 14px; border: 1.5px solid rgba(26,74,68,0.09); box-shadow: 0 2px 8px rgba(26,74,68,0.05); overflow: hidden; transition: transform 0.18s ease, box-shadow 0.18s ease; }
+    .ap-track-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,74,68,0.1); }
+    .ap-track-card-hd { padding: 18px 20px 14px; }
+    .ap-track-card-bd { padding: 0 20px 18px; }
+    .ap-track-badge { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.7); }
+    .ap-track-name { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: #fff; letter-spacing: -0.015em; margin-top: 4px; line-height: 1.3; }
+    .ap-section-pill { font-size: 0.72rem; font-weight: 500; color: var(--text-mid); padding: 4px 10px; border-radius: 20px; background: var(--teal-50); border: 1px solid rgba(45,125,111,0.1); margin: 3px 3px 3px 0; display: inline-block; cursor: pointer; transition: background 0.12s ease, color 0.12s ease; }
+    .ap-section-pill:hover { background: rgba(45,125,111,0.12); color: var(--teal-700); }
+    .ap-section-pill.active { background: var(--teal-700); color: #fff; }
+    .ap-listen-btn { display: inline-flex; align-items: center; gap: 6px; font-family: 'Inter', sans-serif; font-size: 0.78rem; font-weight: 600; padding: 7px 14px; border-radius: 8px; border: 1.5px solid rgba(45,125,111,0.2); background: var(--teal-50); color: var(--teal-700); cursor: pointer; transition: all 0.15s ease; }
+    .ap-listen-btn:hover { background: rgba(45,125,111,0.1); border-color: rgba(45,125,111,0.35); }
+    .ap-listen-btn:focus-visible { outline: 3px solid rgba(75,166,152,0.5); outline-offset: 2px; }
+    .ap-listen-btn.playing { background: var(--teal-700); color: #fff; border-color: var(--teal-700); }
 
     /* ── Mnemonics Cheat Sheet ── */
     .mnemo-print-header { display: none; } /* shown only in print */
@@ -5225,7 +5559,7 @@
 
   <!-- ══════════ JS ══════════ -->
   <script>
-    const navIds = { home: 'nav-home', study: 'nav-study', 'exam-select': 'nav-exams', exam: 'nav-exams', 'exam-results': 'nav-exams', 'ncmhce-sim': 'nav-exams', 'ncmhce-dx': 'nav-exams', 'ncmhce-branch': 'nav-exams', theory: 'nav-study', flashcards: 'nav-study', 'theory-quiz': 'nav-study', reference: 'nav-reference', progress: 'nav-progress', 'study-plan': 'nav-plan' };
+    const navIds = { home: 'nav-home', study: 'nav-study', 'exam-select': 'nav-exams', exam: 'nav-exams', 'exam-results': 'nav-exams', 'ncmhce-sim': 'nav-exams', 'ncmhce-dx': 'nav-exams', 'ncmhce-branch': 'nav-exams', theory: 'nav-study', flashcards: 'nav-study', 'theory-quiz': 'nav-study', reference: 'nav-reference', progress: 'nav-progress', 'study-plan': 'nav-plan', audio: 'nav-audio' };
 
     function showView(name) {
       document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -5238,7 +5572,7 @@
       const navEl = document.getElementById(navIds[name]);
       if (navEl) navEl.classList.add('active');
       // sync mobile nav active state
-      const mobileMap = { home:'mnav-home', study:'mnav-study', 'exam-select':'mnav-exams', exam:'mnav-exams', 'exam-results':'mnav-exams', 'ncmhce-sim':'mnav-exams', 'ncmhce-dx':'mnav-exams', 'ncmhce-branch':'mnav-exams', theory:'mnav-study', flashcards:'mnav-study', 'theory-quiz':'mnav-study', reference:'mnav-reference', progress:'mnav-progress', 'study-plan':'mnav-plan' };
+      const mobileMap = { home:'mnav-home', study:'mnav-study', 'exam-select':'mnav-exams', exam:'mnav-exams', 'exam-results':'mnav-exams', 'ncmhce-sim':'mnav-exams', 'ncmhce-dx':'mnav-exams', 'ncmhce-branch':'mnav-exams', theory:'mnav-study', flashcards:'mnav-study', 'theory-quiz':'mnav-study', reference:'mnav-reference', progress:'mnav-progress', 'study-plan':'mnav-plan', audio:'mnav-audio' };
       document.querySelectorAll('.mobile-nav-item').forEach(l => l.classList.remove('active'));
       const mEl = document.getElementById(mobileMap[name]);
       if (mEl) mEl.classList.add('active');
@@ -5246,6 +5580,7 @@
       if (name === 'theory-quiz') { if (typeof refreshDueBadges === 'function') refreshDueBadges(); }
       if (name === 'progress') { if (typeof renderProgressDashboard === 'function') renderProgressDashboard(); }
       if (name === 'study-plan') { if (typeof renderStudyPlan === 'function') renderStudyPlan(); }
+      if (name === 'audio') { if (typeof _apRenderTrackGrid === 'function') _apRenderTrackGrid(); }
     }
 
     function showDomain(index) {
@@ -6883,12 +7218,535 @@
 
     renderDSMCards(dsmData);
 
+    /* ══════════════════════════════════════════════════════
+       AUDIO REVIEW ENGINE
+       Architecture: _ttsProvider (swappable) + _ap (state) + UI
+       To swap to pre-recorded audio, replace _ttsProvider only.
+       ══════════════════════════════════════════════════════ */
+
+    // ── Content tracks ──────────────────────────────────────
+    const audioTracks = [
+      {
+        id:'counseling-skills', badge:'Domain 01', title:'Counseling Skills & Interventions',
+        color:'linear-gradient(135deg,#1a4a44 0%,var(--teal-700) 100%)',
+        // audioUrl prefix for future file swap: 'audio/counseling-skills-{idx}.mp3'
+        sections:[
+          { heading:'The Therapeutic Relationship',
+            text:'The therapeutic relationship is the most consistently researched predictor of positive outcomes in counseling, across every theoretical orientation. Carl Rogers identified three core conditions that create the therapeutic climate: congruence, the therapist\'s genuine authenticity; unconditional positive regard, full acceptance of the client without conditions; and empathic understanding, accurately sensing and communicating the client\'s inner world. Research by Lambert suggests that specific techniques account for only about fifteen percent of outcome variance, while the therapeutic alliance accounts for thirty percent. For the NCE, know that Rogers described these conditions as necessary and sufficient — meaning all three must be present for client growth to occur, and no other techniques are strictly required.' },
+          { heading:'Active Listening Skills',
+            text:'Active listening is a cluster of skills that communicate full attention and deepen understanding. Minimal encouragers — brief responses like mm-hmm or tell me more — keep the client talking without redirecting. Open questions invite elaboration; closed questions elicit yes-or-no responses. Paraphrasing reflects the content of what was said; reflection of feeling mirrors the emotional layer beneath the words. Summarizing pulls together several themes at a natural pause point and helps the client organize their experience. On the NCE, open questions begin with what or how — not why, which sounds interrogative and can create defensiveness in the therapeutic relationship.' },
+          { heading:'Motivational Interviewing',
+            text:'Motivational Interviewing, developed by Miller and Rollnick, is a collaborative conversation style designed to strengthen a person\'s own motivation for change. The spirit of MI rests on four elements remembered as PACE: Partnership — not expert to client but side by side; Acceptance — affirming the client\'s autonomy and worth; Compassion — prioritizing the client\'s wellbeing; and Evocation — drawing out the client\'s own reasons and values. The four core techniques are called OARS: Open questions, Affirmations, Reflections, and Summaries. Change talk — client statements favoring change, remembered as DARN-CAT: Desire, Ability, Reason, Need, Commitment, Activation, and Taking steps — is what MI is designed to elicit. Sustain talk, which favors the status quo, is not confronted but reflected neutrally.' },
+          { heading:'Crisis Intervention & Safety Planning',
+            text:'Crisis intervention is a short-term, directive approach for clients temporarily unable to cope with a precipitating event. The goal is not to resolve the underlying issue but to restore at least pre-crisis functioning. A lethality assessment — remembered with SLAP — evaluates Specificity of the plan, Lethality of the method, Availability of the means, and Proximity to help or rescue. The Stanley-Brown Safety Planning Intervention is the evidence-based standard for suicidality. Its six steps are: recognizing warning signs; internal coping strategies; social contacts for distraction; people to ask for help; professionals and agencies to contact; and means restriction — reducing access to lethal means. For the NCE, lethality increases when a client has a specific plan, a lethal method, access to means, and social isolation.' },
+          { heading:'Group Counseling: Tuckman & Yalom',
+            text:'Group counseling draws on interpersonal dynamics to provide therapeutic change that individual counseling cannot fully replicate. Tuckman\'s stages — Forming, Storming, Norming, Performing, and Adjourning — describe the predictable progression of group cohesion and productivity. During Forming, members orient and test the leader. Storming brings conflict and power struggles. Norming establishes cohesion and shared norms. Performing is characterized by productive therapeutic work. Adjourning involves completion and processing of endings. Irving Yalom identified eleven therapeutic factors that make groups curative. The most tested are instillation of hope, universality, altruism, imitative behavior, interpersonal learning, and cohesiveness. For the NCE, cohesiveness is the most essential curative factor — the group equivalent of the therapeutic alliance in individual therapy.' },
+          { heading:'Transference & Countertransference',
+            text:'Transference occurs when a client unconsciously displaces onto the therapist feelings and expectations originally connected to significant figures from the past. It is a rich source of clinical information and, when interpreted skillfully, a primary vehicle for change in psychodynamic work. Countertransference refers to the therapist\'s own emotional reactions to the client — which may be triggered by the client\'s behavior, the therapist\'s unresolved issues, or the complementary pull of the client\'s transference. Modern relational theory views countertransference as inevitable and useful — not a failure but data about the relational field. The ethical response to countertransference is supervision and personal therapy, not avoidance. ACA Code section C.2.g requires counselors to monitor their own functioning and seek assistance when personal issues impair clinical effectiveness.' },
+        ]
+      },
+      {
+        id:'intake-assessment', badge:'Domain 02', title:'Intake, Assessment & Diagnosis',
+        color:'linear-gradient(135deg,#1a3a5c 0%,#2B6CB0 100%)',
+        sections:[
+          { heading:'Mental Status Examination: A BATE STP',
+            text:'The Mental Status Examination is a structured snapshot of a client\'s current psychological functioning — what the clinician observes during this specific encounter, not a personality assessment or history. It is organized into eight domains remembered with the mnemonic A BATE STP: Appearance, Behavior, Affect, Thought process, Thought content, Speech, Thought perception or sensorium, and Perception — hallucinations in any sensory modality. Appearance covers grooming, hygiene, dress, and apparent age. Affect is the observable range and intensity of emotional expression; mood is what the client reports subjectively. The key exam distinction: flat affect has near-absent range, blunted affect is reduced but present, and incongruent affect does not match the content being discussed. The MSE documents only what is observed in this session — never historical information.' },
+          { heading:'Thought Process & Content Abnormalities',
+            text:'Thought process describes how a client thinks; thought content describes what they think. Normal thought process is logical, linear, and goal-directed. Disorganized processes include loose associations, where ideas jump with little logical connection; flight of ideas, where thinking accelerates with more detectable connections, often seen in mania; tangentiality, where the client veers off topic and never returns; and circumstantiality, where they eventually return but through an excessively indirect path. Thought content abnormalities include delusions — fixed false beliefs not shared by the client\'s culture that resist logical correction — and hallucinations — perceptions without external stimuli. For the NCE, a thought insertion delusion involves the belief that external forces place thoughts into one\'s mind. A persecutory delusion involves the belief that one is being followed or harmed.' },
+          { heading:'PHQ-9, GAD-7, and PCL-5',
+            text:'Three validated screening tools are heavily tested on both the NCE and NCMHCE. The PHQ-9 is a nine-item self-report screen for major depression, scoring each DSM criterion from zero to three. A score of ten or higher warrants further clinical assessment; sensitivity and specificity are approximately eighty-eight percent at this cutoff. The GAD-7 is a seven-item screen for generalized anxiety disorder; a score of ten or above indicates probable GAD. The PCL-5 is a twenty-item self-report measure of PTSD symptoms aligned to DSM-5; a score of thirty-three or above indicates probable PTSD. Critical exam point: all three are screens, not diagnostic instruments. A positive screen initiates a comprehensive clinical assessment — it never establishes a diagnosis on its own.' },
+          { heading:'Substance Use Screening: CAGE & AUDIT',
+            text:'CAGE is a four-item screen for alcohol use disorder administered as a clinical interview. Each yes response scores one point. The four questions ask whether the client has ever felt the need to Cut down on drinking; been Annoyed by criticism; felt Guilty about drinking; or had an Eye-opener — a morning drink to steady nerves or combat a hangover. A score of two or more warrants comprehensive assessment. The Eye-opener item alone, if positive, is the strongest single indicator of physical dependence and should always prompt safety planning around medically supervised withdrawal. The AUDIT, a ten-item WHO instrument, is more sensitive for hazardous use and quantity patterns. The CAGE-AID substitutes "alcohol or drug use" in each question to extend the screen to all substances.' },
+          { heading:'Biopsychosocial Assessment & Cultural Formulation',
+            text:'A biopsychosocial assessment integrates three domains. Biological factors include medical history, medications, substance use, family psychiatric history, and neurological status. Psychological factors include cognitive functioning, personality style, emotional regulation, and trauma history. Social factors include family of origin, current support system, housing, employment, financial stressors, and community belonging. The DSM-5 Cultural Formulation Interview adds a critical fourth lens: how cultural background, identity, and explanatory models shape the client\'s experience of distress and expectations of care. On the NCMHCE, a biopsychosocial assessment is typically completed in Phase One of the intake. A failure to gather cultural formulation data — including the client\'s own explanation for their symptoms — is scored as a clinical error, not merely an omission.' },
+        ]
+      },
+      {
+        id:'treatment-planning', badge:'Domain 03', title:'Treatment Planning',
+        color:'linear-gradient(135deg,#3D2A1A 0%,var(--amber) 100%)',
+        sections:[
+          { heading:'SMART Goals',
+            text:'A treatment plan goal is the bridge between the clinical formulation and the therapeutic work. The SMART acronym defines five criteria for a well-written goal: Specific — operationally defined in observable, behavioral terms; Measurable — with a clearly defined metric for success; Attainable — realistic given the client\'s functioning, resources, and timeline; Relevant — directly tied to the presenting problem; and Time-bound — anchored to a specific review date or session count. Poorly written goals use vague language like "the client will feel better" or "improve communication." Well-written goals name the observable behavior change, the metric for success, and the timeline. For the NCMHCE, a treatment plan without a measurable objective is always scored as incomplete, regardless of how appropriate the intervention is.' },
+          { heading:'ASAM Criteria & Levels of Care',
+            text:'The American Society of Addiction Medicine criteria are the most widely used framework for determining the appropriate intensity of substance use treatment. Placement decisions are made across six dimensions: acute intoxication and withdrawal potential; biomedical conditions and complications; emotional, behavioral, or cognitive conditions; readiness to change; relapse or continued use potential; and recovery environment. The five levels of care progress in intensity: Level 0.5, Early Intervention; Level 1, Outpatient; Level 2, Intensive Outpatient or Partial Hospitalization; Level 3, Residential or Inpatient; and Level 4, Medically Managed Intensive Inpatient. The critical exam concept is step-down care: a client begins at the most intensive appropriate level and steps down as clinical goals are met.' },
+          { heading:'Safety Planning: The Stanley-Brown Model',
+            text:'The Stanley-Brown Safety Planning Intervention is the gold-standard evidence-based approach for suicidality. Unlike a no-suicide contract — which has no empirical support and shifts responsibility to the client — a safety plan is a collaboratively constructed document with six components. First, the client identifies personal warning signs that a crisis may be building. Second, internal coping strategies the client can use alone. Third, social contacts and settings that provide distraction. Fourth, people to contact for support. Fifth, professionals and crisis resources to contact. Sixth, means restriction — reducing access to lethal means, especially firearms. For the NCMHCE, the sequence matters: means restriction and professional contacts always appear in the plan before the crisis reaches an active emergency.' },
+          { heading:'Evidence-Based Treatment Matching',
+            text:'Matching the treatment approach to the presenting diagnosis is a core NCMHCE competency. For Major Depressive Disorder, first-line psychotherapy is Cognitive Behavioral Therapy, with strong evidence also for Behavioral Activation and Interpersonal Therapy. For PTSD, Prolonged Exposure and Cognitive Processing Therapy are gold standards; EMDR also has strong empirical support. For Generalized Anxiety Disorder, CBT with worry exposure and intolerance of uncertainty work is first-line. For OCD, Exposure and Response Prevention is the evidence-based standard. For Borderline Personality Disorder, Dialectical Behavior Therapy has the most extensive research base. For Alcohol Use Disorder, Motivational Enhancement Therapy and Twelve-Step Facilitation have the strongest evidence. For Anorexia Nervosa in adolescents, Family-Based Treatment is first-line.' },
+          { heading:'Co-Occurring Disorders & Integrated Treatment',
+            text:'Co-occurring disorders — the simultaneous presence of a mental health disorder and a substance use disorder — are the rule, not the exception, in community mental health settings. The historically dominant sequential model treated substance use first, then mental health. This model has been largely replaced by integrated dual-diagnosis treatment, which addresses both disorders simultaneously within the same treatment setting. Key evidence-based integrated models include Integrated Dual Diagnosis Treatment and Seeking Safety for trauma and SUD. On the NCMHCE, a clinical decision to delay mental health treatment until sobriety is achieved is typically scored as unnecessary or harmful — because untreated psychiatric symptoms are a primary driver of continued substance use, and treating them as separate problems produces worse outcomes.' },
+        ]
+      },
+      {
+        id:'ethics-practice', badge:'Domain 04', title:'Ethics & Professional Practice',
+        color:'linear-gradient(135deg,#2a1a3d 0%,#6B46C1 100%)',
+        sections:[
+          { heading:'ACA Code Structure: Sections A through I',
+            text:'The ACA Code of Ethics, most recently updated in 2014, is organized into nine sections labeled A through I. Section A governs the Counseling Relationship — including informed consent, client autonomy, and record keeping. Section B covers Confidentiality and Privacy, including the exceptions to confidentiality. Section C addresses Professional Responsibility — scope of practice, impairment, and advertising. Section D covers Relationships with Other Professionals. Section E governs Evaluation, Assessment, and Interpretation. Section F addresses Supervision, Training, and Teaching. Section G covers Research and Publication. Section H addresses Distance Counseling, Technology, and Social Media. Section I governs Resolving Ethical Issues. For the NCE, the most heavily tested sections are A, B, C, and E. Prioritize learning the specific situations — not just the section labels — that each governs.' },
+          { heading:'Confidentiality & Its Exceptions',
+            text:'Confidentiality is a legal and ethical duty that protects clients\' disclosures in counseling. It is not the same as privilege — privilege is the client\'s legal right to prevent disclosure in judicial proceedings, held by the client rather than the therapist. The most tested exceptions to confidentiality are: the duty to warn or protect when a client poses a serious, foreseeable threat to an identifiable third party — established by Tarasoff versus Regents of the University of California in 1976; mandatory reporting of suspected child abuse, elder abuse, or dependent adult abuse, where the threshold is reasonable suspicion, not certainty; and when a court orders disclosure. Breaking confidentiality to warn a third party does not require the client\'s consent. Always know your state law — it may be more specific than federal standards and may require both warning the victim and contacting law enforcement.' },
+          { heading:'Informed Consent: Elements & Special Populations',
+            text:'Informed consent is not a one-time event but an ongoing process throughout the counseling relationship. Ethically and legally valid informed consent requires three elements: disclosure of relevant information; comprehension by the client; and voluntariness — freely given without coercion. For minors, informed consent is typically obtained from parents or guardians, but assent — the minor\'s agreement to participate — should also be sought. Emancipated minors can provide their own consent in most jurisdictions. Clients with diminished capacity due to cognitive impairment, psychosis, or intoxication may not provide valid consent; in these cases, seek consent from a legally authorized representative. The ACA Code requires informed consent to include the nature and goals of counseling, limitations of confidentiality, fees, and the counselor\'s theoretical orientation.' },
+          { heading:'Professional Boundaries & Dual Relationships',
+            text:'Professional boundaries define the appropriate limits of the therapeutic relationship and protect the power differential inherent in counseling. A dual relationship — also called a multiple relationship — occurs when a counselor has a second role-based connection to a client outside the therapeutic frame, such as being the client\'s professor, employer, or family member. Not all dual relationships are prohibited by the ACA Code — some are unavoidable, particularly in rural settings or small communities. The governing principle is harm: counselors avoid dual relationships that could impair objectivity, harm the client, or exploit the therapeutic relationship. Sexual relationships with current clients are an absolute ethical violation. Sexual relationships with former clients for at least five years after termination are also prohibited. The test for any boundary question: does this serve the client\'s therapeutic interests, or does it primarily serve the counselor?' },
+          { heading:'Supervision, Impairment & Vicarious Liability',
+            text:'Supervision is both a professional development tool and a gatekeeping mechanism for the profession. The supervisor holds ethical and potentially legal responsibility for the supervisee\'s clinical work through a concept called vicarious liability — when a supervisee makes an error, a supervisor who provided inadequate oversight may share in the liability. ACA Code Section F requires supervisors to maintain competence in supervisory methods, disclose the supervisory relationship to clients, and monitor supervisee competence. Impairment — when a counselor\'s personal issues begin to negatively affect clinical effectiveness — is addressed in ACA Code C.2.g. Counselors have an ethical duty to monitor their own functioning and seek personal therapy, supervision, or leave when impaired. Failing to address impairment that harms clients is an ethical violation subject to licensure board sanction.' },
+        ]
+      },
+      {
+        id:'human-development', badge:'NCE Domain', title:'Human Growth & Development',
+        color:'linear-gradient(135deg,#1a3a2a 0%,#276749 100%)',
+        sections:[
+          { heading:'Erikson\'s Eight Psychosocial Stages',
+            text:'Erik Erikson\'s psychosocial theory describes development across eight stages, each defined by a central conflict between two opposing tendencies, with successful navigation producing a specific virtue. Trust versus Mistrust in infancy produces Hope. Autonomy versus Shame and Doubt in toddlerhood produces Will. Initiative versus Guilt in preschool produces Purpose. Industry versus Inferiority in school age produces Competence. Identity versus Role Confusion in adolescence produces Fidelity — this is the most commonly tested stage. Intimacy versus Isolation in young adulthood produces Love. Generativity versus Stagnation in middle adulthood produces Care. Integrity versus Despair in late adulthood produces Wisdom. For the NCE, also know the identity moratorium — the period of active exploration without commitment — and identity foreclosure — commitment without exploration, often driven by family pressure.' },
+          { heading:'Piaget\'s Four Stages of Cognitive Development',
+            text:'Jean Piaget described four stages of cognitive development. The Sensorimotor stage spans birth to approximately two years, during which infants learn through sensory experience and motor action. Object permanence — the understanding that objects continue to exist when out of sight — is the major milestone. The Preoperational stage, ages two to seven, is characterized by symbolic thinking and language but also by egocentrism, animism, and centration — focusing on only one aspect of a situation at a time. The Concrete Operational stage, ages seven to eleven, brings logical reasoning tied to concrete objects, conservation, seriation, and perspective-taking. The Formal Operational stage, from age eleven onward, introduces abstract reasoning, hypothetical thinking, and deductive logic. Conservation — understanding that quantity remains constant despite changes in appearance — is the hallmark milestone of the Concrete Operational stage.' },
+          { heading:'Attachment Theory: Bowlby & Ainsworth',
+            text:'John Bowlby\'s attachment theory holds that infants are biologically predisposed to seek proximity to caregivers when threatened — an attachment behavioral system that evolved to increase survival. Mary Ainsworth\'s Strange Situation experiments identified four attachment patterns. Secure attachment — seen in roughly sixty percent of infants — results from sensitive, responsive caregiving; the child uses the caregiver as a secure base for exploration. Anxious-ambivalent or Resistant attachment results from inconsistent responsiveness; the child is preoccupied and difficult to soothe. Avoidant attachment results from emotionally unavailable caregiving; the child appears indifferent to the caregiver. Disorganized attachment, identified by Mary Main, results from frightening or abusive caregiving — the caregiver is simultaneously the source of safety and fear, producing confused behavior. Adult attachment style maps onto these four childhood patterns.' },
+          { heading:'Kohlberg\'s Moral Development & Gilligan\'s Critique',
+            text:'Lawrence Kohlberg described six stages of moral development across three levels. At the Preconventional level, morality is based on consequences and self-interest: Stage 1 is punishment avoidance, and Stage 2 is instrumental purpose — what\'s in it for me. At the Conventional level, morality is based on social rules: Stage 3 is interpersonal conformity, and Stage 4 is law and order — upholding social institutions. At the Postconventional level, morality is based on universal principles: Stage 5 is social contract thinking, and Stage 6 — which Kohlberg considered largely theoretical — is universal ethical principles. Carol Gilligan critiqued Kohlberg for basing his theory on an all-male sample and for equating moral maturity with abstract justice reasoning. She proposed an ethic of care as an alternative moral framework more consistent with how women reason about real-world moral dilemmas.' },
+        ]
+      },
+      {
+        id:'assessment-testing', badge:'NCE Domain', title:'Assessment, Testing & Research',
+        color:'linear-gradient(135deg,#3a2a1a 0%,#B7791F 100%)',
+        sections:[
+          { heading:'Reliability: Types & What They Measure',
+            text:'Reliability refers to the consistency of test scores across different conditions. Test-retest reliability evaluates consistency over time by administering the same test twice and correlating the scores; it is affected by memory effects and genuine change in the construct. Internal consistency, measured with Cronbach\'s alpha, evaluates whether the items within a test are all measuring the same construct — a high alpha means items intercorrelate strongly. Split-half reliability compares scores on two halves of the test, corrected with the Spearman-Brown formula. Alternate forms reliability compares scores across two equivalent versions of the same test. Inter-rater reliability evaluates consistency between different scorers — critical for tests with subjective scoring rubrics. A reliability coefficient of point-seven or higher is generally considered adequate for clinical use; point-nine or above is expected for high-stakes decisions such as eligibility determinations.' },
+          { heading:'Validity: Content, Criterion, & Construct',
+            text:'Validity refers to the extent to which a test measures what it claims to measure for a specific purpose. Content validity assesses whether the test items adequately sample the full domain of the construct — typically evaluated through expert judgment rather than statistical methods. Criterion-related validity comes in two forms: concurrent validity, where the test score correlates with a criterion measured at the same time; and predictive validity, where the test score predicts a criterion measured in the future. Construct validity — considered the overarching form — evaluates whether the test accurately represents the theoretical construct it is designed to measure. Evidence for construct validity includes convergent validity, where the test correlates with related constructs, and discriminant validity, where it does not correlate with unrelated constructs. Importantly, a test can be highly reliable — perfectly consistent — while being entirely invalid if it consistently measures the wrong thing.' },
+          { heading:'SEM, Confidence Intervals, & Score Interpretation',
+            text:'No test is perfectly reliable, so every obtained score contains measurement error. The Standard Error of Measurement quantifies this error in the same units as the test score. The formula is: SEM equals the standard deviation multiplied by the square root of one minus the reliability coefficient. For example, an IQ test with a standard deviation of fifteen and reliability of point-ninety has an SEM of approximately four-point-seven-four. This means an obtained IQ of one hundred twelve likely reflects a true score somewhere in the range of one hundred seven to one hundred seventeen at the sixty-eight percent confidence level. To build a ninety-five percent confidence interval, multiply the SEM by one-point-ninety-six and add and subtract that product from the obtained score. Always report scores with their confidence intervals — a single number without an error band overstates the precision of measurement.' },
+          { heading:'Score Types: z, T, IQ, Stanine, & Percentile',
+            text:'Different test scales all describe positions on the same underlying normal distribution. The empirical rule states that approximately sixty-eight percent of scores fall within one standard deviation of the mean; ninety-five percent within two standard deviations; and ninety-nine-point-seven percent within three. A z-score expresses distance from the mean in standard deviation units. T-scores have a mean of fifty and standard deviation of ten. IQ-type scores, used by the Wechsler scales, have a mean of one hundred and standard deviation of fifteen. Stanines have a mean of five and standard deviation of two, with values ranging from one to nine. All of these are linear transformations of z-scores — a z of plus one is always the eighty-fourth percentile, always a T-score of sixty, always an IQ-type score of one hundred fifteen, regardless of the test name.' },
+          { heading:'Research Designs & Correlation',
+            text:'Research designs differ primarily in whether the researcher manipulates an independent variable and randomly assigns participants — which determines what causal conclusions can be drawn. In a true experiment, participants are randomly assigned to conditions, permitting causal inference. A quasi-experiment uses comparison groups without random assignment — stronger than a case study but weaker than a true experiment. Correlational research measures the relationship between variables without manipulation — it can identify associations but cannot establish causation. A correlation coefficient of point-three to point-five is moderate; above point-seven is considered large by Cohen\'s conventions. Even a very strong correlation does not permit a causal conclusion — a third variable may fully explain the relationship. The coefficient of determination, r-squared, tells you the percentage of shared variance between two variables.' },
+        ]
+      },
+      {
+        id:'mnemonics-review', badge:'Mnemonics', title:'Key Mnemonics Review',
+        color:'linear-gradient(135deg,#1a4a44 0%,#2D7D6F 100%)',
+        sections:[
+          { heading:'MSE: A BATE STP',
+            text:'The mnemonic A BATE STP organizes the eight domains of the Mental Status Examination. A is Appearance — physical presentation, grooming, hygiene, and clothing. B is Behavior — psychomotor activity, gait, and mannerisms. A is Affect — the observable emotional expression, rated by range, intensity, and congruence with content. T is Thought process — the organization, logic, and flow of thinking. E is Thought content — what the client is thinking, including delusions, obsessions, suicidal ideation, and homicidal ideation. S is Speech — rate, volume, prosody, and pressure. T is Thought perception or sensorium — orientation to person, place, time, and situation. P is Perception — hallucinations in any sensory modality. Remember: the MSE documents only what is observed in this session. It is a snapshot, not a portrait.' },
+          { heading:'OARS, SLAP, and SMART',
+            text:'Three high-yield mnemonics cover motivational interviewing, crisis assessment, and treatment planning. OARS names the four core MI techniques: Open questions, Affirmations, Reflections, and Summaries. These techniques evoke change talk and build the working alliance without imposing advice. SLAP assesses lethality in suicidal crisis: Specificity of plan, Lethality of method, Availability of means, and Proximity to rescue. Higher scores on each dimension indicate higher immediate risk. For treatment planning, SMART ensures goals are Specific, Measurable, Attainable, Relevant, and Time-bound. On the NCE, if a question presents a vague treatment goal — such as "the client will improve communication" — the correct answer will always involve making that goal measurable and time-bound before accepting it.' },
+          { heading:'SIG E CAPS & DIGFAST',
+            text:'SIG E CAPS covers the nine DSM-5 criteria for Major Depressive Disorder: Sleep disturbance, Interest loss or anhedonia, Guilt or worthlessness, Energy loss, Concentration impairment, Appetite or weight change, Psychomotor agitation or retardation, and Suicidal ideation. Five of nine criteria must be present for at least two weeks, and at least one must be depressed mood or anhedonia. DIGFAST covers DSM criteria for a Manic Episode: Distractibility, Impulsivity or Indiscretion, Grandiosity, Flight of ideas, Activity increase or Agitation, Sleep decrease, and Talkativeness or pressured speech. Three of these seven must be present — or four if mood is only irritable rather than elevated. Duration is at least seven days for mania, or any duration if hospitalization is required.' },
+          { heading:'Tuckman, Yalom, & Holland RIASEC',
+            text:'Three foundational frameworks each have a key mnemonic. Tuckman\'s group stages — Forming, Storming, Norming, Performing, Adjourning — describe the life cycle of a therapy group. Remember: Storming is necessary, not a sign the group has failed. Yalom\'s most tested curative factors are Universality — relief that others share your struggle — Instillation of hope, Altruism, and Cohesiveness, which is the most fundamental. Holland\'s RIASEC typology for career development lists six personality-environment types: Realistic, Investigative, Artistic, Social, Enterprising, and Conventional. Adjacent types on Holland\'s hexagon are most similar; opposite types are most different. The congruence principle holds that fit between person type and work environment type predicts job satisfaction and persistence. The Self-Directed Search and Strong Interest Inventory are both Holland-based assessment instruments.' },
+          { heading:'Exam-Day Mental Map',
+            text:'On the NCE and NCMHCE, having a mental map of high-yield content areas will help you work efficiently under time pressure. For ethics questions, identify the ACA section first — A through I — then choose the response that most protects client welfare, followed by consultation. For diagnosis questions, always check duration, distress or impairment, and rule-out criteria before selecting. For crisis situations, the priority order is always: safety first, then assessment of lethality with SLAP, then collaborative safety planning. For treatment planning questions, check that the goal meets all five SMART criteria. For assessment questions, remember that a screening tool score never establishes a diagnosis — it triggers a comprehensive clinical assessment. And remember: on the NCMHCE, the most commonly penalized choice is acting on a hunch without gathering information first. Assess before you act.' },
+        ]
+      },
+    ];
+
+    // ── Swappable TTS Provider ───────────────────────────────
+    // To swap to pre-recorded audio files:
+    //   1. Add `audioUrl` to each section object: { heading:'...', text:'...', audioUrl:'audio/track-idx.mp3' }
+    //   2. Replace _ttsProvider below with the AudioFileProvider implementation (commented out below)
+    const _ttsProvider = (() => {
+      let _rate = 1.0;
+      let _active = null; // current SpeechSynthesisUtterance
+
+      function _bestVoice() {
+        const vv = speechSynthesis.getVoices();
+        const pref = ['Samantha','Karen','Moira','Daniel','Alex','Fiona','Victoria'];
+        for (const name of pref) { const v = vv.find(v => v.name.includes(name) && v.lang.startsWith('en')); if (v) return v; }
+        return vv.find(v => v.lang.startsWith('en-US')) || vv.find(v => v.lang.startsWith('en')) || vv[0] || null;
+      }
+
+      return {
+        speak(text, onEnd) {
+          if (!window.speechSynthesis) { setTimeout(onEnd, 0); return; }
+          speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(text);
+          u.rate = _rate; u.lang = 'en-US';
+          const v = _bestVoice(); if (v) u.voice = v;
+          u.onend = () => { _active = null; onEnd(); };
+          u.onerror = () => { _active = null; onEnd(); };
+          _active = u;
+          speechSynthesis.speak(u);
+        },
+        pause()  { if (window.speechSynthesis) speechSynthesis.pause(); },
+        resume() { if (window.speechSynthesis) speechSynthesis.resume(); },
+        stop()   { if (window.speechSynthesis) { speechSynthesis.cancel(); _active = null; } },
+        setRate(r) { _rate = r; },
+        get speaking() { return !!(window.speechSynthesis && speechSynthesis.speaking); },
+        get paused()   { return !!(window.speechSynthesis && speechSynthesis.paused); },
+      };
+    })();
+
+    // Future audio-file provider — uncomment and assign to _ttsProvider to swap engines:
+    // const _ttsProvider = (() => {
+    //   const el = new Audio(); let _rate = 1.0;
+    //   return {
+    //     speak(text, onEnd, trackId, sectionIdx) {
+    //       const t = audioTracks.find(t => t.id === trackId);
+    //       if (!t || !t.sections[sectionIdx].audioUrl) { setTimeout(onEnd, 0); return; }
+    //       el.src = t.sections[sectionIdx].audioUrl; el.playbackRate = _rate;
+    //       el.onended = onEnd; el.onerror = onEnd; el.play();
+    //     },
+    //     pause()  { el.pause(); },
+    //     resume() { el.play(); },
+    //     stop()   { el.pause(); el.currentTime = 0; },
+    //     setRate(r) { _rate = r; el.playbackRate = r; },
+    //     get speaking() { return !el.paused; },
+    //     get paused()   { return el.paused && el.currentTime > 0; },
+    //   };
+    // })();
+
+    // ── Player state ─────────────────────────────────────────
+    const _ap = { trackIdx:0, sectionIdx:0, rate:1.0, active:false, playing:false, paused:false };
+
+    function _apT() { return audioTracks[_ap.trackIdx]; }
+    function _apS() { return _apT().sections[_ap.sectionIdx]; }
+    function _apLen() { return _apT().sections.length; }
+
+    function _apSpeak() {
+      const text = _apS().heading + '. ' + _apS().text;
+      _ttsProvider.speak(text, _apOnEnd);
+      _apUpdateUI();
+    }
+
+    function _apOnEnd() {
+      if (!_ap.playing) return; // stopped externally
+      const nxtSec = _ap.sectionIdx + 1;
+      if (nxtSec < _apLen()) {
+        _ap.sectionIdx = nxtSec; _apSpeak();
+      } else {
+        const nxtTrk = _ap.trackIdx + 1;
+        if (nxtTrk < audioTracks.length) {
+          _ap.trackIdx = nxtTrk; _ap.sectionIdx = 0; _apSpeak();
+        } else {
+          _ap.playing = false; _apUpdateUI(); // end of playlist
+        }
+      }
+    }
+
+    // ── Public player controls ───────────────────────────────
+    function apPlay(trackIdx, sectionIdx) {
+      if (trackIdx !== undefined) _ap.trackIdx = Math.max(0, Math.min(audioTracks.length - 1, trackIdx));
+      if (sectionIdx !== undefined) _ap.sectionIdx = Math.max(0, Math.min(_apLen() - 1, sectionIdx));
+      _ttsProvider.stop();
+      _ap.playing = true; _ap.paused = false; _ap.active = true;
+      _apSpeak();
+    }
+
+    function apTogglePlay() {
+      if (!_ap.active) { apPlay(0, 0); return; }
+      if (_ap.playing && !_ap.paused) {
+        _ttsProvider.pause(); _ap.paused = true; _ap.playing = false;
+      } else if (_ap.paused) {
+        // SpeechSynthesis resume is unreliable cross-browser — restart section if resume fails
+        _ttsProvider.resume();
+        _ap.paused = false; _ap.playing = true;
+        // Fallback: if not speaking after 200ms, restart current section
+        setTimeout(() => { if (_ap.playing && !_ttsProvider.speaking) _apSpeak(); }, 200);
+      } else {
+        apPlay(_ap.trackIdx, _ap.sectionIdx);
+      }
+      _apUpdateUI();
+    }
+
+    function apStop() { _ttsProvider.stop(); _ap.playing = false; _ap.paused = false; _ap.active = false; _apUpdateUI(); }
+
+    function apNextSection() {
+      const wasActive = _ap.playing || _ap.paused;
+      _ttsProvider.stop();
+      if (_ap.sectionIdx + 1 < _apLen()) { _ap.sectionIdx++; }
+      else if (_ap.trackIdx + 1 < audioTracks.length) { _ap.trackIdx++; _ap.sectionIdx = 0; }
+      _ap.paused = false;
+      if (wasActive) { _ap.playing = true; _apSpeak(); } else _apUpdateUI();
+    }
+
+    function apPrevSection() {
+      const wasActive = _ap.playing || _ap.paused;
+      _ttsProvider.stop();
+      _ap.sectionIdx = Math.max(0, _ap.sectionIdx - 1); _ap.paused = false;
+      if (wasActive) { _ap.playing = true; _apSpeak(); } else _apUpdateUI();
+    }
+
+    function apNextTrack() {
+      const wasActive = _ap.playing || _ap.paused;
+      _ttsProvider.stop();
+      if (_ap.trackIdx + 1 < audioTracks.length) { _ap.trackIdx++; _ap.sectionIdx = 0; }
+      _ap.paused = false;
+      if (wasActive) { _ap.playing = true; _apSpeak(); } else _apUpdateUI();
+    }
+
+    function apPrevTrack() {
+      const wasActive = _ap.playing || _ap.paused;
+      _ttsProvider.stop();
+      _ap.trackIdx = Math.max(0, _ap.trackIdx - 1); _ap.sectionIdx = 0; _ap.paused = false;
+      if (wasActive) { _ap.playing = true; _apSpeak(); } else _apUpdateUI();
+    }
+
+    function apSetRate(r) {
+      _ap.rate = r; _ttsProvider.setRate(r);
+      document.querySelectorAll('.ap-speed').forEach(b => b.classList.toggle('active', parseFloat(b.dataset.rate) === r));
+      // Restart current section at new rate if playing
+      if (_ap.playing && !_ap.paused) { _ttsProvider.stop(); _ap.playing = true; _apSpeak(); }
+    }
+
+    function apJumpTo(trackIdx, sectionIdx) {
+      apPlay(trackIdx, sectionIdx);
+    }
+
+    // ── UI rendering ─────────────────────────────────────────
+    function _apUpdateUI() {
+      const mp = document.getElementById('ap-mini');
+      if (!mp) return;
+      mp.style.display = _ap.active ? 'flex' : 'none';
+      if (!_ap.active) { _apRenderTrackGrid(); return; }
+
+      const track = _apT(), sec = _apS(), total = _apLen();
+      document.getElementById('ap-track-title').textContent = track.title;
+      document.getElementById('ap-section-label').textContent = sec.heading;
+      document.getElementById('ap-section-counter').textContent = (_ap.sectionIdx + 1) + ' / ' + total;
+      document.getElementById('ap-progress-bar').style.width = ((_ap.sectionIdx / total) * 100).toFixed(1) + '%';
+
+      const isPlaying = _ap.playing && !_ap.paused;
+      const btn = document.getElementById('ap-play-btn');
+      const icon = document.getElementById('ap-play-icon');
+      if (isPlaying) {
+        icon.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+        btn.setAttribute('aria-label','Pause');
+      } else {
+        icon.innerHTML = '<polygon points="5 3 19 12 5 21 5 3"/>';
+        btn.setAttribute('aria-label','Play');
+      }
+      _apRenderTrackGrid();
+    }
+
+    function _apRenderTrackGrid() {
+      const grid = document.getElementById('ap-track-grid');
+      if (!grid) return;
+      grid.innerHTML = audioTracks.map((t, ti) => {
+        const isActive = _ap.active && _ap.trackIdx === ti;
+        const secPills = t.sections.map((s, si) => {
+          const isCur = isActive && _ap.sectionIdx === si;
+          return `<button class="ap-section-pill${isCur?' active':''}" onclick="apJumpTo(${ti},${si})" title="Jump to: ${s.heading.replace(/'/g,'&#39;')}">${s.heading}</button>`;
+        }).join('');
+        const duration = t.sections.length + ' sections · ~' + (t.sections.length * 3) + '–' + (t.sections.length * 5) + ' min';
+        return `<div class="ap-track-card">
+          <div class="ap-track-card-hd" style="background:${t.color};">
+            <div class="ap-track-badge">${t.badge}</div>
+            <div class="ap-track-name">${t.title}</div>
+            <div style="font-size:0.7rem; color:rgba(255,255,255,0.5); margin-top:6px;">${duration}</div>
+          </div>
+          <div class="ap-track-card-bd">
+            <div style="margin-bottom:10px; display:flex; flex-wrap:wrap; gap:2px;">${secPills}</div>
+            <button class="ap-listen-btn${isActive && _ap.playing && !_ap.paused?' playing':''}" onclick="isActive && _ap.playing && !_ap.paused ? apTogglePlay() : apPlay(${ti},0)">
+              ${isActive && _ap.playing && !_ap.paused
+                ? '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Pause'
+                : '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> ' + (isActive ? 'Resume' : 'Play Track')}
+            </button>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    // Render grid on view-audio load
+    document.addEventListener('DOMContentLoaded', () => {
+      _apRenderTrackGrid();
+      // Chrome: ensure voices are loaded before first speak
+      if (window.speechSynthesis && speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = () => {};
+      }
+    });
+
     /* ══════════ REFERENCE TOOL PANEL SWITCHER ══════════ */
     function showRefTool(name) {
-      ['dsm','aca','theorists','meds','compare','mnemonics'].forEach(t => {
+      ['dsm','aca','theorists','meds','compare','mnemonics','stats'].forEach(t => {
         document.getElementById('ref-panel-' + t).style.display = name === t ? '' : 'none';
         document.getElementById('reftab-' + t).classList.toggle('active', name === t);
       });
+    }
+
+    /* ══════════ STATS HELPER ══════════ */
+
+    // Normal distribution helpers
+    function _shErf(x) {
+      const t = 1 / (1 + 0.3275911 * Math.abs(x));
+      const y = 1 - (0.254829592 + t*(-0.284496736 + t*(1.421413741 + t*(-1.453152027 + t*1.061405429)))) * t * Math.exp(-x*x);
+      return x < 0 ? -y : y;
+    }
+    function _shNormCDF(z) { return 0.5 * (1 + _shErf(z / Math.SQRT2)); }
+    function _shInvNorm(p) {
+      if (p <= 0) return -Infinity; if (p >= 1) return Infinity;
+      const a = [-3.969683028665376e1,2.209460984245205e2,-2.759285104469687e2,1.383577518672690e2,-3.066479806614716e1,2.506628277459239];
+      const b = [-5.447609879822406e1,1.615858368580409e2,-1.556989798598866e2,6.680131188771972e1,-1.328068155288572e1];
+      const c = [-7.784894002430293e-3,-3.223964580411365e-1,-2.400758277161838,-2.549732539343734,4.374664141464968,2.938163982698783];
+      const d = [7.784695709041462e-3,3.224671290700398e-1,2.445134137142996,3.754408661907416];
+      const plo=0.02425, phi=1-plo;
+      let q,r;
+      if(p<plo){q=Math.sqrt(-2*Math.log(p));return(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);}
+      if(p<=phi){q=p-0.5;r=q*q;return(((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q/((((( b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1);}
+      q=Math.sqrt(-2*Math.log(1-p));return-(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1);
+    }
+
+    // Render helpers
+    function _shStep(n, lbl, body) {
+      return `<div class="sh-step"><div class="sh-step-n">${n}</div><div style="flex:1;"><div class="sh-step-lbl">${lbl}</div><div class="sh-math">${body}</div></div></div>`;
+    }
+    function _shErr(id, msg) {
+      const el = document.getElementById(id);
+      el.innerHTML = `<p class="sh-err">${msg}</p>`;
+      el.style.display = '';
+    }
+    function _n(v,d=2){ return isNaN(v)?'—':Number(v).toFixed(d); }
+
+    // ── Calculator 1: SEM ──
+    function calcSEM() {
+      const sd = parseFloat(document.getElementById('sem-sd').value);
+      const r  = parseFloat(document.getElementById('sem-r').value);
+      if (isNaN(sd)||sd<=0||isNaN(r)||r<0||r>1) { _shErr('sem-output','Please enter a valid SD (> 0) and reliability coefficient (0 to 1).'); return; }
+      const inner    = 1 - r;
+      const sqrtInner = Math.sqrt(inner);
+      const sem      = sd * sqrtInner;
+      const out = document.getElementById('sem-output');
+      out.innerHTML = `
+        ${_shStep(1,'State the formula','SEM = SD &times; &radic;(1 &minus; r<sub>xx</sub>)')}
+        ${_shStep(2,'Plug in your values',`SEM = ${_n(sd,2)} &times; &radic;(1 &minus; ${_n(r,2)})`)}
+        ${_shStep(3,'Subtract inside the radical',`SEM = ${_n(sd,2)} &times; &radic;${_n(inner,4)}`)}
+        ${_shStep(4,'Compute the square root',`SEM = ${_n(sd,2)} &times; ${_n(sqrtInner,4)}`)}
+        ${_shStep(5,'Multiply',`SEM = <strong>${_n(sem,2)}</strong>`)}
+        <div class="sh-res">
+          <div class="sh-res-label">Standard Error of Measurement</div>
+          <div class="sh-res-val">SEM = ${_n(sem,2)}</div>
+          <div class="sh-res-note">An obtained score is within &plusmn;${_n(sem,2)} points of the true score roughly 68% of the time. Use this SEM in Calculator 2 to build a confidence interval. Smaller SEM = more precise measurement.</div>
+        </div>`;
+      out.style.display='';
+    }
+
+    // ── Calculator 2: Confidence Intervals ──
+    function calcCI() {
+      const x    = parseFloat(document.getElementById('ci-x').value);
+      const sem  = parseFloat(document.getElementById('ci-sem').value);
+      const lvl  = parseInt(document.getElementById('ci-level').value);
+      if (isNaN(x)||isNaN(sem)||sem<=0) { _shErr('ci-output','Please enter a valid obtained score and SEM (SEM must be > 0).'); return; }
+      const zMap = {68:1.000,85:1.440,90:1.645,95:1.960,99:2.576};
+      const zc   = zMap[lvl];
+      const mg   = zc * sem;
+      const lo   = x - mg, hi = x + mg;
+      const out  = document.getElementById('ci-output');
+      out.innerHTML = `
+        ${_shStep(1,'State the formula','CI = X &plusmn; (z* &times; SEM)')}
+        ${_shStep(2,`Look up z* for ${lvl}% confidence`,`z* = ${zc} &nbsp; &mdash; &nbsp; this captures the middle ${lvl}% of the normal distribution`)}
+        ${_shStep(3,'Plug in values',`CI = ${_n(x,2)} &plusmn; (${zc} &times; ${_n(sem,2)})`)}
+        ${_shStep(4,'Multiply z* &times; SEM',`CI = ${_n(x,2)} &plusmn; ${_n(mg,2)}`)}
+        ${_shStep(5,'Compute lower bound',`Lower = ${_n(x,2)} &minus; ${_n(mg,2)} = <strong>${_n(lo,2)}</strong>`)}
+        ${_shStep(6,'Compute upper bound',`Upper = ${_n(x,2)} + ${_n(mg,2)} = <strong>${_n(hi,2)}</strong>`)}
+        <div class="sh-res">
+          <div class="sh-res-label">${lvl}% Confidence Interval</div>
+          <div class="sh-res-val">${_n(lo,2)} &mdash; ${_n(hi,2)}</div>
+          <div class="sh-res-note">We are ${lvl}% confident the client's <em>true score</em> falls between ${_n(lo,2)} and ${_n(hi,2)}. The obtained score of ${_n(x,2)} is the best single estimate; the CI acknowledges the uncertainty built into every measurement.</div>
+        </div>
+        <div class="sh-tip"><strong>Exam tip:</strong> "95% confident the true score is in this range" means: if we built this CI infinitely many times across repeated administrations, 95% of those intervals would capture the true score. It does <em>not</em> mean there is a 95% probability the true score is any particular single value.</div>`;
+      out.style.display='';
+    }
+
+    // ── Calculator 3: Score Conversions ──
+    let _scoreType = 'raw';
+    function setScoreType(type) {
+      _scoreType = type;
+      ['raw','z','t','iq','pct'].forEach(t => document.getElementById('stype-'+t).classList.toggle('active',t===type));
+      const tpl = {
+        raw: `<div class="sh-field"><label class="sh-label" for="sv-x">Raw Score (X)</label><input class="sh-input" id="sv-x" type="number" placeholder="e.g. 68"></div><div class="sh-field"><label class="sh-label" for="sv-m">Test Mean (M)</label><input class="sh-input" id="sv-m" type="number" placeholder="e.g. 50"></div><div class="sh-field"><label class="sh-label" for="sv-sd">Test SD</label><input class="sh-input" id="sv-sd" type="number" placeholder="e.g. 10" min="0.01"></div>`,
+        z:   `<div class="sh-field"><label class="sh-label" for="sv-z">z-Score</label><input class="sh-input" id="sv-z" type="number" placeholder="e.g. 1.5" step="0.01"><span class="sh-hint">Mean=0, SD=1</span></div>`,
+        t:   `<div class="sh-field"><label class="sh-label" for="sv-t">T-Score</label><input class="sh-input" id="sv-t" type="number" placeholder="e.g. 65" step="0.1"><span class="sh-hint">Mean=50, SD=10 (e.g. MMPI-2)</span></div>`,
+        iq:  `<div class="sh-field"><label class="sh-label" for="sv-iq">IQ-type Score</label><input class="sh-input" id="sv-iq" type="number" placeholder="e.g. 115" step="0.1"><span class="sh-hint">Mean=100, SD=15 (Wechsler scales)</span></div>`,
+        pct: `<div class="sh-field"><label class="sh-label" for="sv-pct">Percentile Rank</label><input class="sh-input" id="sv-pct" type="number" placeholder="e.g. 84" min="1" max="99" step="0.1"><span class="sh-hint">Enter 1–99</span></div>`
+      };
+      document.getElementById('score-inputs').innerHTML = tpl[type]||tpl.raw;
+      document.getElementById('score-output').style.display='none';
+    }
+    function calcScoreConv() {
+      let z, fromStep;
+      try {
+        switch(_scoreType) {
+          case 'raw': { const X=parseFloat(document.getElementById('sv-x').value),M=parseFloat(document.getElementById('sv-m').value),S=parseFloat(document.getElementById('sv-sd').value); if(isNaN(X)||isNaN(M)||isNaN(S)||S<=0){_shErr('score-output','Fill all three fields; SD must be > 0.');return;} z=(X-M)/S; fromStep=`z = (X &minus; M) / SD = (${_n(X,2)} &minus; ${_n(M,2)}) / ${_n(S,2)} = ${_n(X-M,2)} / ${_n(S,2)} = <strong>${_n(z,4)}</strong>`; break; }
+          case 'z':   { z=parseFloat(document.getElementById('sv-z').value); if(isNaN(z)){_shErr('score-output','Enter a z-score.');return;} fromStep=`z = ${_n(z,4)} (entered directly)`; break; }
+          case 't':   { const T=parseFloat(document.getElementById('sv-t').value); if(isNaN(T)){_shErr('score-output','Enter a T-score.');return;} z=(T-50)/10; fromStep=`z = (T &minus; 50) / 10 = (${_n(T,2)} &minus; 50) / 10 = ${_n(T-50,2)} / 10 = <strong>${_n(z,4)}</strong>`; break; }
+          case 'iq':  { const IQ=parseFloat(document.getElementById('sv-iq').value); if(isNaN(IQ)){_shErr('score-output','Enter an IQ-type score.');return;} z=(IQ-100)/15; fromStep=`z = (IQ &minus; 100) / 15 = (${_n(IQ,2)} &minus; 100) / 15 = ${_n(IQ-100,2)} / 15 = <strong>${_n(z,4)}</strong>`; break; }
+          case 'pct': { const P=parseFloat(document.getElementById('sv-pct').value); if(isNaN(P)||P<=0||P>=100){_shErr('score-output','Enter a percentile between 1 and 99.');return;} z=_shInvNorm(P/100); fromStep=`z = &Phi;<sup>&minus;1</sup>(${_n(P,1)}%) &asymp; <strong>${_n(z,4)}</strong> (inverse normal CDF)`; break; }
+        }
+      } catch(e){_shErr('score-output','Calculation error. Please check your inputs.');return;}
+      const T2=50+10*z, IQ2=100+15*z, stan=Math.max(1,Math.min(9,Math.round(5+2*z))), pct=_shNormCDF(z)*100;
+      const loc = Math.abs(z)<=1?'within one standard deviation of the mean — the broad average range':Math.abs(z)<=2?'between 1 and 2 standard deviations from the mean — a notable but not extreme score':'more than 2 standard deviations from the mean — a statistically unusual score';
+      const out = document.getElementById('score-output');
+      out.innerHTML=`
+        ${_shStep(1,'Convert input to z-score (the common currency)',fromStep)}
+        ${_shStep(2,'Compute T-score — Mean 50, SD 10',`T = 50 + 10 &times; ${_n(z,4)} = 50 + ${_n(10*z,3)} = <strong>${_n(T2,1)}</strong>`)}
+        ${_shStep(3,'Compute IQ-type score — Mean 100, SD 15 (Wechsler scale)',`IQ = 100 + 15 &times; ${_n(z,4)} = 100 + ${_n(15*z,3)} = <strong>${_n(IQ2,1)}</strong>`)}
+        ${_shStep(4,'Compute Stanine — Mean 5, SD 2 — round, clamp 1&ndash;9',`Stanine = round(5 + 2 &times; ${_n(z,4)}) = round(${_n(5+2*z,4)}) = <strong>${stan}</strong>`)}
+        ${_shStep(5,'Find percentile via the normal CDF: &Phi;(z)',`&Phi;(${_n(z,4)}) &times; 100 = <strong>${_n(pct,1)}th percentile</strong>`)}
+        <div class="sh-grid">
+          <div class="sh-grid-item"><div class="sh-grid-val">${_n(z,2)}</div><div class="sh-grid-name">z-score</div></div>
+          <div class="sh-grid-item hi"><div class="sh-grid-val">${_n(T2,1)}</div><div class="sh-grid-name">T-score</div></div>
+          <div class="sh-grid-item hi"><div class="sh-grid-val">${_n(IQ2,1)}</div><div class="sh-grid-name">IQ-type</div></div>
+          <div class="sh-grid-item"><div class="sh-grid-val">${stan}</div><div class="sh-grid-name">Stanine</div></div>
+          <div class="sh-grid-item hi"><div class="sh-grid-val">${_n(pct,1)}%</div><div class="sh-grid-name">Percentile</div></div>
+        </div>
+        <div class="sh-interp">z = ${_n(z,2)} places this score at the <strong>${_n(pct,1)}th percentile</strong> — it exceeds ${_n(pct,1)}% of the reference population. It falls ${loc}.</div>`;
+      out.style.display='';
+    }
+
+    // ── Calculator 4: Correlation Coefficient ──
+    function calcCorr() {
+      const r = parseFloat(document.getElementById('corr-r').value);
+      if (isNaN(r)||r<-1||r>1) { _shErr('corr-output','Enter a value between &minus;1 and +1.'); return; }
+      const absR=Math.abs(r), r2=r*r, r2pct=(r2*100);
+      const dir=r>0?'Positive':r<0?'Negative':'Zero';
+      const dirDesc=r>0?'As one variable increases, the other tends to increase as well.':r<0?'As one variable increases, the other tends to decrease.':'No linear relationship between the variables.';
+      const mags = [{lbl:'Trivial',thr:0.10},{lbl:'Small',thr:0.30},{lbl:'Moderate',thr:0.50},{lbl:'Large',thr:0.70},{lbl:'Very Large',thr:Infinity}];
+      const mag = mags.find(m=>absR<m.thr)||mags[4];
+      const magDesc = {Trivial:'Practically no linear relationship.',Small:'A weak relationship — present, but not practically important in most clinical contexts.',Moderate:'A meaningful relationship worth noting in clinical and research contexts.',Large:'A strong relationship with clear practical significance.',Very Large:'A very strong relationship. Note: |r| &ge; 0.70 is also the conventional threshold for acceptable test reliability.'}[mag.lbl];
+      const maxV=Math.sqrt(absR);
+      const pills=mags.map(m=>`<span class="sh-mag-pill" style="background:${m.lbl===mag.lbl?'var(--teal-700)':'rgba(26,74,68,0.07)'}; color:${m.lbl===mag.lbl?'#fff':'var(--text-mid)'};">${m.lbl}</span>`).join('');
+      const out=document.getElementById('corr-output');
+      out.innerHTML=`
+        ${_shStep(1,'Identify the direction',`r = ${_n(r,2)} &rarr; <strong>${dir}</strong><br><span style="font-size:0.82rem;color:var(--text-mid);">${dirDesc}</span>`)}
+        ${_shStep(2,'Determine the magnitude (Cohen 1988 conventions)',`<strong>${mag.lbl}</strong> (|r| = ${_n(absR,2)})<br><span style="font-size:0.82rem;color:var(--text-mid);">${magDesc}</span><div class="sh-mag-pills">${pills}</div>`)}
+        ${_shStep(3,'Compute the coefficient of determination (r&sup2;)',`r&sup2; = (${_n(r,2)})&sup2; = ${_n(r2,4)} = <strong>${_n(r2pct,1)}% shared variance</strong>`)}
+        <div class="sh-interp"><strong>${_n(r2pct,1)}%</strong> of the variability in one variable is statistically accounted for by the other. The remaining <strong>${_n(100-r2pct,1)}%</strong> is due to other factors or measurement error.</div>
+        ${_shStep(4,'If r is a reliability coefficient — find the validity ceiling',`Max validity = &radic;${_n(absR,2)} = <strong>${_n(maxV,3)}</strong>`)}
+        <div class="sh-interp">If r = ${_n(r,2)} is a <em>reliability</em> coefficient, then a test built on it can achieve a validity coefficient no higher than ${_n(maxV,3)}. Reliability sets the upper bound — measurement error limits how well a test can predict any external criterion.</div>
+        <div class="sh-tip"><strong>Correlation &ne; Causation:</strong> A correlation shows two variables move together; it does not tell you which (if either) causes the other, or whether a third variable explains the relationship.</div>`;
+      out.style.display='';
+    }
+
+    // ── Calculator 5: Reliability–Validity Ceiling ──
+    function calcRV() {
+      const r = parseFloat(document.getElementById('rv-r').value);
+      if (isNaN(r)||r<0||r>1) { _shErr('rv-output','Enter a reliability coefficient between 0 and 1.'); return; }
+      const maxV=Math.sqrt(r);
+      const rows=[0.50,0.60,0.70,0.80,0.85,0.90,0.95,0.99].map(rv=>{
+        const mv=Math.sqrt(rv), isMe=Math.abs(rv-r)<0.005;
+        const rating=rv>=0.90?'Excellent':rv>=0.80?'Good':rv>=0.70?'Adequate':'Poor for clinical use';
+        return `<tr style="${isMe?'background:rgba(45,125,111,0.09);font-weight:700;':''}"><td style="padding:5px 10px;border-bottom:1px solid rgba(26,74,68,0.07);">${rv.toFixed(2)}</td><td style="padding:5px 10px;border-bottom:1px solid rgba(26,74,68,0.07);">${mv.toFixed(3)}</td><td style="padding:5px 10px;border-bottom:1px solid rgba(26,74,68,0.07);">${(rv*100).toFixed(0)}%</td><td style="padding:5px 10px;border-bottom:1px solid rgba(26,74,68,0.07);color:var(--text-mid);">${rating}</td></tr>`;
+      }).join('');
+      const out=document.getElementById('rv-output');
+      out.innerHTML=`
+        ${_shStep(1,'Recall the formula for the validity ceiling','r<sub>validity(max)</sub> = &radic;r<sub>reliability</sub>')}
+        ${_shStep(2,'Plug in the reliability coefficient',`r<sub>validity(max)</sub> = &radic;${_n(r,2)}`)}
+        ${_shStep(3,'Compute the square root',`r<sub>validity(max)</sub> = <strong>${_n(maxV,3)}</strong>`)}
+        <div class="sh-interp">With reliability = ${_n(r,2)}, the highest validity coefficient this test could <em>theoretically</em> achieve is <strong>${_n(maxV,3)}</strong>. No amount of improved criterion measurement can push validity beyond this while the test remains at this reliability level.</div>
+        <div style="margin-top:16px;">
+          <div style="font-size:0.82rem;font-weight:700;color:var(--teal-900);margin-bottom:8px;">Validity Ceilings at Common Reliability Levels</div>
+          <table style="width:100%;border-collapse:collapse;font-size:0.82rem;color:var(--text-dark);">
+            <thead><tr style="background:var(--teal-50);color:var(--teal-700);font-weight:700;font-size:0.74rem;text-transform:uppercase;letter-spacing:0.04em;">
+              <th style="padding:7px 10px;text-align:left;border-bottom:1.5px solid rgba(45,125,111,0.15);">Reliability</th>
+              <th style="padding:7px 10px;text-align:left;border-bottom:1.5px solid rgba(45,125,111,0.15);">Max Validity</th>
+              <th style="padding:7px 10px;text-align:left;border-bottom:1.5px solid rgba(45,125,111,0.15);">Self-correlation</th>
+              <th style="padding:7px 10px;text-align:left;border-bottom:1.5px solid rgba(45,125,111,0.15);">Rating</th>
+            </tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+        <div class="sh-note"><strong>Key exam point:</strong> Reliability is necessary but <em>not sufficient</em> for validity. A test can be perfectly consistent (reliable) while measuring the wrong construct entirely — so reliable but invalid. Validity always requires reliability first; a valid test is always reliable, but a reliable test is not always valid.</div>`;
+      out.style.display='';
     }
 
     /* ══════════ ACA ETHICS CODE ══════════ */
@@ -10015,6 +10873,196 @@
               { text:'Hospitalize Jaylen immediately without conducting a full risk assessment', score:-2, tag:'harm', feedback:'Harmful: hospitalization is the most restrictive level of care and should be based on a completed risk assessment. Acting without assessment may be unnecessary, traumatizing, and undermine future help-seeking.' },
               { text:'Tell Jaylen\'s mother everything he shared in session to ensure transparency', score:-2, tag:'harm', feedback:'Harmful: disclosing full session content violates Jaylen\'s confidentiality unnecessarily. The ethical standard is to share what is needed for safety — not a full disclosure. This would destroy the therapeutic alliance.' },
               { text:'Psychoeducation about depression for Jaylen and, with his consent, his family', score:1, tag:'good', feedback:'Appropriate: psychoeducation reduces self-blame, increases treatment adherence, and helps caregivers understand what their child is experiencing.' },
+            ]
+          }
+        ]
+      },
+      {
+        id:'case4', title:'Priya, 21 — The College Sophomore', badge:'Eating Disorders',
+        presenting:`Priya, 21, is a second-year pre-med student referred to the campus counseling center by her roommate, who told a resident advisor she was "worried about Priya's eating." Priya arrives dismissive: "I'm fine — my roommate overreacted." She is 5'4" and currently weighs 96 lbs (BMI ≈ 16.5). She reports restricting her intake to fewer than 800 calories per day, exercising two hours daily including 5 AM runs, and describes herself as "not where I want to be yet" when asked about her weight. She denies binge eating or purging. She has not menstruated in five months. Her parents, both physicians, immigrated from India before she was born; she describes them as "very proud but also watching everything I do." She endorses persistent fatigue, cold intolerance, and difficulty concentrating in her organic chemistry course. She denies suicidal ideation. When asked what she eats in a day, she lists two rice cakes, black coffee, and "maybe an apple."`,
+        phases:[
+          { id:'intake', label:'Phase 1', title:'Information Gathering', badge:'Intake',
+            instruction:'Select ALL items you would include in the initial intake with Priya. Some choices are clinically appropriate; others are unnecessary or harmful.',
+            type:'multi',
+            options:[
+              { text:'Assess current weight, height, and rate of recent weight loss', score:2, tag:'crit', feedback:'Critical: BMI ≈ 16.5 falls in the DSM-5 Moderate severity range for AN (16.0–16.99). Rate of weight loss is as clinically important as current BMI — rapid loss carries higher cardiac risk even at less extreme weights.' },
+              { text:'Arrange or assess vital signs — heart rate, blood pressure (orthostatic), temperature', score:2, tag:'crit', feedback:'Critical: medical instability in AN (bradycardia <50 bpm, orthostatic hypotension, hypothermia) is a primary criterion for inpatient medical stabilization. Even in an outpatient setting, the counselor must coordinate this assessment before any other clinical planning.' },
+              { text:'Screen for compensatory behaviors — purging, laxative use, diuretics, excessive exercise as compensation', score:2, tag:'crit', feedback:'Critical: distinguishing AN Restricting Type from AN Binge-Purge Type changes the medical risk profile. Purging causes hypokalemia that can cause fatal cardiac arrhythmia — a distinct and more acute medical risk than restriction alone.' },
+              { text:'Assess menstrual history — last period and duration of amenorrhea', score:1, tag:'good', feedback:'Appropriate: five months of amenorrhea signals significant hormonal disruption from malnutrition and is relevant to both medical monitoring and the severity picture.' },
+              { text:'Explore eating behaviors — food rules, "safe" foods, and a detailed account of a typical day of eating', score:1, tag:'good', feedback:'Clinically relevant: the specific cognitive rules around food (safe vs. unsafe, rituals, caloric thresholds) are direct targets for CBT-E and essential for treatment planning.' },
+              { text:'Assess the body image disturbance — how she perceives her current weight and shape', score:1, tag:'good', feedback:'Core diagnostic criterion: DSM-5 AN Criterion C requires disturbance in how body weight or shape is experienced. "Not where I want to be yet" at BMI 16.5 confirms the distortion.' },
+              { text:'Screen for suicidal ideation and self-harm', score:1, tag:'good', feedback:'Appropriate: AN carries the highest mortality rate of any psychiatric diagnosis, with a significant proportion from suicide. Routine safety screening is always indicated regardless of presenting concern.' },
+              { text:'Explore cultural and family context — parents\' expectations and the meaning of achievement and body in her family', score:1, tag:'good', feedback:'Relevant: first-generation family achievement expectations, cultural body norms, and physician-parent dynamics intersect significantly with AN etiology and must be incorporated into the formulation.' },
+              { text:'Assess prior eating disorder history and prior treatment attempts', score:1, tag:'good', feedback:'Relevant: prior episodes, treatment attempts, and what has and has not worked inform prognosis, treatment sequencing, and engagement strategies.' },
+              { text:'Accept her self-report that she is "fine" and defer clinical assessment since she did not self-refer', score:-2, tag:'harm', feedback:'Harmful: AN is ego-syntonic — clients typically minimize severity, deny impairment, and present dismissively. Taking "I\'m fine" at face value in the presence of objective markers (BMI 16.5, amenorrhea, fatigue, food restriction) is a clinical and ethical failure.' },
+              { text:'Directly confront her: "You\'re clearly not fine — your BMI is dangerously low and you need to eat more"', score:-2, tag:'harm', feedback:'Harmful: confrontational challenges to the eating disorder in the first session with an ambivalent, minimizing client reliably trigger defensiveness and dropout. Motivational and collaborative approaches are required in early AN treatment.' },
+              { text:'Provide dietary guidance — recommend a high-protein meal plan to help her gain weight safely', score:-2, tag:'harm', feedback:'Harmful on two counts: dietary advice is outside the counselor\'s scope of practice (the domain of a registered dietitian); and any conversation that treats the situation as a "diet adjustment" rather than a medical-psychiatric emergency understates the severity.' },
+            ]
+          },
+          { id:'assessment', label:'Phase 2', title:'Assessment & Conceptualization', badge:'Assessment',
+            instruction:'Select all assessments and conceptualization steps appropriate for this stage with Priya.',
+            type:'multi',
+            options:[
+              { text:'Eating Disorder Examination Questionnaire (EDE-Q)', score:2, tag:'crit', feedback:'Critical: the EDE-Q is the most widely used validated self-report measure for eating disorder psychopathology, assessing restraint, eating concern, weight concern, and shape concern. Essential for baseline severity and diagnostic confirmation.' },
+              { text:'Medical risk assessment — coordinate referral to a physician for labs (electrolytes, CBC, ECG) and vital signs documentation', score:2, tag:'crit', feedback:'Critical: AN requires medical monitoring by a physician. Hypokalemia, hypophosphatemia, anemia, and QTc prolongation are life-threatening. Failing to coordinate medical evaluation before outpatient treatment begins is a clinical and ethical error.' },
+              { text:'Motivational readiness and stage of change assessment', score:2, tag:'crit', feedback:'Critical for AN: most clients present in precontemplation or contemplation. Readiness assessment determines whether to lead with Motivational Enhancement Therapy before CBT-E — a sequencing decision that significantly affects treatment retention.' },
+              { text:'PHQ-9 or equivalent depression screener', score:1, tag:'good', feedback:'Appropriate: major depression co-occurs in over 50% of AN cases. This affects treatment planning — note that SSRIs are ineffective for AN in the malnourished state and pharmacological decisions belong to the prescribing provider.' },
+              { text:'Biopsychosocial assessment including cultural formulation', score:1, tag:'good', feedback:'Appropriate and comprehensive: must include cultural context, family dynamics, achievement pressures, and the specific meaning of thinness, control, and success in Priya\'s family environment.' },
+              { text:'Assess family availability and willingness to participate in treatment', score:1, tag:'good', feedback:'Relevant: Family-Based Treatment (FBT) is first-line for adolescent AN and has adapted protocols for young adults. Even if FBT is not used, family involvement is a major prognostic factor.' },
+              { text:'MMPI-2 as the primary assessment battery', score:-1, tag:'bad', feedback:'Unnecessary: not indicated as first-line for eating disorder evaluation. Time-consuming and not specific to ED psychopathology. EDE-Q plus clinical interview is the standard.' },
+              { text:'Defer all formal assessment because she seems resistant and the alliance is fragile', score:-2, tag:'harm', feedback:'Harmful: resistance is expected and normative in AN due to its ego-syntonic nature. Omitting assessment due to client ambivalence leaves the counselor without the clinical data needed to evaluate severity, determine level of care, and guide treatment.' },
+            ]
+          },
+          { id:'diagnosis', label:'Phase 3', title:'Diagnosis', badge:'Diagnosis',
+            instruction:'Select the MOST accurate DSM-5 diagnosis for Priya based on the case presentation.',
+            type:'single',
+            options:[
+              { text:'Bulimia Nervosa', score:-2, tag:'harm', feedback:'Incorrect: BN requires recurrent binge eating episodes plus compensatory behaviors. Priya restricts and exercises but explicitly denies bingeing and purging. The absence of binge-purge cycles rules out BN entirely.' },
+              { text:'Avoidant/Restrictive Food Intake Disorder (ARFID)', score:-2, tag:'harm', feedback:'Incorrect: ARFID is characterized by restriction based on sensory properties, fear of aversive consequences (choking), or low appetite interest — critically, without fear of weight gain or body image disturbance. Priya\'s explicit fear of gaining weight and her distorted body perception ("not where I want to be yet" at BMI 16.5) confirm AN, not ARFID.' },
+              { text:'Anorexia Nervosa, Restricting Type, Moderate severity', score:2, tag:'crit', feedback:'Correct: all three DSM-5 AN criteria are met — (A) restriction leading to significantly low body weight (BMI ≈ 16.5), (B) intense fear of gaining weight despite being underweight ("not where I want to be yet"), (C) disturbance in the experience of body weight/shape. No binge or purge episodes = Restricting Type. BMI 16.0–16.99 = Moderate severity per DSM-5.' },
+              { text:'Other Specified Feeding or Eating Disorder (OSFED)', score:-1, tag:'harm', feedback:'Incorrect: OSFED is a residual category for presentations that do not meet full diagnostic criteria. Priya meets all three AN criteria. Applying OSFED here understates the severity and clinical urgency and would inappropriately influence level-of-care determination.' },
+              { text:'Body Dysmorphic Disorder', score:-1, tag:'harm', feedback:'Incorrect: BDD involves preoccupation with perceived defects in physical appearance broadly — not specifically with weight or shape. AN involves a distinct cognitive disturbance specifically about body weight, fear of gaining weight, and the experience of one\'s own body. Different etiology, course, and treatment.' },
+            ]
+          },
+          { id:'treatment', label:'Phase 4', title:'Treatment Planning', badge:'Treatment',
+            instruction:'Select all treatment elements appropriate for Priya\'s initial treatment plan.',
+            type:'multi',
+            options:[
+              { text:'Conduct a formal level-of-care determination — outpatient, IOP, PHP, residential, or medical inpatient', score:2, tag:'crit', feedback:'Critical: at BMI 16.5, Priya is at moderate medical risk. LOC is determined not by BMI alone but by rate of weight loss, vital sign stability, prior treatment history, and home environment. This determination must happen before any outpatient treatment begins.' },
+              { text:'Immediate medical referral — physician evaluation including labs, ECG, and vital signs', score:2, tag:'crit', feedback:'Critical: five months of amenorrhea, BMI 16.5, cold intolerance, and fatigue constitute active medical risk. Medical coordination is not optional and must not wait several sessions for rapport to develop.' },
+              { text:'Evidence-based eating disorder psychotherapy — CBT-Enhanced (CBT-E) once motivational readiness permits; Motivational Enhancement Therapy (MET) adapted for AN first if client is in precontemplation', score:2, tag:'crit', feedback:'Critical: CBT-E (Fairburn) is the most evidence-based outpatient psychotherapy for AN. Sequencing matters: MET before CBT-E when the client is ambivalent or precontemplative. Skipping the motivational phase leads to high dropout.' },
+              { text:'Referral to a registered dietitian for medical nutrition therapy', score:1, tag:'good', feedback:'Appropriate: nutrition rehabilitation must be provided by an RD — not the counselor. Coordinated team care (counselor + RD + physician ± psychiatrist) is the standard of care for AN.' },
+              { text:'Safety planning adapted for AN — medical warning signs (fainting, chest pain, palpitations), when to call 911, and crisis contacts', score:1, tag:'good', feedback:'Appropriate: AN has the highest mortality of any psychiatric disorder. Safety planning should cover both medical crisis signs and suicidal ideation, and should specify at what point to escalate level of care.' },
+              { text:'Address cultural context in treatment — family expectations, achievement pressure, the meaning of control, perfectionism, and the body', score:1, tag:'good', feedback:'Clinically important: Priya\'s family system, cultural identity, and the pressures of being a first-generation pre-med student are central to her formulation, not peripheral. These must be integrated into treatment, not treated as add-ons.' },
+              { text:'Focus exclusively on underlying emotional issues; avoid directly addressing food and weight until rapport is well established', score:-2, tag:'harm', feedback:'Harmful: an outdated and medically dangerous approach. Weight restoration is a prerequisite for psychological work in AN — malnutrition impairs cognitive flexibility, emotional regulation, and the neurobiological capacity to engage in insight-oriented work. "Emotions first, weight later" causes preventable deaths.' },
+              { text:'Prescribe SSRIs to address the mood symptoms concurrent with the eating disorder', score:-2, tag:'harm', feedback:'Harmful on two counts: (1) prescribing is outside counselor scope of practice; (2) SSRIs have not demonstrated efficacy for AN in the malnourished state — current evidence suggests they are ineffective and may worsen outcomes at low weight. Nutritional restoration must precede any psychopharmacological consideration.' },
+              { text:'Advise Priya to begin gaining weight by eating whatever she wants without structured support', score:-2, tag:'harm', feedback:'Harmful: unstructured refeeding without medical supervision risks refeeding syndrome — a potentially fatal electrolyte disturbance (hypophosphatemia) triggered by too-rapid nutritional rehabilitation. All refeeding in severe restriction must be medically coordinated.' },
+            ]
+          }
+        ]
+      },
+      {
+        id:'case5', title:'Darnell, 34 — The Upswing and the Bottle', badge:'Bipolar + SUD',
+        presenting:`Darnell, 34, is self-referred after a crisis three weeks ago in which he felt "like the universe finally made sense" — he slept 2–3 hours per night without fatigue, started four business ventures simultaneously, gave $4,000 to a stranger "because the idea felt right," and was fired after telling his supervisor he was "too visionary for this position." He was briefly hospitalized seven days ago when his girlfriend called 911 during an escalating conflict in which he broke furniture. His chart shows a prior inpatient admission at age 27 for a nearly identical episode. He is now in a depressive phase: sleeping 14 hours per day, withdrawn, anhedonic, with passive suicidal ideation ("I'm just tired of the cycles"). He has been drinking a fifth of vodka per day for the past two years; he reports starting heavy drinking during depressive episodes "to feel something." He was prescribed lithium three years ago and stopped after six months: "It made me feel nothing — flat, like a zombie." He presents with insight: "I know something is wrong with my brain."`,
+        phases:[
+          { id:'intake', label:'Phase 1', title:'Information Gathering', badge:'Intake',
+            instruction:'Select ALL items you would include in the initial intake with Darnell. Some choices are clinically appropriate; others are unnecessary or harmful.',
+            type:'multi',
+            options:[
+              { text:'Directly assess the passive suicidal ideation — intent, plan, means, and timeline', score:2, tag:'crit', feedback:'Critical: Bipolar I + AUD is one of the highest-risk combinations for completed suicide. "Tired of the cycles" is passive SI and must be assessed as rigorously as any suicidal statement. Passive ideation is not automatically low-risk.' },
+              { text:'Assess alcohol use in detail — quantity, frequency, duration, prior withdrawal attempts, and consequences', score:2, tag:'crit', feedback:'Critical: a fifth of vodka per day constitutes severe AUD with significant alcohol withdrawal risk. Abrupt cessation can cause seizures and delirium tremens, which are life-threatening. Withdrawal risk must be assessed before any treatment planning.' },
+              { text:'Assess the full longitudinal mood episode history — number of episodes, duration, severity, hospitalization history', score:2, tag:'crit', feedback:'Critical: the prior inpatient admission at age 27 is the pivotal evidence for Bipolar I. Longitudinal history is required to distinguish Bipolar I from Bipolar II, substance-induced mood disorder, and unipolar depression — a distinction with life-altering treatment implications.' },
+              { text:'Assess the lithium discontinuation — specific side effects, duration of use, and reasons for stopping', score:1, tag:'good', feedback:'Clinically important: lithium non-adherence in Bipolar I is a primary driver of episode recurrence. Understanding why Darnell stopped (emotional blunting) is essential for the medication-adherence conversation and for considering alternatives (lamotrigine, valproate, atypical antipsychotics).' },
+              { text:'Screen for psychotic features during manic episodes', score:1, tag:'good', feedback:'Clinically important: Bipolar I with psychotic features is a DSM-5 specifier that affects level-of-care decisions and medication selection — antipsychotics may be needed alongside or instead of mood stabilizers.' },
+              { text:'Assess the real-world consequences of the recent manic episode — financial losses, employment, relationship impact', score:1, tag:'good', feedback:'Relevant: manic episode consequences are often the primary motivator for treatment engagement. Understanding the cost of the episode builds motivation for mood stabilization and medication adherence going forward.' },
+              { text:'Screen for family history of mood disorders or substance use', score:1, tag:'good', feedback:'Relevant: Bipolar I has strong heritability. Family history informs psychoeducation and often helps with engagement ("this runs in your family — it is not a character defect").' },
+              { text:'Tell Darnell he has Bipolar Disorder and needs to restart lithium immediately', score:-2, tag:'harm', feedback:'Harmful on two counts: (1) diagnosing before assessment is complete is premature; (2) medication recommendations — including which specific medication — are outside counselor scope of practice. This approach destroys the alliance and models paternalism before any therapeutic relationship exists.' },
+              { text:'Assume the mood episodes are entirely substance-induced and defer mood assessment until after sobriety is achieved', score:-2, tag:'harm', feedback:'Harmful: a critical diagnostic error. The prior hospitalization at age 27 — before heavy drinking began — is strong evidence for an independent Bipolar I disorder, not a substance-induced condition. Deferring the mood assessment misses the primary diagnosis and delays appropriate treatment.' },
+              { text:'Contact his girlfriend to get her account of the manic episode without his consent', score:-2, tag:'harm', feedback:'Harmful: contacting collateral sources without the client\'s informed consent violates confidentiality and will rupture the alliance before it has been established.' },
+            ]
+          },
+          { id:'assessment', label:'Phase 2', title:'Assessment & Conceptualization', badge:'Assessment',
+            instruction:'Select all assessments and conceptualization steps appropriate for this stage with Darnell.',
+            type:'multi',
+            options:[
+              { text:'Columbia Suicide Severity Rating Scale (C-SSRS)', score:2, tag:'crit', feedback:'Critical: Bipolar I + AUD + passive SI is a very high-risk combination. Structured suicide risk assessment is mandatory before any treatment planning. The C-SSRS documents ideation type, intensity, plan, access to means, and attempt history.' },
+              { text:'AUDIT or AUDIT-C for alcohol use disorder severity', score:2, tag:'crit', feedback:'Critical: quantifying AUD severity (Mild = 2–3 criteria, Moderate = 4–5, Severe = ≥6) determines level of care. Severe AUD with tolerance and withdrawal risk requires medically managed detoxification, not outpatient counseling alone.' },
+              { text:'Alcohol withdrawal risk assessment — CIWA-Ar or equivalent, coordinated with a medical provider', score:2, tag:'crit', feedback:'Critical: at a fifth of vodka per day, Darnell is at high risk for alcohol withdrawal syndrome, with symptoms emerging 6–72 hours after the last drink and potentially escalating to seizures and delirium tremens. This is a medical safety priority requiring immediate medical coordination.' },
+              { text:'Mood Disorder Questionnaire (MDQ)', score:1, tag:'good', feedback:'Appropriate: the MDQ is the most widely validated screen for bipolar spectrum disorders. A positive result (≥7 of 13 symptoms during the same time period, causing moderate/serious problems) supports the bipolar diagnosis and provides useful documentation.' },
+              { text:'PHQ-9 to quantify current depressive episode severity', score:1, tag:'good', feedback:'Appropriate: quantifying current depressive severity guides level-of-care decisions and provides a baseline for treatment monitoring.' },
+              { text:'Mental Status Examination', score:1, tag:'good', feedback:'Standard of care for any initial clinical contact; particularly important here to document affect, thought process, cognition, and insight during the current depressive phase.' },
+              { text:'Review prior psychiatric hospitalization records with appropriate releases', score:1, tag:'good', feedback:'Appropriate: hospitalization records from the prior manic episode at age 27 are the most important diagnostic evidence available and may document psychotic features, prior medication trials, and risk history.' },
+              { text:'Skip withdrawal assessment since Darnell appears stable and engaged in session', score:-2, tag:'harm', feedback:'Dangerous: appearing stable in session does not rule out withdrawal risk. Symptoms may emerge hours after the last drink. Failing to assess withdrawal in a chronic heavy drinker is a medical safety error that can result in a preventable death.' },
+              { text:'Administer the full MMPI-2 to rule out a personality disorder before treating the mood disorder', score:-1, tag:'bad', feedback:'Unnecessary as a first-line step: Darnell\'s presentation is dominated by documented Bipolar I episodes requiring immediate safety planning. A full personality assessment is not indicated before addressing acute crisis concerns and establishing the primary diagnosis.' },
+            ]
+          },
+          { id:'diagnosis', label:'Phase 3', title:'Diagnosis', badge:'Diagnosis',
+            instruction:'Select the MOST accurate DSM-5 diagnosis for Darnell based on the full case presentation.',
+            type:'single',
+            options:[
+              { text:'Major Depressive Disorder, Recurrent, with suicidal ideation', score:-2, tag:'harm', feedback:'Dangerous error: the DSM-5 hierarchy rule prohibits diagnosing MDD if a full manic episode has ever occurred. Darnell has two documented manic episodes with hospitalizations. Treating MDD with antidepressant monotherapy — which this diagnosis would lead to — can precipitate manic switching in Bipolar I disorder.' },
+              { text:'Substance-Induced Mood Disorder, with depressive features', score:-1, tag:'harm', feedback:'Incorrect as primary diagnosis: a substance-induced mood disorder requires that the symptoms would not have occurred without the substance. Darnell\'s hospitalization at age 27 preceded his heavy drinking — this is strong evidence for an independent Bipolar I disorder. The alcohol is better understood as self-medication of the primary condition.' },
+              { text:'Bipolar I Disorder, current episode depressed, with co-occurring Alcohol Use Disorder, Severe', score:2, tag:'crit', feedback:'Correct: Bipolar I requires a lifetime history of at least one full manic episode, which Darnell has (two hospitalizations). The current depressive phase is a specifier. AUD Severe is separately and concurrently diagnosed in DSM-5 — co-occurring disorders are coded independently and treated with an integrated approach.' },
+              { text:'Bipolar II Disorder, current episode depressed', score:-1, tag:'harm', feedback:'Incorrect: Bipolar II requires hypomanic episodes (never full manic) and prohibits any lifetime history of a full manic episode. Darnell has been hospitalized twice for manic episodes — hospitalization for mania is definitional of Bipolar I.' },
+              { text:'Cyclothymic Disorder with Alcohol Use Disorder', score:-2, tag:'harm', feedback:'Incorrect: Cyclothymic Disorder involves chronic sub-threshold hypomanic and depressive symptoms — not full manic or major depressive episodes. Darnell\'s episodes are full, severe, and have required hospitalization multiple times. Cyclothymia is not appropriate here.' },
+            ]
+          },
+          { id:'treatment', label:'Phase 4', title:'Treatment Planning', badge:'Treatment',
+            instruction:'Select all treatment elements appropriate for Darnell\'s initial treatment plan.',
+            type:'multi',
+            options:[
+              { text:'Immediate medical referral for alcohol withdrawal risk — medically supervised detoxification if indicated', score:2, tag:'crit', feedback:'Critical: at a fifth of vodka per day, Darnell is at high risk for alcohol withdrawal syndrome. Abrupt cessation without medical supervision can cause seizures and delirium tremens. Medical detoxification referral is a first-priority safety intervention that precedes all other treatment planning.' },
+              { text:'Safety planning addressing suicidal ideation — crisis contacts, means restriction, and a clear monitoring plan', score:2, tag:'crit', feedback:'Critical: Bipolar I + AUD + passive SI + recent agitation is a very high-risk combination. Safety planning is a non-negotiable session-one clinical requirement. Means restriction — particularly firearms and stockpiled medications — is a core component of the plan.' },
+              { text:'Psychiatric referral for mood stabilizer evaluation and an honest conversation about lithium alternatives', score:2, tag:'crit', feedback:'Critical: Bipolar I requires pharmacotherapy. The counselor\'s role is to support medication adherence and ensure the referral happens — not to prescribe. Failing to refer for psychiatric evaluation when a client has documented Bipolar I is a clinical gap. The lithium side effect concern (blunting) is addressable through dose adjustment or alternative agents.' },
+              { text:'Integrated dual-diagnosis treatment addressing Bipolar I and AUD concurrently', score:2, tag:'crit', feedback:'Critical: sequential treatment ("get sober first, then treat bipolar") is significantly less effective than integrated, concurrent treatment. Untreated Bipolar I fuels drinking as self-medication; untreated AUD destabilizes mood. Integrated Group Therapy (IGT) for bipolar and SUD is the evidence-based protocol.' },
+              { text:'Psychoeducation about Bipolar I — the mood cycle, sleep as a manic trigger, and alcohol\'s paradoxical effect on mood stability', score:1, tag:'good', feedback:'Foundational: psychoeducation is one of the strongest evidence-based components of bipolar treatment. Darnell\'s belief that alcohol helps him must be addressed directly: alcohol disrupts sleep architecture (a primary manic trigger), lowers the seizure threshold, blunts mood stabilizer efficacy, and amplifies impulsivity during manic episodes.' },
+              { text:'Interpersonal and Social Rhythm Therapy (IPSRT) or mood/sleep monitoring chart', score:1, tag:'good', feedback:'Evidence-based: IPSRT targets sleep/wake rhythm stabilization, which is a primary manic trigger. Even a simplified mood and sleep log is clinically effective and builds the self-monitoring skills central to long-term bipolar management.' },
+              { text:'Motivational Interviewing to address ambivalence about sobriety and medication adherence', score:1, tag:'good', feedback:'Appropriate: Darnell has clear reasons to continue drinking (self-medication of depression) and clear reasons to avoid lithium (emotional blunting). MI is the evidence-based approach for resolving ambivalence in both substance use and medication adherence.' },
+              { text:'Tell Darnell to stop drinking cold turkey at home before the next session', score:-2, tag:'harm', feedback:'Potentially fatal: abrupt cessation of heavy chronic alcohol use without medical supervision can cause withdrawal seizures and delirium tremens within 6–72 hours. Instructing a severe AUD client to self-detox at home is a clinical safety error that has resulted in preventable deaths.' },
+              { text:'Begin trauma-focused therapy immediately — the recent manic episode and its consequences were traumatic', score:-1, tag:'bad', feedback:'Premature: trauma processing requires stabilization first. Darnell is in an active depressive episode with passive SI, severe active AUD, and no current medication management. Initiating trauma-focused work before medical stabilization and mood stability is clinically unsafe.' },
+              { text:'Focus exclusively on the alcohol problem and defer bipolar treatment until Darnell is fully sober', score:-2, tag:'harm', feedback:'Harmful: the sequential model is contraindicated for Bipolar I + AUD. Untreated Bipolar I will continue to fuel drinking as self-medication. Integrated, concurrent treatment is the evidence-based standard and produces significantly better outcomes than sequential approaches.' },
+            ]
+          }
+        ]
+      },
+      {
+        id:'case6', title:'Noah, 10 — Caught in the Middle', badge:'Child / Custody & Ethics',
+        presenting:`Noah, 10, is referred by his school counselor after a teacher found him crying at his desk and he wrote in a journal entry that "home is scary sometimes." His parents, Theresa and Kevin, divorced 18 months ago after a contentious legal proceeding; a court order grants joint legal custody with Noah primarily residing with Theresa and visiting Kevin every other weekend. Both parents sign intake paperwork separately, each checking the box requesting "full access to session records and content." Noah's pediatrician recently diagnosed him with ADHD, Combined Presentation. During individual time with Noah in the assessment session, he becomes very quiet, then says: "Dad gets really, really mad when I mess up. Last time he hit me on my face and on my back. He said if I tell anyone I won't get to see him anymore — so please don't tell."`,
+        phases:[
+          { id:'intake', label:'Phase 1', title:'Information Gathering', badge:'Intake',
+            instruction:'Select ALL items to include in the intake phase. Note that this phase involves meeting briefly with both parents and then individually with Noah. Some choices are clinically appropriate; others are unnecessary or harmful.',
+            type:'multi',
+            options:[
+              { text:'Clarify informed consent at the outset — confidentiality, its limits (including mandatory reporting obligations), and the framework for information-sharing with each parent', score:2, tag:'crit', feedback:'Critical: informed consent with minor clients is uniquely complex. Both parents with joint legal custody have legal rights to records and treatment information. The counselor must clarify the information-sharing framework — including mandatory reporting obligations — before any clinical contact begins.' },
+              { text:'Clarify and document each parent\'s legal custody status and rights to information about Noah\'s treatment', score:2, tag:'crit', feedback:'Critical: "joint legal custody" grants both parents equal legal rights to mental health records and treatment information. Ideally, the counselor reviews the actual custody order. Verification prevents serious errors later when information-sharing disputes arise.' },
+              { text:'Establish clearly with both parents that Noah is the identified client and the counselor\'s role is to serve his wellbeing, not to adjudicate or inform the custody dispute', score:1, tag:'good', feedback:'Clinically and ethically essential: in high-conflict custody cases, each parent may attempt to enlist the counselor as an ally or extract information for legal proceedings. Explicitly naming the counselor\'s role as Noah\'s therapist — not a mediator, evaluator, or custody witness — is a necessary boundary.' },
+              { text:'Meet with each parent briefly and separately to gather each one\'s perspective on Noah\'s difficulties', score:1, tag:'good', feedback:'Appropriate: in high-conflict custody situations, parents may present significantly different accounts of the child\'s functioning. Separate meetings may yield more candid information and prevent the conflict from escalating in a joint session.' },
+              { text:'Gather teacher and school counselor reports with signed releases', score:1, tag:'good', feedback:'Appropriate: teacher reports are essential collateral data for ADHD and behavioral assessment, and for understanding how Noah\'s difficulties manifest across settings — a diagnostic requirement for ADHD.' },
+              { text:'Assess ADHD symptoms across home, school, and peer settings using validated rating scales (Conners, BASC-3, Vanderbilt)', score:1, tag:'good', feedback:'Appropriate: ADHD diagnosis requires symptoms in two or more settings. Cross-situational assessment with validated tools — ideally including parent and teacher report forms — is the standard of care.' },
+              { text:'Promise both parents verbatim access to everything Noah discloses in individual sessions', score:-2, tag:'harm', feedback:'Harmful: promising full disclosure of individual session content — including to a parent who may be abusive — eliminates the therapeutic space required for child therapy and will prevent Noah from making disclosures critical to his safety. The counselor defines what will be shared (safety concerns, progress) without promising verbatim access.' },
+              { text:'Inform Kevin (in the joint parent meeting) that Theresa contacted the school with concerns about his parenting before the referral', score:-2, tag:'harm', feedback:'Harmful: sharing information disclosed by one parent to the other without consent in a high-conflict custody case is a confidentiality breach that could endanger Noah, inflame the conflict, and expose the counselor to legal liability.' },
+            ]
+          },
+          { id:'assessment', label:'Phase 2', title:'Assessment & Disclosure', badge:'Disclosure',
+            instruction:'Noah has disclosed physical abuse by his father mid-session. Select ALL clinically and ethically appropriate responses to this disclosure.',
+            type:'multi',
+            options:[
+              { text:'Respond with calm and warmth — validate his courage, do not express shock or alarm, and affirm that telling was the right thing to do', score:2, tag:'crit', feedback:'Critical: a trauma-informed response to a child\'s abuse disclosure requires staying calm and regulated. Expressions of shock or distress cause children to recant, minimize, or feel responsible for upsetting the counselor. Validation and calm are clinically protective.' },
+              { text:'Assess immediate safety — is Noah scheduled to be with his father today or this weekend?', score:2, tag:'crit', feedback:'Critical: if Noah is scheduled for a visit with the alleged abuser in the near term, the counselor must assess and address the immediate safety risk before the session ends. This is an active protective obligation.' },
+              { text:'Document Noah\'s disclosure using his exact words and observed affect — not a clinical paraphrase', score:2, tag:'crit', feedback:'Critical: verbatim documentation of a child\'s disclosure is legally and clinically essential. In child abuse investigations and custody proceedings, the accuracy of the original statement is closely scrutinized. "Dad hits me on my face and back" must be recorded exactly as stated.' },
+              { text:'File a mandatory report to child protective services (CPS) before the end of the session or immediately after', score:2, tag:'crit', feedback:'Critical: physical abuse of a child by a parent is mandated for report in all U.S. states. The legal standard is reasonable suspicion — not certainty. The mandatory report must be filed promptly and cannot be delayed to consult a supervisor, gather more information, or notify a parent first.' },
+              { text:'Explain to Noah — gently and in age-appropriate terms — that some things must be shared to keep him safe, and that telling was the right choice', score:1, tag:'good', feedback:'Appropriate: children who disclose abuse need to understand that the counselor is required to share this information for their safety — not as a betrayal. This maintains the therapeutic alliance and reduces the child\'s fear of having caused harm by telling.' },
+              { text:'Consult with a supervisor immediately after the session and document the consultation', score:1, tag:'good', feedback:'Appropriate: consultation after a mandatory reporting event is good clinical and risk management practice. Note: consultation supplements the report but does not replace it. The report must be filed whether or not a supervisor is reachable beforehand.' },
+              { text:'Call Kevin before filing the CPS report to give him a chance to explain his side', score:-2, tag:'harm', feedback:'Harmful and potentially illegal: contacting the alleged abuser before making a mandatory report can endanger the child, compromise the investigation, and in many states constitutes obstruction of a mandated report. Never contact the alleged perpetrator before filing.' },
+              { text:'Honor Noah\'s request not to tell — the therapeutic relationship depends on confidentiality', score:-2, tag:'harm', feedback:'Harmful: a child\'s request for secrecy does not override the mandatory reporting obligation. Promising secrecy about physical abuse is an ethical violation. Explaining to Noah that some information must be shared to keep him safe is both required and therapeutically appropriate.' },
+              { text:'Call Noah\'s mother to inform her before filing the CPS report', score:-2, tag:'harm', feedback:'Harmful: mandatory reporting statutes require the counselor to report to CPS without delay — notifying the non-offending parent first is not required and creates risk. The non-offending parent may inadvertently alert the alleged abuser, confront them, or remove the child from a situation CPS needs to assess independently. File the report first; parent notification follows through appropriate channels.' },
+            ]
+          },
+          { id:'diagnosis', label:'Phase 3', title:'Diagnosis', badge:'Diagnosis',
+            instruction:'Select the combination of DSM-5 diagnoses that MOST accurately reflects Noah\'s clinical presentation at this point in the assessment.',
+            type:'single',
+            options:[
+              { text:'ADHD, Combined Presentation — only', score:-1, tag:'harm', feedback:'Incomplete: ADHD accounts for inattention, hyperactivity, and impulsivity but does not capture the emotional distress, crying episodes, journal entry, or the acute stressors (contentious divorce, disclosed abuse). A second diagnosis is clinically required to represent the full picture.' },
+              { text:'ADHD, Combined Presentation + Adjustment Disorder with Mixed Disturbance of Emotions and Conduct', score:2, tag:'crit', feedback:'Correct: ADHD (confirmed by pediatrician, cross-setting symptom history) is the neurodevelopmental diagnosis. Adjustment Disorder with Mixed Disturbance (309.4) accurately captures the behavioral and emotional deterioration in response to the identifiable stressors (divorce, abuse). Both diagnoses are needed. A trauma-related diagnosis (PTSD, Acute Stress Disorder) should be reassessed after a complete trauma history is gathered.' },
+              { text:'ADHD, Combined Presentation + Conduct Disorder', score:-2, tag:'harm', feedback:'Incorrect: Conduct Disorder requires a persistent pattern of violating others\' basic rights or age-appropriate societal norms — aggression toward others, property destruction, theft, serious rule violations. Noah\'s behavioral difficulties are better explained by ADHD impulsivity and stress reactivity from the custody conflict and abuse. A conduct disorder diagnosis would stigmatize Noah and misdirect treatment.' },
+              { text:'Reactive Attachment Disorder', score:-2, tag:'harm', feedback:'Incorrect: RAD requires a history of social neglect or severe deprivation in early childhood (insufficient caregiving). Noah has had active, engaged relationships with both parents throughout his life. His emotional and behavioral difficulties are not consistent with the inhibited, emotionally withdrawn pattern of RAD.' },
+              { text:'ADHD, Combined Presentation + PTSD', score:-1, tag:'harm', feedback:'Premature: PTSD may ultimately be appropriate, but it requires a complete trauma history and a full DSM-5 PTSD symptom assessment (re-experiencing, avoidance, negative cognitions/mood, hyperarousal) that has not yet been conducted. Adjustment Disorder is the most clinically accurate diagnosis at this stage of the assessment.' },
+            ]
+          },
+          { id:'treatment', label:'Phase 4', title:'Treatment Planning & Ethics', badge:'Treatment',
+            instruction:'Select all clinically appropriate and ethically required treatment and action steps following the mandatory report.',
+            type:'multi',
+            options:[
+              { text:'Document the mandatory CPS report fully — date, time, intake worker name, report number, the specific disclosure, and your clinical reasoning', score:2, tag:'crit', feedback:'Critical: thorough documentation of the mandatory report is a legal and ethical requirement. Include Noah\'s verbatim words, the basis for reasonable suspicion, CPS report details, and follow-up steps. This documentation protects both the client and the counselor.' },
+              { text:'Consult with a supervisor and, if necessary, an attorney about information-sharing obligations with Kevin during the active CPS investigation', score:2, tag:'crit', feedback:'Critical: while joint legal custody creates a presumption of records access, an active CPS investigation naming Kevin as an alleged abuser may — depending on state law and court orders — modify or suspend those rights. This is a state-specific legal question that requires consultation before releasing any records to Kevin.' },
+              { text:'Continue individual play therapy with Noah, trauma-informed and paced at his lead, focused on safety and coping', score:1, tag:'good', feedback:'Appropriate: trauma-informed play therapy that is client-paced supports emotional processing, builds coping skills, and maintains a safe therapeutic relationship — essential regardless of legal proceedings that follow the mandatory report.' },
+              { text:'Coordinate with Noah\'s school counselor (with appropriate releases) to support him academically and monitor for distress signals', score:1, tag:'good', feedback:'Appropriate: school coordination with releases ensures Noah has support across settings and creates a safety net for monitoring. The school counselor is an important collateral contact in the treatment network.' },
+              { text:'Refer Noah for ADHD evaluation if not yet formally evaluated, and coordinate with the pediatrician on the existing diagnosis', score:1, tag:'good', feedback:'Appropriate: the pediatrician-confirmed ADHD diagnosis may benefit from a formal psychological evaluation, and coordination between the counselor and prescribing physician supports collaborative care.' },
+              { text:'Offer behavioral parent training to Theresa once safety is established', score:1, tag:'good', feedback:'Appropriate: behavioral parent training (BPT) is evidence-based for childhood ADHD and can support Theresa in managing Noah\'s behavioral difficulties at home. Timing matters — this is a longer-term intervention, not a first-session priority.' },
+              { text:'Psychoeducation for Theresa about ADHD and the behavioral impact of trauma and stress on children', score:1, tag:'good', feedback:'Appropriate: helping Theresa understand Noah\'s behaviors as multi-determined — ADHD, stress reactivity, and potential trauma responses — reduces misattribution of his behaviors as willful defiance and supports more effective parenting responses.' },
+              { text:'Provide Kevin with a full copy of session notes when he requests them — joint legal custody requires this', score:-2, tag:'harm', feedback:'Harmful: while joint legal custody creates a general right to records, an active CPS investigation naming Kevin as an alleged abuser may alter those rights. Releasing session notes to the alleged abuser during an open investigation could compromise the investigation and endanger Noah. Do not release without legal consultation and, if applicable, a court order.' },
+              { text:'Provide the court with a custody recommendation favoring Theresa based on the disclosure', score:-2, tag:'harm', feedback:'Harmful: making custody recommendations is outside the role of the treating counselor. The treating therapist\'s role is exclusively therapeutic. Providing custody recommendations conflates the therapeutic and forensic roles — a boundary violation explicitly addressed in ACA ethics guidelines and specialty practice standards.' },
+              { text:'Schedule a joint session with both Kevin and Theresa to improve co-parenting communication', score:-2, tag:'harm', feedback:'Contraindicated: in the context of alleged physical abuse by Kevin and an active CPS investigation, a joint parent session is clinically dangerous. It could provide Kevin an opportunity to intimidate or coerce, compromise the investigation, and place the counselor in an untenable dual role.' },
             ]
           }
         ]
