@@ -682,6 +682,7 @@
         <button class="nav-link" id="nav-study" onclick="showView('study')">Study Materials</button>
         <button class="nav-link" id="nav-exams" onclick="showView('exam-select')">Practice Exams</button>
         <button class="nav-link" id="nav-reference" onclick="showView('reference')">Reference Tools</button>
+        <button class="nav-link" id="nav-tips" onclick="showView('tips')">Exam Tips</button>
         <button class="nav-link" id="nav-progress" onclick="showView('progress')">Progress</button>
         <button class="nav-link" id="nav-plan" onclick="showView('study-plan')">Study Plan</button>
         <button class="nav-link" id="nav-audio" onclick="showView('audio')" style="display:inline-flex;align-items:center;gap:5px;">
@@ -792,6 +793,7 @@
       <button class="mobile-nav-item" id="mnav-study" onclick="showView('study'); closeMobileNav()">Study Materials</button>
       <button class="mobile-nav-item" id="mnav-exams" onclick="showView('exam-select'); closeMobileNav()">Practice Exams</button>
       <button class="mobile-nav-item" id="mnav-reference" onclick="showView('reference'); closeMobileNav()">Reference Tools</button>
+      <button class="mobile-nav-item" id="mnav-tips" onclick="showView('tips'); closeMobileNav()">Exam Tips</button>
       <button class="mobile-nav-item" id="mnav-progress" onclick="showView('progress'); closeMobileNav()">Progress</button>
       <button class="mobile-nav-item" id="mnav-plan" onclick="showView('study-plan'); closeMobileNav()">Study Plan</button>
       <button class="mobile-nav-item" id="mnav-audio" onclick="showView('audio'); closeMobileNav()">🎧 Audio Review</button>
@@ -4981,6 +4983,412 @@
     </div>
   </div><!-- /view-reference -->
 
+  <!-- ══════════ VIEW: EXAM TIPS ══════════
+       To edit section content: find the section comment below (e.g., SECTION 1, SECTION 2…)
+       and update the HTML inside that block. To add a new section, copy any .acc-item block
+       and update the number badge, heading, summary text, and inner content.
+  ══════════════════════════════════════════════════════════════════════════════════════════ -->
+  <div id="view-tips" class="view">
+    <div style="min-height:100vh; padding-top:88px; padding-bottom:80px; background:var(--sage-bg);">
+      <div style="max-width:800px; margin:0 auto; padding:0 24px;">
+
+        <!-- Page header -->
+        <div style="margin-bottom:36px;">
+          <span class="badge" style="background:rgba(45,125,111,0.09); color:var(--teal-700); border:1px solid rgba(45,125,111,0.15); margin-bottom:12px;">Exam Tips</span>
+          <h1 style="font-family:'Playfair Display',serif; font-size:clamp(1.6rem,3.5vw,2.1rem); font-weight:700; color:var(--teal-900); letter-spacing:-0.03em; margin-bottom:8px;">NCE &amp; NCMHCE Exam Prep Guide</h1>
+          <p style="font-size:0.92rem; color:var(--text-mid); line-height:1.7; max-width:600px;">Strategies, tactics, and format details for both exams — organized so you can skim what you already know and dig into what you don't.</p>
+        </div>
+
+        <!-- ─────────────────────────────────────────────────
+             SECTION 1: Know Your Format (and Your Test Date)
+             ───────────────────────────────────────────────── -->
+        <div class="acc-item">
+          <button class="acc-btn open" onclick="toggleAcc(this)" aria-expanded="true">
+            <span style="display:flex; align-items:center; gap:10px;">
+              <span style="width:28px; height:28px; border-radius:7px; background:var(--teal-50); border:1px solid rgba(45,125,111,0.2); display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700; color:var(--teal-700); flex-shrink:0;">1</span>
+              <span class="acc-title-group">
+                <span>Know Your Format (and Your Test Date)</span>
+                <span class="acc-summary">NCE current vs. new 2027 format · NCMHCE structure · NBCC confirmation reminder</span>
+              </span>
+            </span>
+            <svg class="acc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="acc-content open">
+            <div class="acc-inner">
+
+              <p style="font-size:0.88rem; color:var(--text-dark); line-height:1.75; margin-bottom:24px;">The single most important thing to confirm before you study is which version of the exam you're taking — because the NCE is changing. NBCC has published a new NCE format that takes effect <strong>July 1, 2027</strong>. If your exam is on or after that date, you're taking the new version; if it's before, you're taking the current one. They differ in length, structure, and scoring, so check your scheduled test date against the table below and study to the right one. When in doubt, confirm directly with NBCC.</p>
+
+              <!-- Format cards grid -->
+              <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin-bottom:24px;">
+
+                <!-- NCE Current -->
+                <div style="background:#fff; border-radius:14px; border:1.5px solid rgba(26,74,68,0.12); overflow:hidden; box-shadow:0 2px 8px rgba(26,74,68,0.05);">
+                  <div style="background:linear-gradient(135deg,var(--teal-700) 0%,#2d9e8a 100%); padding:14px 18px;">
+                    <div style="font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:rgba(255,255,255,0.65); margin-bottom:3px;">Before July 1, 2027</div>
+                    <div style="font-size:1rem; font-weight:700; color:#fff; font-family:'Playfair Display',serif;">NCE — Current Format</div>
+                  </div>
+                  <div style="padding:16px 18px;">
+                    <ul style="list-style:none; font-size:0.83rem; color:var(--text-dark); line-height:1.75;">
+                      <li style="padding:5px 0; border-bottom:1px solid rgba(26,74,68,0.06);"><strong style="color:var(--teal-700);">200</strong> multiple-choice questions — 160 scored, 40 unscored field-test items mixed in randomly. You can't tell which are which, so treat every question as if it counts.</li>
+                      <li style="padding:5px 0; border-bottom:1px solid rgba(26,74,68,0.06);"><strong style="color:var(--teal-700);">3 hours 45 minutes.</strong></li>
+                      <li style="padding:5px 0; border-bottom:1px solid rgba(26,74,68,0.06);">Organized around eight counseling content areas / six behavioral domains; assessment and intervention carry heavy weight.</li>
+                      <li style="padding:5px 0;">Passing score varies by form and is set by a standard-setting process — not a fixed cutoff.</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- NCE New 2027 -->
+                <div style="background:#fff; border-radius:14px; border:1.5px solid rgba(196,133,90,0.25); overflow:hidden; box-shadow:0 2px 8px rgba(196,133,90,0.08);">
+                  <div style="background:linear-gradient(135deg,#7a4a1a 0%,var(--amber) 100%); padding:14px 18px;">
+                    <div style="font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:rgba(255,255,255,0.65); margin-bottom:3px;">July 1, 2027 and After</div>
+                    <div style="font-size:1rem; font-weight:700; color:#fff; font-family:'Playfair Display',serif;">NCE — New Format</div>
+                  </div>
+                  <div style="padding:16px 18px;">
+                    <ul style="list-style:none; font-size:0.83rem; color:var(--text-dark); line-height:1.75;">
+                      <li style="padding:5px 0; border-bottom:1px solid rgba(196,133,90,0.08);"><strong style="color:var(--amber);">170</strong> multiple-choice questions, each with <strong>three</strong> answer options (not four) — 30 are unscored field-test items distributed randomly.</li>
+                      <li style="padding:5px 0; border-bottom:1px solid rgba(196,133,90,0.08);"><strong style="color:var(--amber);">3 hours 45 minutes</strong> (225 min), with an optional 15-minute break at the halfway point. Once you submit the first half and start the break, you <em>cannot</em> return to those questions.</li>
+                      <li style="padding:5px 0; border-bottom:1px solid rgba(196,133,90,0.08);">Restructured into <strong>six behavioral domains:</strong> Professional Development &amp; Counselor Self-Awareness (15%), Intake &amp; Assessment (18%), Treatment Planning &amp; Continuity of Care (15%), Provision of Counseling Interventions (20%), Indirect Client Care (12%), and Legal &amp; Ethical Compliance (20%).</li>
+                      <li style="padding:5px 0; border-bottom:1px solid rgba(196,133,90,0.08);">Scaled score <strong>100–500;</strong> passing point is <strong>360.</strong> This is not a percentage — a 400 does not mean 80%.</li>
+                      <li style="padding:5px 0;">New content emphasis: ethical and legal use of AI in practice; Counseling Compact / license portability; telemental health compliance; ICD-11 alongside DSM-5-TR.</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- NCMHCE -->
+                <div style="background:#fff; border-radius:14px; border:1.5px solid rgba(26,74,68,0.12); overflow:hidden; box-shadow:0 2px 8px rgba(26,74,68,0.05);">
+                  <div style="background:linear-gradient(135deg,#1a4a44 0%,#3a7d72 100%); padding:14px 18px;">
+                    <div style="font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:rgba(255,255,255,0.65); margin-bottom:3px;">Current Format</div>
+                    <div style="font-size:1rem; font-weight:700; color:#fff; font-family:'Playfair Display',serif;">NCMHCE</div>
+                  </div>
+                  <div style="padding:16px 18px;">
+                    <ul style="list-style:none; font-size:0.83rem; color:var(--text-dark); line-height:1.75;">
+                      <li style="padding:5px 0; border-bottom:1px solid rgba(26,74,68,0.06);">A <strong>clinical simulation</strong> exam, not a recall test. You work through approximately 11 case simulations, of which approximately 9–10 are scored; the rest are unscored pilot cases you won't be able to identify.</li>
+                      <li style="padding:5px 0; border-bottom:1px solid rgba(26,74,68,0.06);">Each case is scored in two distinct skill areas — <strong>Information Gathering</strong> and <strong>Decision-Making</strong> — and you need to meet the cut score in <em>both.</em></li>
+                      <li style="padding:5px 0; border-bottom:1px solid rgba(26,74,68,0.06);"><strong>3 hours 45 minutes.</strong></li>
+                      <li style="padding:5px 0;">Tests clinical judgment as a case unfolds: what you'd assess, and what you'd do next. <button onclick="showView('ncmhce-sim')" style="background:none; border:none; color:var(--teal-700); font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; font-size:0.83rem; padding:0; text-decoration:underline;">Practice with Clinical Simulations →</button></li>
+                    </ul>
+                  </div>
+                </div>
+
+              </div><!-- /format cards -->
+
+              <div style="background:rgba(26,74,68,0.05); border-radius:10px; border:1px solid rgba(26,74,68,0.1); padding:12px 16px; font-size:0.82rem; color:var(--text-mid); line-height:1.65;">
+                <strong style="color:var(--teal-900);">Always confirm with NBCC.</strong> Exam specifications, fees, and scheduling change. Verify the current details for your specific test date at <strong>nbcc.org</strong> before you rely on anything here.
+              </div>
+
+            </div>
+          </div>
+        </div><!-- /section 1 -->
+
+        <!-- ─────────────────────────────────────────────────
+             SECTION 2: General Study Strategy (Both Exams)
+             ───────────────────────────────────────────────── -->
+        <div class="acc-item">
+          <button class="acc-btn" onclick="toggleAcc(this)" aria-expanded="false">
+            <span style="display:flex; align-items:center; gap:10px;">
+              <span style="width:28px; height:28px; border-radius:7px; background:var(--teal-50); border:1px solid rgba(45,125,111,0.2); display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700; color:var(--teal-700); flex-shrink:0;">2</span>
+              <span class="acc-title-group">
+                <span>General Study Strategy — Both Exams</span>
+                <span class="acc-summary">Active recall over rereading · spaced practice · mine wrong answers · simulate real conditions</span>
+              </span>
+            </span>
+            <svg class="acc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="acc-content">
+            <div class="acc-inner">
+
+              <p style="font-size:0.88rem; color:var(--text-dark); line-height:1.75; margin-bottom:20px;">These habits apply no matter which exam or format you're preparing for. The theme running through all of them: <strong>active recall beats passive review, and consistency beats cramming.</strong></p>
+
+              <div style="display:flex; flex-direction:column; gap:14px;">
+
+                <div style="display:flex; gap:14px; align-items:flex-start; padding:14px 16px; background:var(--teal-50); border-radius:10px; border:1px solid rgba(45,125,111,0.12);">
+                  <div style="width:32px; height:32px; border-radius:8px; background:var(--teal-700); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  </div>
+                  <div>
+                    <div style="font-size:0.88rem; font-weight:700; color:var(--teal-900); margin-bottom:3px;">Start early and study in small, regular blocks.</div>
+                    <div style="font-size:0.83rem; color:var(--text-mid); line-height:1.65;">Begin 3–4 months out. One to two focused hours several days a week will outperform long, infrequent cram sessions — your brain needs spaced exposure to consolidate this much material.</div>
+                  </div>
+                </div>
+
+                <div style="display:flex; gap:14px; align-items:flex-start; padding:14px 16px; background:#fff; border-radius:10px; border:1.5px solid rgba(26,74,68,0.08);">
+                  <div style="width:32px; height:32px; border-radius:8px; background:rgba(45,125,111,0.09); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--teal-700)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                  </div>
+                  <div>
+                    <div style="font-size:0.88rem; font-weight:700; color:var(--teal-900); margin-bottom:3px;">Practice retrieval, not rereading.</div>
+                    <div style="font-size:0.83rem; color:var(--text-mid); line-height:1.65;">Close the book and test yourself. Pulling an answer from memory is what builds durable recall; re-reading notes feels productive but mostly builds false familiarity.</div>
+                  </div>
+                </div>
+
+                <div style="display:flex; gap:14px; align-items:flex-start; padding:14px 16px; background:#fff; border-radius:10px; border:1.5px solid rgba(26,74,68,0.08);">
+                  <div style="width:32px; height:32px; border-radius:8px; background:rgba(192,82,82,0.08); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C05252" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  </div>
+                  <div>
+                    <div style="font-size:0.88rem; font-weight:700; color:var(--teal-900); margin-bottom:3px;">Mine your wrong answers.</div>
+                    <div style="font-size:0.83rem; color:var(--text-mid); line-height:1.65;">After every practice set, study what you missed and why — not just the right answer, but the reasoning trap behind the wrong one. Your mistakes are the most efficient study guide you have. <button onclick="showView('mrq-select')" style="background:none; border:none; color:var(--teal-700); font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; font-size:0.83rem; padding:0; text-decoration:underline;">Use the Mistake Review Queue to drill these →</button></div>
+                  </div>
+                </div>
+
+                <div style="display:flex; gap:14px; align-items:flex-start; padding:14px 16px; background:#fff; border-radius:10px; border:1.5px solid rgba(26,74,68,0.08);">
+                  <div style="width:32px; height:32px; border-radius:8px; background:rgba(45,125,111,0.09); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--teal-700)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
+                  </div>
+                  <div>
+                    <div style="font-size:0.88rem; font-weight:700; color:var(--teal-900); margin-bottom:3px;">Rotate strong and weak topics.</div>
+                    <div style="font-size:0.83rem; color:var(--text-mid); line-height:1.65;">Don't only study what scares you, and don't only study what's comfortable. Alternating keeps variety high and burnout low, and interleaving topics improves retention over blocking one subject at a time.</div>
+                  </div>
+                </div>
+
+                <div style="display:flex; gap:14px; align-items:flex-start; padding:14px 16px; background:#fff; border-radius:10px; border:1.5px solid rgba(26,74,68,0.08);">
+                  <div style="width:32px; height:32px; border-radius:8px; background:rgba(45,125,111,0.09); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--teal-700)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                  </div>
+                  <div>
+                    <div style="font-size:0.88rem; font-weight:700; color:var(--teal-900); margin-bottom:3px;">Build memory hooks for dense material.</div>
+                    <div style="font-size:0.83rem; color:var(--text-mid); line-height:1.65;">Acronyms and associations make theories, ethics codes, and frameworks stick under pressure. <button onclick="showView('reference'); showRefTool('mnemonics')" style="background:none; border:none; color:var(--teal-700); font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; font-size:0.83rem; padding:0; text-decoration:underline;">See the Mnemonics Cheat Sheet →</button></div>
+                  </div>
+                </div>
+
+                <div style="display:flex; gap:14px; align-items:flex-start; padding:14px 16px; background:#fff; border-radius:10px; border:1.5px solid rgba(26,74,68,0.08);">
+                  <div style="width:32px; height:32px; border-radius:8px; background:rgba(45,125,111,0.09); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--teal-700)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  </div>
+                  <div>
+                    <div style="font-size:0.88rem; font-weight:700; color:var(--teal-900); margin-bottom:3px;">Simulate real conditions before test day.</div>
+                    <div style="font-size:0.83rem; color:var(--text-mid); line-height:1.65;">Take at least one or two full-length, timed practice runs. Stamina and pacing are skills you train separately from content — many capable candidates lose points to fatigue and clock management, not lack of knowledge.</div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div><!-- /section 2 -->
+
+        <!-- ─────────────────────────────────────────────────
+             SECTION 3: NCE In-Exam Tactics
+             ───────────────────────────────────────────────── -->
+        <div class="acc-item">
+          <button class="acc-btn" onclick="toggleAcc(this)" aria-expanded="false">
+            <span style="display:flex; align-items:center; gap:10px;">
+              <span style="width:28px; height:28px; border-radius:7px; background:rgba(196,133,90,0.1); border:1px solid rgba(196,133,90,0.25); display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700; color:var(--amber); flex-shrink:0;">3</span>
+              <span class="acc-title-group">
+                <span>NCE In-Exam Tactics</span>
+                <span class="acc-summary">Ethics anchor · flag and move on · stem-first reading · focus resets</span>
+              </span>
+            </span>
+            <svg class="acc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="acc-content">
+            <div class="acc-inner">
+
+              <p style="font-size:0.88rem; color:var(--text-dark); line-height:1.75; margin-bottom:20px;">The NCE rewards careful reading and steady pacing. These are the moves that help on the multiple-choice format itself.</p>
+
+              <!-- Featured heuristic -->
+              <div style="background:rgba(196,133,90,0.07); border:2px solid var(--amber); border-radius:14px; padding:20px 22px; margin-bottom:20px;">
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                  <span style="font-size:1.15rem; line-height:1;">🔑</span>
+                  <span style="font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--amber);">Featured Heuristic</span>
+                </div>
+                <p style="font-size:0.97rem; font-weight:700; color:#5C3B1A; margin-bottom:8px; font-family:'Inter',sans-serif;">When in doubt, anchor to ethics.</p>
+                <p style="font-size:0.85rem; color:var(--text-dark); line-height:1.72; margin:0;">If a question stumps you, default to the principles that govern safe practice: <strong>client safety first, then scope of practice, supervision, and referral.</strong> The "right" answer on the NCE is almost always the safe, ethical, within-scope action — not the clever or aggressive one. This single instinct rescues more uncertain questions than any other.</p>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:12px;">
+
+                <div style="padding:14px 16px; background:#fff; border-radius:10px; border:1.5px solid rgba(26,74,68,0.08);">
+                  <div style="font-size:0.88rem; font-weight:700; color:var(--teal-900); margin-bottom:3px;">Read the stem before the options.</div>
+                  <div style="font-size:0.83rem; color:var(--text-mid); line-height:1.65;">Figure out exactly what's being asked before you look at the answers. A huge share of misses come from answering the question you assumed rather than the one on the screen — especially with "EXCEPT," "LEAST," and "BEST first step" phrasings.</div>
+                </div>
+
+                <div style="padding:14px 16px; background:#fff; border-radius:10px; border:1.5px solid rgba(26,74,68,0.08);">
+                  <div style="font-size:0.88rem; font-weight:700; color:var(--teal-900); margin-bottom:3px;">Flag and move on after ~60–90 seconds.</div>
+                  <div style="font-size:0.83rem; color:var(--text-mid); line-height:1.65;">If a question is sticking, mark it and keep going. Protect your time for the questions you can win, and circle back. On the 2027 format, you cannot return to the first half after starting the mid-exam break — finish your flagged items in each half before submitting.</div>
+                </div>
+
+                <div style="padding:14px 16px; background:#fff; border-radius:10px; border:1.5px solid rgba(26,74,68,0.08);">
+                  <div style="font-size:0.88rem; font-weight:700; color:var(--teal-900); margin-bottom:3px;">Treat every question as scored.</div>
+                  <div style="font-size:0.83rem; color:var(--text-mid); line-height:1.65;">You can't identify the unscored field-test items, so don't try. Give each one full effort.</div>
+                </div>
+
+                <div style="padding:14px 16px; background:#fff; border-radius:10px; border:1.5px solid rgba(26,74,68,0.08);">
+                  <div style="font-size:0.88rem; font-weight:700; color:var(--teal-900); margin-bottom:3px;">Reset your focus periodically.</div>
+                  <div style="font-size:0.83rem; color:var(--text-mid); line-height:1.65;">A few slow breaths every 20 or so questions keeps attention from drifting over a nearly four-hour exam.</div>
+                </div>
+
+                <div style="padding:14px 16px; background:rgba(196,133,90,0.05); border-radius:10px; border:1.5px solid rgba(196,133,90,0.18);">
+                  <div style="font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--amber); margin-bottom:4px;">2027 Format Only</div>
+                  <div style="font-size:0.88rem; font-weight:700; color:var(--teal-900); margin-bottom:3px;">Remember there are only three options.</div>
+                  <div style="font-size:0.83rem; color:var(--text-mid); line-height:1.65;">Fewer choices means elimination is faster — rule out the clearly wrong one and weigh the remaining two against the safety/ethics lens above.</div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div><!-- /section 3 -->
+
+        <!-- ─────────────────────────────────────────────────
+             SECTION 4: NCMHCE Clinical-Reasoning Tactics
+             ───────────────────────────────────────────────── -->
+        <div class="acc-item">
+          <button class="acc-btn" onclick="toggleAcc(this)" aria-expanded="false">
+            <span style="display:flex; align-items:center; gap:10px;">
+              <span style="width:28px; height:28px; border-radius:7px; background:var(--teal-50); border:1px solid rgba(45,125,111,0.2); display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700; color:var(--teal-700); flex-shrink:0;">4</span>
+              <span class="acc-title-group">
+                <span>NCMHCE Clinical-Reasoning Tactics</span>
+                <span class="acc-summary">Next best step · safety-first ordering · DSM-5-TR precision · two scoring lanes</span>
+              </span>
+            </span>
+            <svg class="acc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="acc-content">
+            <div class="acc-inner">
+
+              <p style="font-size:0.88rem; color:var(--text-dark); line-height:1.75; margin-bottom:20px;">The NCMHCE is a different animal. It doesn't reward recall — it rewards thinking like a counselor in the room. These tactics are about clinical judgment, not test-taking tricks.</p>
+
+              <!-- Featured principle -->
+              <div style="background:var(--teal-50); border:2px solid var(--teal-500); border-radius:14px; padding:20px 22px; margin-bottom:20px;">
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+                  <span style="font-size:1.15rem; line-height:1;">🔑</span>
+                  <span style="font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--teal-600);">Featured Principle</span>
+                </div>
+                <p style="font-size:0.97rem; font-weight:700; color:var(--teal-900); margin-bottom:8px; font-family:'Inter',sans-serif;">Choose the next best step, not the eventual step.</p>
+                <p style="font-size:0.85rem; color:var(--text-dark); line-height:1.72; margin:0;">At every decision point, the question isn't "what could be done for this client eventually?" — it's "what should be done right now, next?" The correct answer is the most appropriate immediate action given everything you know at that moment. Treatments that are perfectly valid later are <em>wrong answers</em> if something more urgent (safety, rapport, assessment) comes first.</p>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:12px;">
+
+                <div style="padding:14px 16px; background:#fff; border-radius:10px; border:1.5px solid rgba(26,74,68,0.08);">
+                  <div style="font-size:0.88rem; font-weight:700; color:var(--teal-900); margin-bottom:3px;">Sequence by safety and clinical priority.</div>
+                  <div style="font-size:0.83rem; color:var(--text-mid); line-height:1.65;">Risk assessment and client safety come before deeper intervention. Stabilization comes before trauma processing. Rapport and assessment come before treatment planning. When two options both seem reasonable, ask which one is appropriate <em>first.</em></div>
+                </div>
+
+                <div style="padding:14px 16px; background:#fff; border-radius:10px; border:1.5px solid rgba(26,74,68,0.08);">
+                  <div style="font-size:0.88rem; font-weight:700; color:var(--teal-900); margin-bottom:3px;">Read between the lines.</div>
+                  <div style="font-size:0.83rem; color:var(--text-mid); line-height:1.65;">Cases include details that are implied, not stated. Notice what the client isn't saying, watch for inconsistencies, and track patterns across symptoms, history, and behavior — those patterns drive the diagnosis and the next move.</div>
+                </div>
+
+                <div style="padding:14px 16px; background:#fff; border-radius:10px; border:1.5px solid rgba(26,74,68,0.08);">
+                  <div style="font-size:0.88rem; font-weight:700; color:var(--teal-900); margin-bottom:3px;">Apply DSM-5-TR criteria deliberately — don't eyeball the diagnosis.</div>
+                  <div style="font-size:0.83rem; color:var(--text-mid); line-height:1.65;">Misdiagnosis cascades into wrong treatment choices and costs points across the rest of the case. Match the full criteria, including duration and impairment requirements.</div>
+                </div>
+
+                <div style="padding:14px 16px; background:#fff; border-radius:10px; border:1.5px solid rgba(26,74,68,0.08);">
+                  <div style="font-size:0.88rem; font-weight:700; color:var(--teal-900); margin-bottom:3px;">Watch the two scoring lanes.</div>
+                  <div style="font-size:0.83rem; color:var(--text-mid); line-height:1.65;">Remember each case is scored separately on Information Gathering and Decision-Making. Gather enough relevant information before you commit to decisions — and don't keep gathering once you have what you need to act.</div>
+                </div>
+
+                <div style="padding:14px 16px; background:#fff; border-radius:10px; border:1.5px solid rgba(26,74,68,0.08);">
+                  <div style="font-size:0.88rem; font-weight:700; color:var(--teal-900); margin-bottom:3px;">Manage your pace across cases.</div>
+                  <div style="font-size:0.83rem; color:var(--text-mid); line-height:1.65;">With limited time spread over multiple simulations, no single case should swallow your clock. Give each one its fair share.</div>
+                </div>
+
+              </div>
+
+              <div style="margin-top:18px; padding:13px 16px; background:var(--teal-50); border-radius:10px; border:1px solid rgba(45,125,111,0.15); font-size:0.84rem; color:var(--teal-900); line-height:1.65;">
+                The best NCMHCE prep is repetition with real cases. <button onclick="showView('ncmhce-sim')" style="background:none; border:none; color:var(--teal-700); font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; font-size:0.84rem; padding:0; text-decoration:underline;">Work through the Clinical Simulations to build these instincts →</button>
+              </div>
+
+            </div>
+          </div>
+        </div><!-- /section 4 -->
+
+        <!-- ─────────────────────────────────────────────────
+             SECTION 5: Test-Day Logistics (Both Exams)
+             ───────────────────────────────────────────────── -->
+        <div class="acc-item">
+          <button class="acc-btn" onclick="toggleAcc(this)" aria-expanded="false">
+            <span style="display:flex; align-items:center; gap:10px;">
+              <span style="width:28px; height:28px; border-radius:7px; background:var(--teal-50); border:1px solid rgba(45,125,111,0.2); display:flex; align-items:center; justify-content:center; font-size:0.72rem; font-weight:700; color:var(--teal-700); flex-shrink:0;">5</span>
+              <span class="acc-title-group">
+                <span>Test-Day Logistics — Both Exams</span>
+                <span class="acc-summary">Sleep over cramming · light morning review · arrive early · calming routine</span>
+              </span>
+            </span>
+            <svg class="acc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="acc-content">
+            <div class="acc-inner">
+
+              <p style="font-size:0.88rem; color:var(--text-dark); line-height:1.75; margin-bottom:20px;">You've done the hard part. Test day is about protecting the preparation you've already banked.</p>
+
+              <div style="display:flex; flex-direction:column; gap:12px;">
+
+                <div style="display:flex; gap:14px; align-items:flex-start; padding:14px 16px; background:var(--teal-50); border-radius:10px; border:1px solid rgba(45,125,111,0.12);">
+                  <div style="width:32px; height:32px; border-radius:8px; background:var(--teal-700); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                  </div>
+                  <div>
+                    <div style="font-size:0.88rem; font-weight:700; color:var(--teal-900); margin-bottom:3px;">Sleep, don't cram.</div>
+                    <div style="font-size:0.83rem; color:var(--text-mid); line-height:1.65;">The night before, prioritize rest over one more review pass. Recall depends on sleep far more than on a late-night skim. No all-nighters.</div>
+                  </div>
+                </div>
+
+                <div style="display:flex; gap:14px; align-items:flex-start; padding:14px 16px; background:#fff; border-radius:10px; border:1.5px solid rgba(26,74,68,0.08);">
+                  <div style="width:32px; height:32px; border-radius:8px; background:rgba(45,125,111,0.09); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--teal-700)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  </div>
+                  <div>
+                    <div style="font-size:0.88rem; font-weight:700; color:var(--teal-900); margin-bottom:3px;">Keep the morning light.</div>
+                    <div style="font-size:0.83rem; color:var(--text-mid); line-height:1.65;">Glance over your key summaries and hardest-to-remember frameworks only. Trying to learn something new hours before the exam mostly raises anxiety.</div>
+                  </div>
+                </div>
+
+                <div style="display:flex; gap:14px; align-items:flex-start; padding:14px 16px; background:#fff; border-radius:10px; border:1.5px solid rgba(26,74,68,0.08);">
+                  <div style="width:32px; height:32px; border-radius:8px; background:rgba(45,125,111,0.09); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--teal-700)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  </div>
+                  <div>
+                    <div style="font-size:0.88rem; font-weight:700; color:var(--teal-900); margin-bottom:3px;">Arrive early with the right ID.</div>
+                    <div style="font-size:0.83rem; color:var(--text-mid); line-height:1.65;">Build in a buffer for traffic or parking, and bring the identification your test center requires. Arriving rushed costs you focus you'll want for the exam.</div>
+                  </div>
+                </div>
+
+                <div style="display:flex; gap:14px; align-items:flex-start; padding:14px 16px; background:#fff; border-radius:10px; border:1.5px solid rgba(26,74,68,0.08);">
+                  <div style="width:32px; height:32px; border-radius:8px; background:rgba(45,125,111,0.09); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--teal-700)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  </div>
+                  <div>
+                    <div style="font-size:0.88rem; font-weight:700; color:var(--teal-900); margin-bottom:3px;">Have a few questions to warm up.</div>
+                    <div style="font-size:0.83rem; color:var(--text-mid); line-height:1.65;">If a handful of low-stakes practice questions settles your nerves, do them before you leave — but stop before you tire yourself out.</div>
+                  </div>
+                </div>
+
+                <div style="display:flex; gap:14px; align-items:flex-start; padding:14px 16px; background:#fff; border-radius:10px; border:1.5px solid rgba(26,74,68,0.08);">
+                  <div style="width:32px; height:32px; border-radius:8px; background:rgba(45,125,111,0.09); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--teal-700)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+                  </div>
+                  <div>
+                    <div style="font-size:0.88rem; font-weight:700; color:var(--teal-900); margin-bottom:3px;">Use a calming routine.</div>
+                    <div style="font-size:0.83rem; color:var(--text-mid); line-height:1.65;">A simple, practiced relaxation technique — slow breathing, a grounding exercise — is worth more on test day than any last-minute fact. Manage the nerves and let the preparation do its work.</div>
+                  </div>
+                </div>
+
+                <div style="display:flex; gap:14px; align-items:flex-start; padding:14px 16px; background:#fff; border-radius:10px; border:1.5px solid rgba(26,74,68,0.08);">
+                  <div style="width:32px; height:32px; border-radius:8px; background:rgba(45,125,111,0.09); display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--teal-700)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                  </div>
+                  <div>
+                    <div style="font-size:0.88rem; font-weight:700; color:var(--teal-900); margin-bottom:3px;">Pace yourself and let go of sunk time.</div>
+                    <div style="font-size:0.83rem; color:var(--text-mid); line-height:1.65;">Move past time-sinks, trust your first read on questions you've reasoned through, and keep a steady rhythm to the finish.</div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div><!-- /section 5 -->
+
+        <!-- Footer disclaimer -->
+        <div style="margin-top:36px; padding:16px 20px; background:rgba(26,74,68,0.05); border-radius:12px; border:1px solid rgba(26,74,68,0.1);">
+          <p style="font-size:0.79rem; color:var(--text-mid); line-height:1.7; margin:0;">Counselor Companion is not affiliated with NBCC or any licensing body. Exam formats, content, fees, and policies are set by NBCC and can change — always verify current details for your specific test date at <strong>nbcc.org</strong>. The tips here are general study guidance, not a guarantee of any exam outcome.</p>
+        </div>
+
+      </div>
+    </div>
+  </div><!-- /view-tips -->
+
   <!-- ══════════ VIEW: AUDIO REVIEW ══════════ -->
   <div id="view-audio" class="view">
     <div style="min-height:100vh; padding-top:88px; padding-bottom:120px; background:var(--sage-bg);">
@@ -5713,7 +6121,7 @@
 
   <!-- ══════════ JS ══════════ -->
   <script>
-    const navIds = { home: 'nav-home', study: 'nav-study', 'exam-select': 'nav-exams', exam: 'nav-exams', 'exam-results': 'nav-exams', 'ncmhce-sim': 'nav-exams', 'ncmhce-dx': 'nav-exams', 'ncmhce-branch': 'nav-exams', 'mrq-select': 'nav-exams', theory: 'nav-study', flashcards: 'nav-study', 'theory-quiz': 'nav-study', reference: 'nav-reference', progress: 'nav-progress', 'study-plan': 'nav-plan', audio: 'nav-audio' };
+    const navIds = { home: 'nav-home', study: 'nav-study', 'exam-select': 'nav-exams', exam: 'nav-exams', 'exam-results': 'nav-exams', 'ncmhce-sim': 'nav-exams', 'ncmhce-dx': 'nav-exams', 'ncmhce-branch': 'nav-exams', 'mrq-select': 'nav-exams', theory: 'nav-study', flashcards: 'nav-study', 'theory-quiz': 'nav-study', reference: 'nav-reference', tips: 'nav-tips', progress: 'nav-progress', 'study-plan': 'nav-plan', audio: 'nav-audio' };
 
     function showView(name) {
       document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -5726,7 +6134,7 @@
       const navEl = document.getElementById(navIds[name]);
       if (navEl) navEl.classList.add('active');
       // sync mobile nav active state
-      const mobileMap = { home:'mnav-home', study:'mnav-study', 'exam-select':'mnav-exams', exam:'mnav-exams', 'exam-results':'mnav-exams', 'ncmhce-sim':'mnav-exams', 'ncmhce-dx':'mnav-exams', 'ncmhce-branch':'mnav-exams', 'mrq-select':'mnav-mrq', theory:'mnav-study', flashcards:'mnav-study', 'theory-quiz':'mnav-study', reference:'mnav-reference', progress:'mnav-progress', 'study-plan':'mnav-plan', audio:'mnav-audio' };
+      const mobileMap = { home:'mnav-home', study:'mnav-study', 'exam-select':'mnav-exams', exam:'mnav-exams', 'exam-results':'mnav-exams', 'ncmhce-sim':'mnav-exams', 'ncmhce-dx':'mnav-exams', 'ncmhce-branch':'mnav-exams', 'mrq-select':'mnav-mrq', theory:'mnav-study', flashcards:'mnav-study', 'theory-quiz':'mnav-study', reference:'mnav-reference', tips:'mnav-tips', progress:'mnav-progress', 'study-plan':'mnav-plan', audio:'mnav-audio' };
       document.querySelectorAll('.mobile-nav-item').forEach(l => l.classList.remove('active'));
       const mEl = document.getElementById(mobileMap[name]);
       if (mEl) mEl.classList.add('active');
