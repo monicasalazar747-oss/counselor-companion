@@ -795,6 +795,7 @@
       <button class="mobile-nav-item" id="mnav-progress" onclick="showView('progress'); closeMobileNav()">Progress</button>
       <button class="mobile-nav-item" id="mnav-plan" onclick="showView('study-plan'); closeMobileNav()">Study Plan</button>
       <button class="mobile-nav-item" id="mnav-audio" onclick="showView('audio'); closeMobileNav()">🎧 Audio Review</button>
+      <button class="mobile-nav-item" id="mnav-mrq" onclick="showView('mrq-select'); closeMobileNav()">🎯 Mistake Review</button>
     </div>
   </div>
 
@@ -3787,6 +3788,31 @@
           </button>
         </div>
 
+        <!-- ── Mistake Review Queue entry ── -->
+        <div id="mrq-entry-card" style="margin-top:32px; display:none;">
+          <div style="border-top:1.5px solid rgba(26,74,68,0.09); margin-bottom:28px;"></div>
+          <button onclick="showView('mrq-select')" style="display:block; width:100%; text-align:left; border:none; font-family:'Inter',sans-serif; background:linear-gradient(135deg,rgba(192,82,82,0.04) 0%,rgba(192,82,82,0.08) 100%); border-radius:16px; border:1.5px solid rgba(192,82,82,0.18); padding:22px 24px; cursor:pointer; transition:box-shadow 0.18s ease, border-color 0.18s ease;" onmouseover="this.style.boxShadow='0 4px 20px rgba(192,82,82,0.12)'; this.style.borderColor='rgba(192,82,82,0.32)'" onmouseout="this.style.boxShadow=''; this.style.borderColor='rgba(192,82,82,0.18)'">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+              <div style="display:flex; align-items:center; gap:14px;">
+                <div style="width:44px; height:44px; border-radius:12px; background:rgba(192,82,82,0.1); border:1.5px solid rgba(192,82,82,0.2); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C05252" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18M10.5 10.677a2 2 0 0 0 2.823 2.823"/><path d="M7.362 7.561C5.68 8.842 4.279 10.722 3 13c1.889 3.825 5.37 6 9 6 1.12 0 2.21-.19 3.24-.54M12 5c3.466.02 6.728 2.21 9 6-.74 1.342-1.567 2.47-2.47 3.36"/></svg>
+                </div>
+                <div>
+                  <div style="font-size:1rem; font-weight:700; color:var(--teal-900); margin-bottom:4px;">Review My Mistakes</div>
+                  <div style="font-size:0.82rem; color:var(--text-mid);">Re-drill questions you've missed — answer options reshuffled every session</div>
+                </div>
+              </div>
+              <div style="display:flex; align-items:center; gap:12px; flex-shrink:0;">
+                <div style="text-align:right;">
+                  <div id="mrq-entry-count" style="font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:700; color:#C05252; line-height:1;">0</div>
+                  <div style="font-size:0.7rem; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; color:rgba(192,82,82,0.6);">to review</div>
+                </div>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-light)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </div>
+            </div>
+          </button>
+        </div>
+
         <!-- ── NCMHCE divider ── -->
         <div style="border-top:1.5px solid rgba(26,74,68,0.09); margin:40px 0 32px;"></div>
         <div style="margin-bottom:20px;">
@@ -3875,6 +3901,116 @@
           </div>
 
         </div><!-- /NCMHCE grid -->
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ VIEW: MISTAKE REVIEW QUEUE ══════════ -->
+  <div id="view-mrq-select" class="view">
+    <div style="min-height:100vh; padding-top:96px; padding-bottom:80px; background:var(--sage-bg);">
+      <div style="max-width:680px; margin:0 auto; padding:0 24px;">
+
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+          <button onclick="showView('exam-select')" class="btn-ghost" style="font-size:0.82rem; padding:7px 14px; display:inline-flex; align-items:center; gap:6px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Practice Exams
+          </button>
+        </div>
+
+        <div style="margin-bottom:32px;">
+          <span class="badge" style="background:rgba(192,82,82,0.09); color:#C05252; border:1px solid rgba(192,82,82,0.2); margin-bottom:12px;">Mistake Review</span>
+          <h2 style="font-family:'Playfair Display',serif; font-size:clamp(1.6rem,3.5vw,2rem); font-weight:700; color:var(--teal-900); letter-spacing:-0.03em; margin-bottom:8px;">Review My Mistakes</h2>
+          <p style="color:var(--text-mid); font-size:0.92rem; line-height:1.7;">Re-drill every question you've missed. A question graduates from the queue after you answer it correctly <strong id="mrq-threshold-label">2</strong> times in a row during a review session.</p>
+        </div>
+
+        <!-- ── Empty: no mistakes yet ── -->
+        <div id="mrq-empty-none" style="display:none; text-align:center; padding:56px 32px; background:#fff; border-radius:20px; border:1.5px solid rgba(26,74,68,0.08); box-shadow:0 2px 8px rgba(26,74,68,0.05);">
+          <div style="width:64px; height:64px; border-radius:18px; background:linear-gradient(145deg,rgba(75,166,152,0.12),rgba(45,125,111,0.06)); margin:0 auto 20px; display:flex; align-items:center; justify-content:center;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--teal-500)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <h3 style="font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:700; color:var(--teal-900); margin-bottom:8px;">No mistakes on record yet</h3>
+          <p style="font-size:0.88rem; color:var(--text-mid); line-height:1.7; max-width:380px; margin:0 auto 24px;">Take a practice exam — every question you miss will appear here so you can drill your weak spots without repeating questions you already know.</p>
+          <button onclick="showView('exam-select')" class="btn-primary" style="font-size:0.9rem; padding:11px 28px;">Start a Practice Exam →</button>
+        </div>
+
+        <!-- ── Empty: all mastered ── -->
+        <div id="mrq-empty-cleared" style="display:none; text-align:center; padding:56px 32px; background:linear-gradient(145deg,rgba(45,125,111,0.06),rgba(75,166,152,0.04)); border-radius:20px; border:1.5px solid rgba(45,125,111,0.15); box-shadow:0 2px 8px rgba(45,125,111,0.06);">
+          <div style="font-size:2.8rem; margin-bottom:16px;">🎉</div>
+          <h3 style="font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; color:var(--teal-900); margin-bottom:8px;">Queue cleared!</h3>
+          <p style="font-size:0.88rem; color:var(--text-mid); line-height:1.7; max-width:380px; margin:0 auto 24px;">You've answered every previously missed question correctly <strong id="mrq-cleared-threshold">2</strong>+ times in a row. Take a new exam to uncover more gaps.</p>
+          <button onclick="showView('exam-select')" class="btn-primary" style="font-size:0.9rem; padding:11px 28px;">Take Another Exam →</button>
+        </div>
+
+        <!-- ── Main UI (has unmastered questions) ── -->
+        <div id="mrq-main" style="display:none;">
+
+          <!-- Filter row -->
+          <div style="background:#fff; border-radius:14px; border:1.5px solid rgba(26,74,68,0.09); padding:20px 22px; margin-bottom:20px; box-shadow:0 1px 6px rgba(26,74,68,0.05);">
+            <p style="font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--text-light); margin-bottom:14px;">Filter queue</p>
+            <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:flex-end;">
+              <div style="flex:1; min-width:140px;">
+                <label style="font-size:0.75rem; font-weight:600; color:var(--text-mid); display:block; margin-bottom:5px;">Domain</label>
+                <select id="mrq-filter-domain" onchange="renderMRQSelect()" style="width:100%; padding:8px 10px; border-radius:8px; border:1.5px solid rgba(26,74,68,0.14); font-family:'Inter',sans-serif; font-size:0.83rem; color:var(--teal-900); background:#fff; cursor:pointer;">
+                  <option value="all">All Domains</option>
+                  <option value="HGD">HGD — Human Growth &amp; Development</option>
+                  <option value="SCD">SCD — Social &amp; Cultural Diversity</option>
+                  <option value="CHR">CHR — Counseling &amp; Helping Relationships</option>
+                  <option value="GCG">GCG — Group Counseling &amp; Group Work</option>
+                  <option value="CD">CD — Career Development</option>
+                  <option value="AT">AT — Assessment &amp; Testing</option>
+                  <option value="RPE">RPE — Research &amp; Program Evaluation</option>
+                  <option value="PCO">PCO — Professional Orientation &amp; Ethics</option>
+                  <option value="Theory">Theory Quiz</option>
+                </select>
+              </div>
+              <div style="flex:1; min-width:130px;">
+                <label style="font-size:0.75rem; font-weight:600; color:var(--text-mid); display:block; margin-bottom:5px;">Type</label>
+                <select id="mrq-filter-source" onchange="renderMRQSelect()" style="width:100%; padding:8px 10px; border-radius:8px; border:1.5px solid rgba(26,74,68,0.14); font-family:'Inter',sans-serif; font-size:0.83rem; color:var(--teal-900); background:#fff; cursor:pointer;">
+                  <option value="all">All Types</option>
+                  <option value="domain_exam">NCE Questions</option>
+                  <option value="theory_quiz">Theory Quiz</option>
+                </select>
+              </div>
+              <div style="flex:1; min-width:130px;">
+                <label style="font-size:0.75rem; font-weight:600; color:var(--text-mid); display:block; margin-bottom:5px;">Recency</label>
+                <select id="mrq-filter-recency" onchange="renderMRQSelect()" style="width:100%; padding:8px 10px; border-radius:8px; border:1.5px solid rgba(26,74,68,0.14); font-family:'Inter',sans-serif; font-size:0.83rem; color:var(--teal-900); background:#fff; cursor:pointer;">
+                  <option value="all">All Time</option>
+                  <option value="30d">Last 30 Days</option>
+                  <option value="7d">Last 7 Days</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Count + mastery summary -->
+          <div style="background:#fff; border-radius:14px; border:1.5px solid rgba(26,74,68,0.09); padding:20px 22px; margin-bottom:20px; box-shadow:0 1px 6px rgba(26,74,68,0.05);">
+            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+              <div>
+                <div id="mrq-count-display" style="font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:700; color:var(--teal-900); line-height:1; margin-bottom:4px;"></div>
+                <div id="mrq-count-label" style="font-size:0.82rem; color:var(--text-mid);">in queue matching these filters</div>
+              </div>
+              <div id="mrq-mastery-display" style="text-align:right;">
+                <div id="mrq-mastered-count" style="font-size:1rem; font-weight:700; color:var(--teal-700); font-family:'Inter',sans-serif;"></div>
+                <div style="font-size:0.75rem; color:var(--text-light);">questions mastered</div>
+              </div>
+            </div>
+            <!-- Zero-filter state -->
+            <div id="mrq-empty-filter" style="display:none; padding-top:12px; border-top:1px solid rgba(26,74,68,0.07); margin-top:12px;">
+              <p style="font-size:0.85rem; color:var(--text-mid); line-height:1.6;">No mistakes match these filters. <button onclick="document.getElementById('mrq-filter-domain').value='all'; document.getElementById('mrq-filter-source').value='all'; document.getElementById('mrq-filter-recency').value='all'; renderMRQSelect();" style="background:none; border:none; color:var(--teal-700); font-weight:600; cursor:pointer; font-family:'Inter',sans-serif; font-size:0.85rem; padding:0; text-decoration:underline;">Clear filters</button></p>
+            </div>
+          </div>
+
+          <!-- Answer-shuffle note -->
+          <div style="display:flex; align-items:flex-start; gap:10px; padding:12px 16px; background:rgba(45,125,111,0.05); border-radius:10px; border:1px solid rgba(45,125,111,0.12); margin-bottom:24px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--teal-600)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:2px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <p style="font-size:0.82rem; color:var(--text-mid); line-height:1.6;">Answer options are shuffled before each session so you can't pass by memorizing position.</p>
+          </div>
+
+          <button id="mrq-start-btn" onclick="startMRQDrill()" class="btn-primary" style="width:100%; font-size:1rem; padding:15px 28px; border-radius:12px;">
+            Start Review Session →
+          </button>
+        </div>
 
       </div>
     </div>
@@ -4160,6 +4296,22 @@
                 <button id="prog-due-fc-btn" onclick="showDueFlashcards()" style="display:none; background:rgba(196,133,90,0.28); border:1.5px solid rgba(196,133,90,0.45); color:#f5c97a; font-family:'Inter',sans-serif; font-size:0.82rem; font-weight:600; padding:9px 16px; border-radius:10px; cursor:pointer; white-space:nowrap; transition:background 0.15s ease;" onmouseover="this.style.background='rgba(196,133,90,0.42)'" onmouseout="this.style.background='rgba(196,133,90,0.28)'">⚡ Flashcards</button>
                 <button id="prog-due-tq-btn" onclick="startTQReviewDue()" style="display:none; background:rgba(255,255,255,0.12); border:1.5px solid rgba(255,255,255,0.22); color:#fff; font-family:'Inter',sans-serif; font-size:0.82rem; font-weight:600; padding:9px 16px; border-radius:10px; cursor:pointer; white-space:nowrap; transition:background 0.15s ease;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.12)'">⚡ Theory Quiz</button>
               </div>
+            </div>
+          </div>
+
+          <!-- Mistake Review Queue panel -->
+          <div id="prog-mrq-panel" style="margin-bottom:20px; display:none;">
+            <div style="background:#fff; border-radius:14px; border:1.5px solid rgba(192,82,82,0.15); padding:18px 22px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; box-shadow:0 2px 8px rgba(192,82,82,0.05);">
+              <div style="display:flex; align-items:center; gap:14px;">
+                <div style="width:40px; height:40px; border-radius:10px; background:rgba(192,82,82,0.08); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C05252" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18M10.5 10.677a2 2 0 0 0 2.823 2.823"/><path d="M7.362 7.561C5.68 8.842 4.279 10.722 3 13c1.889 3.825 5.37 6 9 6 1.12 0 2.21-.19 3.24-.54M12 5c3.466.02 6.728 2.21 9 6-.74 1.342-1.567 2.47-2.47 3.36"/></svg>
+                </div>
+                <div>
+                  <p style="font-size:0.68rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:rgba(192,82,82,0.6); margin-bottom:3px;">Mistake Review Queue</p>
+                  <p id="prog-mrq-summary" style="font-size:0.95rem; font-weight:700; color:var(--teal-900); font-family:'Playfair Display',serif; line-height:1.2;"></p>
+                </div>
+              </div>
+              <button onclick="showView('mrq-select')" style="background:rgba(192,82,82,0.08); border:1.5px solid rgba(192,82,82,0.22); color:#C05252; font-family:'Inter',sans-serif; font-size:0.82rem; font-weight:600; padding:9px 16px; border-radius:10px; cursor:pointer; white-space:nowrap; transition:background 0.15s ease;" onmouseover="this.style.background='rgba(192,82,82,0.15)'" onmouseout="this.style.background='rgba(192,82,82,0.08)'">Review Now →</button>
             </div>
           </div>
 
@@ -5561,7 +5713,7 @@
 
   <!-- ══════════ JS ══════════ -->
   <script>
-    const navIds = { home: 'nav-home', study: 'nav-study', 'exam-select': 'nav-exams', exam: 'nav-exams', 'exam-results': 'nav-exams', 'ncmhce-sim': 'nav-exams', 'ncmhce-dx': 'nav-exams', 'ncmhce-branch': 'nav-exams', theory: 'nav-study', flashcards: 'nav-study', 'theory-quiz': 'nav-study', reference: 'nav-reference', progress: 'nav-progress', 'study-plan': 'nav-plan', audio: 'nav-audio' };
+    const navIds = { home: 'nav-home', study: 'nav-study', 'exam-select': 'nav-exams', exam: 'nav-exams', 'exam-results': 'nav-exams', 'ncmhce-sim': 'nav-exams', 'ncmhce-dx': 'nav-exams', 'ncmhce-branch': 'nav-exams', 'mrq-select': 'nav-exams', theory: 'nav-study', flashcards: 'nav-study', 'theory-quiz': 'nav-study', reference: 'nav-reference', progress: 'nav-progress', 'study-plan': 'nav-plan', audio: 'nav-audio' };
 
     function showView(name) {
       document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -5574,11 +5726,12 @@
       const navEl = document.getElementById(navIds[name]);
       if (navEl) navEl.classList.add('active');
       // sync mobile nav active state
-      const mobileMap = { home:'mnav-home', study:'mnav-study', 'exam-select':'mnav-exams', exam:'mnav-exams', 'exam-results':'mnav-exams', 'ncmhce-sim':'mnav-exams', 'ncmhce-dx':'mnav-exams', 'ncmhce-branch':'mnav-exams', theory:'mnav-study', flashcards:'mnav-study', 'theory-quiz':'mnav-study', reference:'mnav-reference', progress:'mnav-progress', 'study-plan':'mnav-plan', audio:'mnav-audio' };
+      const mobileMap = { home:'mnav-home', study:'mnav-study', 'exam-select':'mnav-exams', exam:'mnav-exams', 'exam-results':'mnav-exams', 'ncmhce-sim':'mnav-exams', 'ncmhce-dx':'mnav-exams', 'ncmhce-branch':'mnav-exams', 'mrq-select':'mnav-mrq', theory:'mnav-study', flashcards:'mnav-study', 'theory-quiz':'mnav-study', reference:'mnav-reference', progress:'mnav-progress', 'study-plan':'mnav-plan', audio:'mnav-audio' };
       document.querySelectorAll('.mobile-nav-item').forEach(l => l.classList.remove('active'));
       const mEl = document.getElementById(mobileMap[name]);
       if (mEl) mEl.classList.add('active');
-      if (name === 'exam-select') { if (typeof renderSmartPanel === 'function') renderSmartPanel(); }
+      if (name === 'exam-select') { if (typeof renderSmartPanel === 'function') renderSmartPanel(); if (typeof _updateMRQEntryCard === 'function') _updateMRQEntryCard(); }
+      if (name === 'mrq-select') { if (typeof renderMRQSelect === 'function') renderMRQSelect(); }
       if (name === 'theory-quiz') { if (typeof refreshDueBadges === 'function') refreshDueBadges(); }
       if (name === 'progress') { if (typeof renderProgressDashboard === 'function') renderProgressDashboard(); }
       if (name === 'study-plan') { if (typeof renderStudyPlan === 'function') renderStudyPlan(); }
@@ -12057,18 +12210,22 @@
       clearInterval(examTimerInterval);
       examResultsDeck = examDeck;
       updateStats(examDeck, examAnswers);
+      var isMRQ = examConfigId === 'mrq';
       examDeck.forEach(function(q, i) {
         if (examAnswers[i] < 0) return; // skipped — don't record unanswered
+        var qid = String(q._mrqOrigId !== undefined ? q._mrqOrigId : q.id);
+        var isCorrect = examAnswers[i] === q.ans;
         StudyProgress.recordQuizAttempt({
-          question_id: String(q.id),
-          source: 'domain_exam',
+          question_id: qid,
+          source: isMRQ ? 'mrq_review' : 'domain_exam',
           domain: q.domain,
           topic_tags: [q.domain],
           answer_given: examAnswers[i],
           correct_answer: q.ans,
-          is_correct: examAnswers[i] === q.ans,
+          is_correct: isCorrect,
           confidence: examConfidences[i] || null
         });
+        if (isMRQ) StudyProgress.recordMRQResult(qid, isCorrect);
       });
       renderResults();
       showView('exam-results');
@@ -12077,7 +12234,153 @@
     function retakeExam() {
       if (examConfigId === 'weak') { startWeakAreaDrill(); return; }
       if (examConfigId === 'bookmarks') { startBookmarkDrill(); return; }
+      if (examConfigId === 'mrq') { showView('mrq-select'); return; }
       startExam(examConfigId);
+    }
+
+    /* ══════════ Mistake Review Queue ══════════ */
+
+    function renderMRQSelect() {
+      const domainEl = document.getElementById('mrq-filter-domain');
+      const sourceEl = document.getElementById('mrq-filter-source');
+      const recencyEl = document.getElementById('mrq-filter-recency');
+      const domain = domainEl ? domainEl.value : 'all';
+      const source = sourceEl ? sourceEl.value : 'all';
+      const recency = recencyEl ? recencyEl.value : 'all';
+      const since_ts = recency === '7d' ? Date.now() - 7*86400000 : recency === '30d' ? Date.now() - 30*86400000 : 0;
+
+      // Set threshold label
+      const tl = document.getElementById('mrq-threshold-label');
+      const tc = document.getElementById('mrq-cleared-threshold');
+      if (tl) tl.textContent = MRQ_MASTERY_THRESHOLD;
+      if (tc) tc.textContent = MRQ_MASTERY_THRESHOLD;
+
+      // Total unmastered (no filter) and filtered count
+      const totalUnmastered = StudyProgress.getMRQCount();
+      const opts = {};
+      if (domain !== 'all') opts.domain = domain;
+      if (source !== 'all') opts.source = source;
+      if (since_ts) opts.since_ts = since_ts;
+      const filteredCount = StudyProgress.getMRQCount(opts);
+
+      // Count mastered questions (has misses but consec >= threshold)
+      const raw = StudyProgress._getRaw();
+      const byId = {};
+      (raw.quiz_attempts || []).forEach(function(a) { if (!a.is_correct) byId[a.question_id] = true; });
+      const totalWithMisses = Object.keys(byId).length;
+      const masteredCount = totalWithMisses - StudyProgress.getMRQCount();
+
+      const emptyNone = document.getElementById('mrq-empty-none');
+      const emptyCleared = document.getElementById('mrq-empty-cleared');
+      const mrqMain = document.getElementById('mrq-main');
+      const emptyFilter = document.getElementById('mrq-empty-filter');
+      const countEl = document.getElementById('mrq-count-display');
+      const masteredEl = document.getElementById('mrq-mastered-count');
+      const startBtn = document.getElementById('mrq-start-btn');
+
+      if (totalWithMisses === 0) {
+        // No mistakes ever
+        if (emptyNone) emptyNone.style.display = '';
+        if (emptyCleared) emptyCleared.style.display = 'none';
+        if (mrqMain) mrqMain.style.display = 'none';
+        return;
+      }
+
+      if (emptyNone) emptyNone.style.display = 'none';
+
+      if (totalUnmastered === 0) {
+        // All mastered!
+        if (emptyCleared) emptyCleared.style.display = '';
+        if (mrqMain) mrqMain.style.display = 'none';
+        return;
+      }
+
+      // Has unmastered questions
+      if (emptyCleared) emptyCleared.style.display = 'none';
+      if (mrqMain) mrqMain.style.display = '';
+
+      if (masteredEl) masteredEl.textContent = masteredCount > 0 ? masteredCount + ' of ' + totalWithMisses : '0 of ' + totalWithMisses;
+      if (countEl) countEl.textContent = filteredCount;
+
+      if (emptyFilter) emptyFilter.style.display = filteredCount === 0 ? '' : 'none';
+      if (startBtn) {
+        startBtn.disabled = filteredCount === 0;
+        startBtn.style.opacity = filteredCount === 0 ? '0.4' : '';
+        startBtn.style.cursor = filteredCount === 0 ? 'not-allowed' : '';
+      }
+    }
+
+    function startMRQDrill() {
+      const domainEl = document.getElementById('mrq-filter-domain');
+      const sourceEl = document.getElementById('mrq-filter-source');
+      const recencyEl = document.getElementById('mrq-filter-recency');
+      const domain = domainEl ? domainEl.value : 'all';
+      const source = sourceEl ? sourceEl.value : 'all';
+      const recency = recencyEl ? recencyEl.value : 'all';
+      const since_ts = recency === '7d' ? Date.now() - 7*86400000 : recency === '30d' ? Date.now() - 30*86400000 : 0;
+
+      const opts = {};
+      if (domain !== 'all') opts.domain = domain;
+      if (source !== 'all') opts.source = source;
+      if (since_ts) opts.since_ts = since_ts;
+
+      const eligible = StudyProgress.getMRQQueue(opts);
+      if (!eligible.length) return;
+
+      const deck = [];
+      eligible.forEach(function(item) {
+        let base = null;
+        let qDomain = item.domain;
+        if (item.source === 'theory_quiz') {
+          const idx = parseInt(item.question_id.replace('tq_', ''), 10);
+          base = theoryQuizBank[idx];
+          if (!base) return;
+          qDomain = base.theory || item.domain || 'Theory';
+        } else {
+          base = nceBank.find(function(q) { return String(q.id) === item.question_id; });
+          if (!base) return;
+        }
+        // Shuffle answer options (Fisher-Yates on index order)
+        const n = base.opts.length;
+        const perm = [];
+        for (let k = 0; k < n; k++) perm.push(k);
+        for (let k = n - 1; k > 0; k--) {
+          const j = Math.floor(Math.random() * (k + 1));
+          const tmp = perm[k]; perm[k] = perm[j]; perm[j] = tmp;
+        }
+        // perm[newIdx] = originalIdx
+        const shuffledOpts = perm.map(function(origIdx) { return base.opts[origIdx]; });
+        const newAns = perm.indexOf(base.ans);
+        deck.push(Object.assign({}, base, {
+          id: item.question_id,
+          domain: qDomain,
+          opts: shuffledOpts,
+          ans: newAns,
+          _mrqOrigId: item.question_id
+        }));
+      });
+
+      if (!deck.length) return;
+      shuffle(deck);
+      _launchCustomDeck('mrq', 'Mistake Review (' + deck.length + ' questions)', deck, Math.ceil(deck.length * 2));
+    }
+
+    function _updateMRQEntryCard() {
+      const count = StudyProgress.getMRQCount();
+      const card = document.getElementById('mrq-entry-card');
+      const countEl = document.getElementById('mrq-entry-count');
+      if (card) card.style.display = count > 0 ? '' : 'none';
+      if (countEl) countEl.textContent = count;
+    }
+
+    function _updateMRQDashboardPanel() {
+      const count = StudyProgress.getMRQCount();
+      const panel = document.getElementById('prog-mrq-panel');
+      const summary = document.getElementById('prog-mrq-summary');
+      if (!panel) return;
+      if (count === 0) { panel.style.display = 'none'; return; }
+      panel.style.display = '';
+      if (summary) summary.textContent = count === 1 ? '1 question needs another look' : count + ' questions need another look';
     }
 
     function toggleReviewBookmark(qId) {
@@ -12322,15 +12625,18 @@
        migration function to MIGRATIONS keyed by the NEW version number.
        Migrations run forward automatically on every _load() call.
     ══════════════════════════════════════════════════════════════ */
+    const MRQ_MASTERY_THRESHOLD = 2; // consecutive correct answers in MRQ sessions to graduate a question
+
     const StudyProgress = (function() {
       const KEY = 'lpc_progress_v1';
-      const CURRENT_VERSION = 1;
+      const CURRENT_VERSION = 2;
 
-      // Add future schema migrations here: { 2: (data) => { ...patch data...; data.schema_version = 2; return data; } }
-      const MIGRATIONS = {};
+      const MIGRATIONS = {
+        2: function(data) { data.mrq_consec = data.mrq_consec || {}; data.schema_version = 2; return data; }
+      };
 
       function _blank() {
-        return { schema_version: CURRENT_VERSION, created_at: Date.now(), updated_at: Date.now(), quiz_attempts: [], flashcard_reviews: [] };
+        return { schema_version: CURRENT_VERSION, created_at: Date.now(), updated_at: Date.now(), quiz_attempts: [], flashcard_reviews: [], mrq_consec: {} };
       }
 
       function _migrate(data) {
@@ -12465,7 +12771,53 @@
       /** Escape hatch for migrations only — do not use in feature code. */
       function _getRaw() { return _load(); }
 
-      return { recordQuizAttempt, recordFlashcardReview, getStats, getStatsByDomain, getWeakAreas, getRecentActivity, resetProgress, exportJSON, _getRaw };
+      /**
+       * Returns array of queue-eligible questions: at least one miss, not yet mastered.
+       * opts: { domain?, source? ('domain_exam'|'theory_quiz'), since_ts? (epoch ms — filters by last miss) }
+       * Sorted newest-missed first.
+       */
+      function getMRQQueue(opts) {
+        opts = opts || {};
+        var data = _load();
+        var byId = {};
+        data.quiz_attempts.forEach(function(a) {
+          if (!byId[a.question_id]) {
+            byId[a.question_id] = {
+              domain: a.domain,
+              detectedSource: (a.question_id.indexOf('tq_') === 0) ? 'theory_quiz' : 'domain_exam',
+              misses: []
+            };
+          }
+          if (!a.is_correct) byId[a.question_id].misses.push(a.ts);
+        });
+        var consec = data.mrq_consec || {};
+        var threshold = MRQ_MASTERY_THRESHOLD;
+        return Object.keys(byId).filter(function(qid) {
+          var item = byId[qid];
+          if (!item.misses.length) return false;
+          if ((consec[qid] || 0) >= threshold) return false;
+          if (opts.domain && item.domain !== opts.domain) return false;
+          if (opts.source && item.detectedSource !== opts.source) return false;
+          if (opts.since_ts) { var last = Math.max.apply(null, item.misses); if (last < opts.since_ts) return false; }
+          return true;
+        }).map(function(qid) {
+          var item = byId[qid];
+          return { question_id: qid, domain: item.domain, source: item.detectedSource, last_missed_ts: Math.max.apply(null, item.misses), total_misses: item.misses.length, consec_correct: consec[qid] || 0 };
+        }).sort(function(a, b) { return b.last_missed_ts - a.last_missed_ts; });
+      }
+
+      /** Count of unmastered questions matching optional filters (same opts as getMRQQueue). */
+      function getMRQCount(opts) { return getMRQQueue(opts).length; }
+
+      /** Called after each MRQ session answer. Increments or resets the consecutive-correct counter. */
+      function recordMRQResult(question_id, is_correct) {
+        var data = _load();
+        if (!data.mrq_consec) data.mrq_consec = {};
+        data.mrq_consec[question_id] = is_correct ? (data.mrq_consec[question_id] || 0) + 1 : 0;
+        _save(data);
+      }
+
+      return { recordQuizAttempt, recordFlashcardReview, getStats, getStatsByDomain, getWeakAreas, getRecentActivity, getMRQQueue, getMRQCount, recordMRQResult, resetProgress, exportJSON, _getRaw };
     })();
 
     /* ══════════ SRS — Leitner Box Engine ══════════
@@ -13597,6 +13949,9 @@
 
       document.getElementById('progress-empty').style.display = isEmpty ? '' : 'none';
       document.getElementById('progress-content').style.display = isEmpty ? 'none' : '';
+
+      // ── Mistake Review Queue panel ──
+      if (typeof _updateMRQDashboardPanel === 'function') _updateMRQDashboardPanel();
 
       // ── Due Today panel (visible regardless of study data, gated on SRS due counts) ──
       var fcDue = SRS.dueCount('fc');
